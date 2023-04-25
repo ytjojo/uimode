@@ -3,9 +3,8 @@
 
     <declare-styleable name="UiMode">
         <attr name="iv_useMaskColor" format="boolean" />
-        <attr name="invalidate" format="boolean" />
         <!--uiMode忽略的属性，多个属性时属性名之间用'|'分割-->
-        <attr name="uiMode_ignore" format="string" />
+      />
     </declare-styleable>
 
     <declare-styleable name="RatioLayout">
@@ -28,6 +27,95 @@
         <attr name="border_width" format="dimension" />
         <attr name="border_color" format="color" />
         <!--<attr name="border_overlay" format="boolean" />-->
+    </declare-styleable>
+
+    <declare-styleable name="UiModeView">
+        <attr name="view_invalidate" format="boolean" />
+        <!--uiMode忽略的属性，多个属性时属性名之间用'|'分割-->
+        <attr name="uiMode_ignore" format="string" />
+        <attr name="view_alpha" format="reference" />
+        <attr name="android:foreground"/>
+        <attr name="android:theme"/>
+    </declare-styleable>
+
+    <declare-styleable name="TextViewHelper">
+        <attr name="android:textCursorDrawable"/>
+        <attr name="android:drawableLeft"/>
+        <attr name="android:drawableTop"/>
+        <attr name="android:drawableRight"/>
+        <attr name="android:drawableBottom"/>
+        <attr name="android:drawableStart"/>
+        <attr name="android:drawableEnd"/>
+        <attr name="android:textAppearance"/>
+        <attr name="android:textColor"/>
+        <attr name="android:textColorHint"/>
+        <attr name="android:textColorLink"/>
+        <attr name="android:textColorHighlight"/>
+
+        <attr format="reference" name="drawableLeftCompat"/>
+        <attr format="reference" name="drawableTopCompat"/>
+        <attr format="reference" name="drawableRightCompat"/>
+        <attr format="reference" name="drawableBottomCompat"/>
+        <attr format="reference" name="drawableStartCompat"/>
+        <attr format="reference" name="drawableEndCompat"/>
+        <!-- Tint to apply to the compound (left, top, etc.) drawables. -->
+        <attr format="color" name="drawableTint"/>
+
+    </declare-styleable>
+
+    <declare-styleable name="ProgressBarHelper">
+        <attr name="android:progressDrawable"/>
+
+<!--        <attr name="mpb_progressTint" format="color|reference" />-->
+<!--        <attr name="mpb_progressTintMode" format="enum">-->
+<!--            <enum name="src_over" value="3" />-->
+<!--            <enum name="src_in" value="5" />-->
+<!--            <enum name="src_atop" value="9" />-->
+<!--            <enum name="multiply" value="14" />-->
+<!--            <enum name="screen" value="15" />-->
+<!--            <enum name="add" value="16" />-->
+<!--        </attr>-->
+<!--        <attr name="mpb_secondaryProgressTint" format="color|reference" />-->
+<!--        <attr name="mpb_secondaryProgressTintMode" format="enum">-->
+<!--            <enum name="src_over" value="3" />-->
+<!--            <enum name="src_in" value="5" />-->
+<!--            <enum name="src_atop" value="9" />-->
+<!--            <enum name="multiply" value="14" />-->
+<!--            <enum name="screen" value="15" />-->
+<!--            <enum name="add" value="16" />-->
+<!--        </attr>-->
+<!--        <attr name="mpb_progressBackgroundTint" format="color|reference" />-->
+<!--        <attr name="mpb_progressBackgroundTintMode" format="enum">-->
+<!--            <enum name="src_over" value="3" />-->
+<!--            <enum name="src_in" value="5" />-->
+<!--            <enum name="src_atop" value="9" />-->
+<!--            <enum name="multiply" value="14" />-->
+<!--            <enum name="screen" value="15" />-->
+<!--            <enum name="add" value="16" />-->
+<!--        </attr>-->
+<!--        <attr name="mpb_indeterminateTint" format="color|reference" />-->
+<!--        <attr name="mpb_indeterminateTintMode" format="enum">-->
+<!--            <enum name="src_over" value="3" />-->
+<!--            <enum name="src_in" value="5" />-->
+<!--            <enum name="src_atop" value="9" />-->
+<!--            <enum name="multiply" value="14" />-->
+<!--            <enum name="screen" value="15" />-->
+<!--            <enum name="add" value="16" />-->
+<!--        </attr>-->
+
+    </declare-styleable>
+    <declare-styleable name="SeekBarHelper">
+        <attr name="android:thumb"/>
+    </declare-styleable>
+
+    <declare-styleable name="ToolbarHelper">
+        <attr name="android:logo"/>
+        <attr name="android:navigationIcon"/>
+
+        <attr name="android:subtitleTextColor"/>
+
+        <attr name="android:titleTextColor"/>
+
     </declare-styleable>
 
 </resources>

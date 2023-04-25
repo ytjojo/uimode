@@ -26,11 +26,13 @@ import com.aliya.uimode.apply.ApplyTextColorHint;
 import com.aliya.uimode.apply.ApplyTheme;
 import com.aliya.uimode.apply.ApplyThumb;
 import com.aliya.uimode.factory.UiModeInflaterFactory;
+import com.aliya.uimode.factory.ViewStore;
 import com.aliya.uimode.intef.ApplyPolicy;
 import com.aliya.uimode.intef.UiApply;
 import com.aliya.uimode.intef.UiModeChangeListener;
 import com.aliya.uimode.mode.Attr;
 import com.aliya.uimode.mode.UiMode;
+import com.aliya.uimode.utils.AppResourceUtils;
 
 import java.lang.ref.SoftReference;
 import java.util.HashMap;
@@ -154,7 +156,7 @@ public final class UiModeManager implements ApplyPolicy {
         HideLog.init(sAppContext);
         sFactory2 = factory2;
 
-        final int appTheme = Utils.getManifestApplicationTheme(sAppContext);
+        final int appTheme = AppResourceUtils.getManifestApplicationTheme(sAppContext);
         if (appTheme != 0) {
             sAppContext.getTheme().applyStyle(appTheme, true);
         }
@@ -182,7 +184,7 @@ public final class UiModeManager implements ApplyPolicy {
          */
         AppCompatDelegate.setDefaultNightMode(mode);
         // 更新 ApplicationContext
-        return Utils.updateUiModeForApplication(sAppContext, mode);
+        return AppResourceUtils.updateUiModeForApplication(sAppContext, mode);
     }
 
     public static void setUiMode(@AppCompatDelegate.NightMode int mode) {
@@ -195,7 +197,7 @@ public final class UiModeManager implements ApplyPolicy {
         int appTheme = 0;
         // 应用Application
         if (uiModeChange) {
-            appTheme = Utils.getManifestApplicationTheme(sAppContext);
+            appTheme = AppResourceUtils.getManifestApplicationTheme(sAppContext);
             if (appTheme != 0) {
                 sAppContext.getTheme().applyStyle(appTheme, true);
             }
@@ -215,7 +217,7 @@ public final class UiModeManager implements ApplyPolicy {
                     }
 
                     if (uiModeChange) {
-                        final int theme = Utils.getManifestActivityTheme(activity);
+                        final int theme = AppResourceUtils.getManifestActivityTheme(activity);
                         if (theme != 0) {
                             activity.getTheme().applyStyle(theme, true);
                         } else if (appTheme != 0) {
@@ -231,46 +233,15 @@ public final class UiModeManager implements ApplyPolicy {
             }
         }
 
-        UiMode.dispatchApplyUiMode(get());
+//        UiMode.dispatchApplyUiMode(get());
+        ViewStore.INSTANCE.dispatchApplyUiMode();
     }
 
     public static void applyUiModeViews(Activity activity) {
         UiMode.applyUiMode(activity, get());
     }
 
-    /**
-     * 适配切换的主题
-     *
-     * @param resId a theme style res id
-     * @see #setUiMode(int)
-     * @deprecated 为兼容v1.x版本保留的方法
-     */
-    @Deprecated
-    public static void setTheme(int resId) {
-        if (sAppContext == null) {
-            HideLog.e(TAG, "Using the ui mode, you need to initialize");
-            return;
-        }
 
-        // 设置所有Activity主题
-        Stack<Activity> appStack = AppStack.getAppStack();
-        if (appStack != null) {
-            for (Activity next : appStack) {
-                if (next != null) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                        if (next.isDestroyed()) continue;
-                    }
-                    next.setTheme(resId);
-                }
-            }
-        }
-
-        // 设置Application的主题
-        sAppContext.setTheme(resId);
-
-        // 执行View到对应主题
-        UiMode.dispatchApplyUiMode(get());
-    }
 
     public static void addSupportAttrIds(int[] attrs) {
         if (attrs == null) {
@@ -324,6 +295,10 @@ public final class UiModeManager implements ApplyPolicy {
         } else {
             HideLog.e(TAG, "Using the ui mode, you need to initialize");
         }
+    }
+
+    public static void cancelLocalNightMode(AppCompatActivity activity){
+        activity.getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_UNSPECIFIED);
     }
 
     /**

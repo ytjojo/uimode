@@ -16,7 +16,7 @@ import androidx.annotation.RequiresApi;
  * @author a_liYa
  * @date 2018/11/14 19:38.
  */
-final class ResourcesFlusher {
+final public class ResourcesFlusher {
 
     private static final String TAG = "ResourcesFlusher";
 
@@ -25,7 +25,7 @@ final class ResourcesFlusher {
      *
      * @param resources .
      */
-    static void flush(@NonNull final Resources resources) {
+    public static void flush(@NonNull final Resources resources) {
         /**
          * 参考自
          * @see androidx.appcompat.app.ResourcesFlusher#flush(Resources)

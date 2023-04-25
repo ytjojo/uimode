@@ -3,5 +3,11 @@
 
     <item name="tag_ui_mode" type="id" />
     <item name="tag_ui_mode_mask_drawable" type="id" />
+    <item name="tag_ui_mode_view_current_theme" type="id" />
+    <item name="tag_ui_mode_widget_style" type="id" />
+    <item name="tag_ui_mode_type_array_map" type="id" />
+    <item name="tag_ui_mode_custom_type_array_map" type="id" />
+
+    <item name="tag_ui_mode_on_ui_mode_changed_list" type="id" />
 
 </resources>

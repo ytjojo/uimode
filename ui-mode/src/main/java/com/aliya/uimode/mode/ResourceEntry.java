@@ -19,7 +19,7 @@ public class ResourceEntry {
      * 构造方法
      *
      * @param id   resource reference identifier.
-     * @param type attr type {@link Type}
+     * @param type attr type {@link ResourceIdType}
      * @see #ResourceEntry(int, Context)
      */
     public ResourceEntry(@AnyRes int id, String type) {

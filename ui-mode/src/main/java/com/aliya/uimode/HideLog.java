@@ -11,7 +11,7 @@ import android.util.Log;
  * @date 2016-3-30 下午11:44:55
  * @hide
  */
-final class HideLog {
+final public class HideLog {
 
     /**
      * 手动控制是否Debug，通过{@link #setIsDebug(boolean)}设置
@@ -22,7 +22,7 @@ final class HideLog {
      */
     private static boolean debuggable = true;
 
-    private static final String TAG = "UiMode";
+    public static final String TAG = "UiMode";
 
     private HideLog() {
     }

@@ -4,17 +4,14 @@ import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import androidx.annotation.AnyRes;
-import androidx.annotation.AttrRes;
 import androidx.appcompat.app.AppCompatDelegate;
 import android.util.DisplayMetrics;
 import android.view.View;
-import android.widget.ImageView;
 
 import com.aliya.uimode.UiModeManager;
 import com.aliya.uimode.intef.UiApply;
 import com.aliya.uimode.mode.Attr;
 import com.aliya.uimode.mode.ResourceEntry;
-import com.aliya.uimode.mode.Type;
 import com.aliya.uimode.mode.UiMode;
 
 import java.util.Map;
@@ -31,26 +28,7 @@ import static androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES;
  */
 public class UiModeUtils {
 
-    /**
-     * ImageView应用src属性， 并加入到UiMode列表
-     *
-     * @param v      ImageView
-     * @param attrId .
-     * @see #applySave(View, String, int)
-     * @deprecated 过时方法，2.x版本不推荐使用 ATTR
-     */
-    @Deprecated
-    public static void applyImageSrc(ImageView v, @AttrRes int attrId) {
-        if (v == null) return;
 
-        UiApply uiApply = UiModeManager.get().obtainApplyPolicy(Attr.NAME_SRC);
-        if (uiApply != null) {
-            ResourceEntry entry = new ResourceEntry(attrId, Type.ATTR);
-            if (uiApply.onApply(v, entry)) {
-                saveViewUiMode(v, Attr.builder().add(Attr.NAME_SRC, entry).build());
-            }
-        }
-    }
 
     /**
      * 应用属性，并加入到UiMode列表

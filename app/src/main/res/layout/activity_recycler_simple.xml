@@ -19,6 +19,6 @@
         android:id="@+id/recycler"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:invalidate="true" />
+        app:view_invalidate="true" />
 
 </LinearLayout>

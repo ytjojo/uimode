@@ -67,8 +67,8 @@ public class UiModeInflaterFactory implements LayoutInflater.Factory2 {
      * @return 返回创建的View
      */
     private View uiModeCreateView(View parent, String name, Context context, AttributeSet attrs) {
-
-        correctConfigUiMode(context);
+        Activity activity = UiMode.findActivity(context);
+        correctConfigUiMode(context , activity);
 
         View view = null;
         switch (name) { // 拦截所有的ImageView、AppCompatImageView
@@ -77,7 +77,6 @@ public class UiModeInflaterFactory implements LayoutInflater.Factory2 {
                 view = new MaskImageView(context, attrs);
                 break;
             default:
-                Activity activity = UiMode.findActivity(context);
                 if (activity instanceof AppCompatActivity) {
                     /**
                      * @see androidx.appcompat.app.AppCompatDelegateImpl#createView(View, String, Context, AttributeSet)
@@ -100,6 +99,7 @@ public class UiModeInflaterFactory implements LayoutInflater.Factory2 {
             sAttrIdsLocal.set(attrIdsMap = new HashMap<>());
         }
         attrIdsMap.clear();
+
 
         if (mInflaterSupport != null) {
             final int N = attrs.getAttributeCount();
@@ -180,7 +180,9 @@ public class UiModeInflaterFactory implements LayoutInflater.Factory2 {
                 }
             }
         }
-
+        if(view != null){
+            UiModeDelegate.INSTANCE.onViewCreated(view,attrs);
+        }
         return onInterceptView(context, attrs, view);
     }
 

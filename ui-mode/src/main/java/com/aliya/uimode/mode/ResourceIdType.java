@@ -11,7 +11,7 @@ import java.lang.annotation.RetentionPolicy;
  * @author a_liYa
  * @date 2018/1/24 16:12.
  */
-public final class Type {
+public final class ResourceIdType {
 
     public static final String COLOR = "color";
 

@@ -1,24 +1,23 @@
 package com.aliya.uimode.utils;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.util.DisplayMetrics;
 import android.view.View;
-import android.widget.ImageView;
+
+import androidx.annotation.AnyRes;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 
 import com.aliya.uimode.UiModeManager;
 import com.aliya.uimode.intef.UiApply;
 import com.aliya.uimode.mode.Attr;
 import com.aliya.uimode.mode.ResourceEntry;
-import com.aliya.uimode.mode.Type;
 import com.aliya.uimode.mode.UiMode;
 
 import java.util.Map;
-
-import androidx.annotation.AnyRes;
-import androidx.annotation.AttrRes;
-import androidx.appcompat.app.AppCompatDelegate;
 
 /**
  * 帮助解析资源保存资源 - 工具类
@@ -28,26 +27,6 @@ import androidx.appcompat.app.AppCompatDelegate;
  */
 public class UiModes {
 
-    /**
-     * ImageView应用src属性， 并加入到UiMode列表
-     *
-     * @param v      ImageView
-     * @param attrId .
-     * @see #applySave(View, String, int)
-     * @deprecated 过时方法，2.x版本不推荐使用 ATTR
-     */
-    @Deprecated
-    public static void applyImageSrc(ImageView v, @AttrRes int attrId) {
-        if (v == null) return;
-
-        UiApply uiApply = UiModeManager.get().obtainApplyPolicy(Attr.NAME_SRC);
-        if (uiApply != null) {
-            ResourceEntry entry = new ResourceEntry(attrId, Type.ATTR);
-            if (uiApply.onApply(v, entry)) {
-                saveViewUiMode(v, Attr.builder().add(Attr.NAME_SRC, entry).build());
-            }
-        }
-    }
 
     /**
      * 应用属性，并加入到UiMode列表
@@ -89,13 +68,13 @@ public class UiModes {
      *
      * @param context .
      */
-    public static void correctConfigUiMode(Context context) {
+    public static void correctConfigUiMode(Context context, Activity activity) {
         /**
          * 参考自 {@link androidx.appcompat.app.AppCompatDelegateImpl#updateForNightMode()}
          */
         final Resources res = context.getResources();
         final Configuration conf = res.getConfiguration();
-        final int uiMode;
+        int uiMode;
         switch (AppCompatDelegate.getDefaultNightMode()) {
             case AppCompatDelegate.MODE_NIGHT_YES:
                 uiMode = Configuration.UI_MODE_NIGHT_YES;
@@ -106,6 +85,31 @@ public class UiModes {
             default:
                 uiMode = Resources.getSystem().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
                 break;
+        }
+
+        final Resources applicationRes = context.getApplicationContext().getResources();
+        final Configuration applicationConfiguration = applicationRes.getConfiguration();
+        if ((applicationConfiguration.uiMode & Configuration.UI_MODE_NIGHT_MASK) != uiMode) {
+            final Configuration config = new Configuration(applicationConfiguration);
+            final DisplayMetrics metrics = applicationRes.getDisplayMetrics();
+
+            // Update the UI Mode to reflect the new night mode
+            applicationConfiguration.uiMode = uiMode | (config.uiMode & ~Configuration.UI_MODE_NIGHT_MASK);
+            applicationRes.updateConfiguration(config, metrics);
+        }
+
+        if (activity instanceof AppCompatActivity) {
+            AppCompatActivity appCompatActivity = (AppCompatActivity) activity;
+            switch (appCompatActivity.getDelegate().getLocalNightMode()) {
+                case AppCompatDelegate.MODE_NIGHT_YES:
+                    uiMode = Configuration.UI_MODE_NIGHT_YES;
+                    break;
+                case AppCompatDelegate.MODE_NIGHT_NO:
+                    uiMode = Configuration.UI_MODE_NIGHT_NO;
+                    break;
+                default:
+                    break;
+            }
         }
         if ((conf.uiMode & Configuration.UI_MODE_NIGHT_MASK) != uiMode) {
             final Configuration config = new Configuration(conf);
