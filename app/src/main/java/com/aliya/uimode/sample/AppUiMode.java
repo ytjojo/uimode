@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 
 import com.aliya.uimode.UiModeManager;
+import com.wogoo.backgroud.BackgroundRegister;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -41,6 +42,7 @@ public final class AppUiMode {
         } else {
             uiMode = AppCompatDelegate.getDefaultNightMode();
         }
+        BackgroundRegister.register();
     }
 
     private static AppUiMode _get() {
@@ -64,7 +66,7 @@ public final class AppUiMode {
 
     public static void init(Context context) {
         sContext = context.getApplicationContext();
-        UiModeManager.init(sContext, null, new LayoutInflater.Factory2() {
+        UiModeManager.init(sContext, new LayoutInflater.Factory2() {
             @Override
             public View onCreateView(View parent, String name, Context context, AttributeSet attrs) {
                 // 此处可自定义拦截创建View

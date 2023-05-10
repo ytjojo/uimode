@@ -16,6 +16,7 @@ import com.aliya.uimode.intef.UiModeChangeListener;
 import com.aliya.uimode.sample.AppUiMode;
 import com.aliya.uimode.sample.MainActivity;
 import com.aliya.uimode.sample.R;
+import com.aliya.uimode.utils.AppUtil;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -50,7 +51,8 @@ public class TopBar extends FrameLayout implements View.OnClickListener, UiModeC
     private void init() {
         mTvTitle = (TextView) findViewById(R.id.tv_title);
         mBtnSwitch = (TextView) findViewById(R.id.btn_switch);
-        Context context = getContext();
+
+        Context context = AppUtil.findActivity(getContext());
         if (context instanceof Activity) {
             try {
                 PackageManager packageManager = context.getPackageManager();

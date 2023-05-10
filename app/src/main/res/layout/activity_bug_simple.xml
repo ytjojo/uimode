@@ -22,7 +22,7 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <TextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
@@ -34,15 +34,15 @@
                 android:drawablePadding="0dp"
                 android:text="左右存在问题"
                 android:textColor="@color/text_color"
-                app:maskColor="@color/colorAccent" />
+                app:drawableTint="@color/colorAccent" />
 
-            <ImageView
+            <androidx.appcompat.widget.AppCompatImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="25dp"
                 android:src="@mipmap/ic_arrow_bottom"
-                app:maskColor="@color/_484848_7a7b7d" />
+                app:tint="@color/colorAccent" />
 
             <ImageView
                 android:layout_width="wrap_content"

@@ -2,7 +2,6 @@ package com.aliya.uimode.uimodewidget
 
 import android.content.res.TypedArray
 import android.util.AttributeSet
-import android.util.TypedValue
 import android.view.View
 import androidx.annotation.StyleRes
 
@@ -16,7 +15,7 @@ interface IApplyAttrResourceId {
      * @param view         View
      * @param attributeSet View在Inflate时的Attribute.
      */
-    fun assemble(view: View, attributeSet: AttributeSet)
+    fun assemble(view: View, attributeSet: AttributeSet):Boolean
 
 
     /**
@@ -27,8 +26,4 @@ interface IApplyAttrResourceId {
      */
     fun applyStyle(view: View, @StyleRes styleRes: Int)
 
-
-    companion object {
-        val sOutValue = TypedValue()
-    }
 }

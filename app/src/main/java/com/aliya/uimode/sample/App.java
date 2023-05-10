@@ -9,6 +9,8 @@ import android.util.Log;
 
 import androidx.appcompat.app.AppCompatDelegate;
 
+import com.noober.background.BLAutoInjectController;
+
 /**
  * Application
  *
@@ -19,6 +21,9 @@ public class App extends Application {
 
     private final String PATH_VIVO_UI_MODE = "vivo_nightmode_used";
 
+    static {
+        BLAutoInjectController.setEnableAutoInject(false);
+    }
     @Override
     public void onCreate() {
         super.onCreate();

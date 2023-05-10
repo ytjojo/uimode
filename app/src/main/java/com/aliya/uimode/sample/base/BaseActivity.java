@@ -6,6 +6,7 @@ import android.os.Bundle;
 import com.aliya.uimode.UiModeManager;
 import com.aliya.uimode.intef.UiModeChangeListener;
 import com.aliya.uimode.sample.AppUiMode;
+import com.noober.background.BackgroundFactory;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -24,7 +25,7 @@ public class BaseActivity extends AppCompatActivity implements UiModeChangeListe
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-        UiModeManager.setInflaterFactor(getLayoutInflater());
+        UiModeManager.setInflaterFactor(getLayoutInflater(),new BackgroundFactory());
         super.onCreate(savedInstanceState);
         nightMode = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
     }

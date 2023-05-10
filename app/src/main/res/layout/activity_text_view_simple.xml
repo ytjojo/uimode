@@ -47,10 +47,24 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:button="@null"
         android:layout_marginTop="25dp"
+        android:button="@null"
         android:drawableLeft="@drawable/ic_drawable_top"
         android:text="测试"
         android:textColor="@color/_484848_7a7b7d" />
+
+    <com.noober.background.view.BLTextView
+        android:id="@+id/tv_next"
+        android:layout_width="100dp"
+        android:padding="5dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25dp"
+        android:enabled="false"
+        android:gravity="center"
+        android:text="下一步"
+        android:textColor="@color/_ffffff_202124"
+        app:bl_corners_radius="25dp"
+        app:bl_solid_color="@color/_ff4081_aa4081" />
 
 </LinearLayout>

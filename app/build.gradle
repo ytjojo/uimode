@@ -9,7 +9,7 @@ android {
 
     defaultConfig {
         applicationId "com.aliya.uimode.sample"
-        minSdkVersion 17
+        minSdkVersion 21
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
@@ -42,4 +42,5 @@ dependencies {
     implementation deps.androidx.recyclerview
     implementation deps.androidx.constraintlayout
     implementation project(':ui-mode')
+    implementation project(':backgroudCompat')
 }

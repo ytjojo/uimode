@@ -1,6 +1,7 @@
 package com.wogoo.backgroud;
 
 import android.content.Context;
+import android.content.res.CachedTypeArray;
 import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
 import android.graphics.drawable.AnimationDrawable;
@@ -11,12 +12,14 @@ import android.graphics.drawable.RippleDrawable;
 import android.graphics.drawable.StateListDrawable;
 import android.os.Build;
 import android.text.TextUtils;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
+import com.aliya.uimode.uimodewidget.TypedValueUtils;
 import com.noober.background.drawable.DrawableFactory;
 
 import java.lang.reflect.InvocationTargetException;
@@ -24,22 +27,42 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
-public class BackgroundFactory {
+public class BackgroundTypedArrayDelegate {
 
 
     private static final HashMap<String, HashMap<String, Method>> methodMap = new HashMap<>();
 
+
+    private static TypedArray getTypedArray(View v, int[] styleableAttrs, Map<int[], TypedArray> typedArrayMap) {
+        TypedArray typedArray = typedArrayMap.get(styleableAttrs);
+        if (typedArray != null) {
+            CachedTypeArray cachedTypeArray = (CachedTypeArray) typedArray;
+            int count = typedArray.getIndexCount();
+            for (int i = 0; i < count; i++) {
+                int index = cachedTypeArray.getIndex(i);
+                TypedValue typedValue = cachedTypeArray.peekValue(index);
+                if(typedValue != null && typedValue.type != TypedValue.TYPE_NULL && typedValue.resourceId != 0){
+                    typedValue.data = v.getResources().getColor(typedValue.resourceId);
+                }
+            }
+
+            return typedArray;
+        } else {
+            return new CachedTypeArray(v.getResources(), v.getContext());
+        }
+    }
+
     @Nullable
-    public static View setViewBackground(Context context, Map<Integer[],TypedArray> typedArrayMap, View view) {
-        TypedArray typedArray = typedArrayMap.get(R.styleable.background);
-        TypedArray pressTa =  typedArrayMap.get(R.styleable.background_press);
-        TypedArray selectorTa = typedArrayMap.get(R.styleable.background_selector);
-        TypedArray textTa = typedArrayMap.get( R.styleable.text_selector);
-        TypedArray buttonTa = typedArrayMap.get( R.styleable.background_button_drawable);
-        TypedArray otherTa = typedArrayMap.get( R.styleable.bl_other);
-        TypedArray animTa = typedArrayMap.get( R.styleable.bl_anim);
-        TypedArray multiSelTa = typedArrayMap.get(R.styleable.background_multi_selector);
-        TypedArray multiTextTa = typedArrayMap.get( R.styleable.background_multi_selector_text);
+    public static View setViewBackground(Context context, Map<int[], TypedArray> typedArrayMap, View view) {
+        TypedArray typedArray = getTypedArray(view, R.styleable.background, typedArrayMap);
+        TypedArray pressTa = getTypedArray(view, R.styleable.background_press, typedArrayMap);
+        TypedArray selectorTa = getTypedArray(view, R.styleable.background_selector, typedArrayMap);
+        TypedArray textTa = getTypedArray(view, R.styleable.text_selector, typedArrayMap);
+        TypedArray buttonTa = getTypedArray(view, R.styleable.background_button_drawable, typedArrayMap);
+        TypedArray otherTa = getTypedArray(view, R.styleable.bl_other, typedArrayMap);
+        TypedArray animTa = getTypedArray(view, R.styleable.bl_anim, typedArrayMap);
+        TypedArray multiSelTa = getTypedArray(view, R.styleable.background_multi_selector, typedArrayMap);
+        TypedArray multiTextTa = getTypedArray(view, R.styleable.background_multi_selector_text, typedArrayMap);
         TypedArray selectorPre21Ta = null;
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             selectorPre21Ta = typedArrayMap.get(R.styleable.background_selector_pre_21);
@@ -126,7 +149,7 @@ public class BackgroundFactory {
                     final Context currentContext = view.getContext();
                     final Class parentClass = currentContext.getClass();
                     final Method method = getMethod(parentClass, methodName);
-                    if(method != null){
+                    if (method != null) {
                         view.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
@@ -214,6 +237,7 @@ public class BackgroundFactory {
             view.setBackgroundDrawable(drawable);
         }
     }
+
     private static boolean hasStatus(int flag, int status) {
         return (flag & status) == status;
     }
