@@ -28,7 +28,7 @@ open class ToolbarWidget : ViewWidget() {
         if (toolBar == null) {
             return
         }
-        val logoDrawable: Drawable = getDrawable(toolBar, typedValue)
+        val logoDrawable = TypedValueUtils.getDrawable(toolBar,typedValue,this)
         toolBar.logo = logoDrawable
     }
 
@@ -36,7 +36,7 @@ open class ToolbarWidget : ViewWidget() {
         if (toolBar == null) {
             return
         }
-        val iconDrawable: Drawable = getDrawable(toolBar, typedValue)
+        val iconDrawable: Drawable? = TypedValueUtils.getDrawable(toolBar,typedValue,this)
         toolBar.navigationIcon = iconDrawable
     }
 
@@ -44,13 +44,21 @@ open class ToolbarWidget : ViewWidget() {
         if (toolBar == null) {
             return
         }
-        toolBar.setTitleTextColor(getColor(toolBar, typedValue))
+        val color = TypedValueUtils.getColorStateList(toolBar,typedValue,this)
+        color?.apply {
+            toolBar.setTitleTextColor(color)
+        }
+
     }
 
     open fun setSubTitleTextColor(toolBar: Toolbar?, typedValue: TypedValue) {
         if (toolBar == null) {
             return
         }
-        toolBar.setSubtitleTextColor(getColor(toolBar, typedValue))
+        val color = TypedValueUtils.getColorStateList(toolBar,typedValue,this)
+        color?.apply {
+            toolBar.setSubtitleTextColor(color)
+        }
+
     }
 }

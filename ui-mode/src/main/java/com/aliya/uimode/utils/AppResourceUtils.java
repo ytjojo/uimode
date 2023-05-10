@@ -1,5 +1,7 @@
 package com.aliya.uimode.utils;
 
+import static androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ComponentName;
@@ -11,17 +13,18 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
-import androidx.annotation.AttrRes;
-import androidx.annotation.ColorRes;
-import androidx.annotation.DrawableRes;
-import androidx.annotation.IdRes;
-import androidx.appcompat.app.AppCompatDelegate;
-import androidx.core.content.ContextCompat;
-
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.View;
+
+import androidx.annotation.AttrRes;
+import androidx.annotation.ColorRes;
+import androidx.annotation.DrawableRes;
+import androidx.annotation.IdRes;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.core.content.ContextCompat;
 
 import com.aliya.uimode.HideLog;
 import com.aliya.uimode.ResourcesFlusher;
@@ -44,8 +47,8 @@ public class AppResourceUtils {
     private static TypedValue sTypedValue;
 
 
-    public static TypedValue getTypedValue(){
-        if(sTypedValue == null){
+    public static TypedValue getTypedValue() {
+        if (sTypedValue == null) {
             sTypedValue = new TypedValue();
         }
         return sTypedValue;
@@ -94,10 +97,8 @@ public class AppResourceUtils {
 
         TypedValue typedValue = getTypedValue();
         context.getTheme().resolveAttribute(attrResId, typedValue, true);
-        return ContextCompat.getColor(context,typedValue.resourceId);
+        return ContextCompat.getColor(context, typedValue.resourceId);
     }
-
-
 
 
     /**
@@ -111,10 +112,8 @@ public class AppResourceUtils {
         if (context == null) {
             return -1;
         }
-        return ContextCompat.getColor(context,colorResId);
+        return ContextCompat.getColor(context, colorResId);
     }
-
-
 
 
     /**
@@ -132,9 +131,8 @@ public class AppResourceUtils {
         context.getTheme().resolveAttribute(attrResId, typedValue, true);
 
         HideLog.d("ThemeUtils", "ColorStateList type:" + typedValue.toString());
-        return ContextCompat.getColorStateList(context,typedValue.resourceId);
+        return ContextCompat.getColorStateList(context, typedValue.resourceId);
     }
-
 
 
     /**
@@ -150,7 +148,6 @@ public class AppResourceUtils {
         }
         return ContextCompat.getColorStateList(context, colorStateListResId);
     }
-
 
 
     /**
@@ -169,11 +166,10 @@ public class AppResourceUtils {
         ;
         HideLog.d("getDrawable", "drawable type:" + typedValue.toString());
 
-        Drawable drawable = DrawableCompatUtil.getDrawable(context,typedValue.resourceId);
+        Drawable drawable = DrawableCompatUtil.getDrawable(context, typedValue.resourceId);
         return drawable;
 
     }
-
 
 
     /**
@@ -188,9 +184,8 @@ public class AppResourceUtils {
             return null;
         }
 
-        return DrawableCompatUtil.getDrawable(context,drawableResId);
+        return DrawableCompatUtil.getDrawable(context, drawableResId);
     }
-
 
 
     public static <T> T getViewTag(View view, @IdRes int tagKey) throws ClassCastException, NullPointerException {
@@ -310,19 +305,20 @@ public class AppResourceUtils {
 
     /**
      * “android"
+     *
      * @param context
      * @param identifier
      * @param type
      * @return
      */
-    public static int getIdentifier(Context context,String identifier,String type){
+    public static int getIdentifier(Context context, String identifier, String type) {
 
         return context.getResources().getIdentifier(identifier, "drawable", context.getPackageName());
     }
 
-    public static int getAttrId(Context context,String identifier){
-        int id =  context.getResources().getIdentifier(identifier, "attr", context.getPackageName());
-        if(id != 0){
+    public static int getAttrId(Context context, String identifier) {
+        int id = context.getResources().getIdentifier(identifier, "attr", context.getPackageName());
+        if (id != 0) {
             return id;
         }
         return context.getResources().getIdentifier(identifier, "attr", "android");
@@ -371,5 +367,113 @@ public class AppResourceUtils {
 //            ResourcesFlusher.flush(sAppContext.getResources());
 //        }
         return currentNightMode != newNightMode;
+    }
+
+
+    @AppCompatDelegate.NightMode
+    public static int calculateNightMode(Activity activity) {
+        if (activity instanceof AppCompatActivity) {
+            AppCompatActivity appCompatActivity = (AppCompatActivity) activity;
+            return appCompatActivity.getDelegate().getLocalNightMode() != AppCompatDelegate.MODE_NIGHT_UNSPECIFIED ? appCompatActivity.getDelegate().getLocalNightMode() : AppCompatDelegate.getDefaultNightMode();
+        }
+        return AppCompatDelegate.getDefaultNightMode();
+    }
+
+    /**
+     * 纠正 {@link Configuration#uiMode} 的值.
+     * 在xml中遇到WeView时会被改成 {@link Configuration#UI_MODE_NIGHT_NO}, 导致后续View出现问题.
+     *
+     * @param context .
+     */
+    public static void correctConfigUiMode(Context context, Activity activity) {
+        /**
+         * 参考自 {@link androidx.appcompat.app.AppCompatDelegateImpl#updateForNightMode()}
+         */
+        final Resources res = context.getResources();
+        final Configuration conf = res.getConfiguration();
+        int uiMode;
+        switch (AppCompatDelegate.getDefaultNightMode()) {
+            case AppCompatDelegate.MODE_NIGHT_YES:
+                uiMode = Configuration.UI_MODE_NIGHT_YES;
+                break;
+            case AppCompatDelegate.MODE_NIGHT_NO:
+                uiMode = Configuration.UI_MODE_NIGHT_NO;
+                break;
+            default:
+                uiMode = Resources.getSystem().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+                break;
+        }
+
+        final Resources applicationRes = context.getApplicationContext().getResources();
+        final Configuration applicationConfiguration = applicationRes.getConfiguration();
+        if ((applicationConfiguration.uiMode & Configuration.UI_MODE_NIGHT_MASK) != uiMode) {
+            final Configuration config = new Configuration(applicationConfiguration);
+            final DisplayMetrics metrics = applicationRes.getDisplayMetrics();
+
+            // Update the UI Mode to reflect the new night mode
+            applicationConfiguration.uiMode = uiMode | (config.uiMode & ~Configuration.UI_MODE_NIGHT_MASK);
+            applicationRes.updateConfiguration(config, metrics);
+        }
+
+        if (activity instanceof AppCompatActivity) {
+            AppCompatActivity appCompatActivity = (AppCompatActivity) activity;
+            switch (appCompatActivity.getDelegate().getLocalNightMode()) {
+                case AppCompatDelegate.MODE_NIGHT_YES:
+                    uiMode = Configuration.UI_MODE_NIGHT_YES;
+                    break;
+                case AppCompatDelegate.MODE_NIGHT_NO:
+                    uiMode = Configuration.UI_MODE_NIGHT_NO;
+                    break;
+                default:
+                    break;
+            }
+        }
+        if ((conf.uiMode & Configuration.UI_MODE_NIGHT_MASK) != uiMode) {
+            final Configuration config = new Configuration(conf);
+            final DisplayMetrics metrics = res.getDisplayMetrics();
+
+            // Update the UI Mode to reflect the new night mode
+            config.uiMode = uiMode | (config.uiMode & ~Configuration.UI_MODE_NIGHT_MASK);
+            res.updateConfiguration(config, metrics);
+        }
+    }
+
+
+    /**
+     * 纠正 {@link Configuration#uiMode} 的值.
+     * 在xml中遇到WeView时会被改成 {@link Configuration#UI_MODE_NIGHT_NO}, 导致后续View出现问题.
+     *
+     * @param context .
+     */
+    public static void correctConfigUiMode(Context context) {
+        /**
+         * 参考自 {@link androidx.appcompat.app.AppCompatDelegateImplV14#updateForNightMode(int)}
+         */
+        final Resources res = context.getResources();
+        final Configuration conf = res.getConfiguration();
+        final int uiMode = (AppCompatDelegate.getDefaultNightMode() == MODE_NIGHT_YES)
+                ? Configuration.UI_MODE_NIGHT_YES
+                : Configuration.UI_MODE_NIGHT_NO;
+        if ((conf.uiMode & Configuration.UI_MODE_NIGHT_MASK) != uiMode) {
+            final Configuration config = new Configuration(conf);
+            final DisplayMetrics metrics = res.getDisplayMetrics();
+
+            // Update the UI Mode to reflect the new night mode
+            config.uiMode = uiMode | (config.uiMode & ~Configuration.UI_MODE_NIGHT_MASK);
+            res.updateConfiguration(config, metrics);
+        }
+    }
+
+
+    /**
+     * 判断当前 context 是否为夜间模式.
+     *
+     * @param context The current context.
+     * @return true : 表示为夜间模式.
+     */
+    public static boolean isUiModeNight(Context context) {
+        final Configuration config = context.getResources().getConfiguration();
+        final int currentUiMode = config.uiMode & Configuration.UI_MODE_NIGHT_MASK;
+        return Configuration.UI_MODE_NIGHT_YES == currentUiMode;
     }
 }

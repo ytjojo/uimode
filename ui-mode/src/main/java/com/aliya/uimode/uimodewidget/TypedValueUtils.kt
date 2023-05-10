@@ -31,9 +31,14 @@ class TypedValueUtils {
                     }
                 }
                 else -> {
-                    if (typedValue.type > TypedValue.TYPE_FIRST_INT && typedValue.type < TypedValue.TYPE_LAST_INT) {
-                        return ColorDrawable(typedValue.data)
+                    if(typedValue.resourceId != 0){
+                        return DrawableCompatUtil.getDrawable(v.context, typedValue.resourceId)
+                    }else{
+                        if (typedValue.type > TypedValue.TYPE_FIRST_INT && typedValue.type < TypedValue.TYPE_LAST_INT) {
+                            return ColorDrawable(typedValue.data)
+                        }
                     }
+
                 }
             }
             return null
@@ -58,9 +63,14 @@ class TypedValueUtils {
                     }
                 }
                 else -> {
-                    if (typedValue.type > TypedValue.TYPE_FIRST_INT && typedValue.type < TypedValue.TYPE_LAST_INT) {
-                        return ColorStateList.valueOf(typedValue.data)
+                    if(typedValue.resourceId != 0){
+                       return AppCompatResources.getColorStateList(v.context,typedValue.resourceId)
+                    }else{
+                        if (typedValue.type > TypedValue.TYPE_FIRST_INT && typedValue.type < TypedValue.TYPE_LAST_INT) {
+                            return ColorStateList.valueOf(typedValue.data)
+                        }
                     }
+
                 }
             }
             return null

@@ -20,7 +20,7 @@ import android.util.AttributeSet;
 import android.view.View;
 
 import com.aliya.uimode.R;
-import com.aliya.uimode.mode.UiMode;
+import com.aliya.uimode.factory.ViewStore;
 
 /**
  * 实现圆角 - 助手
@@ -45,7 +45,7 @@ class RoundHelper {
     private int borderColor;
     private float borderWidth;
     // private boolean borderOverlay; // 开发者可通过设置 Padding 达到同样效果
-    private int borderColorRes = UiMode.NO_ID;
+    private int borderColorRes = ViewStore.NO_ID;
 
     private Context mContext;
 
@@ -190,7 +190,7 @@ class RoundHelper {
     }
 
     public void refreshBorderColor() {
-        if (borderColorRes != UiMode.NO_ID) {
+        if (borderColorRes != ViewStore.NO_ID) {
             try {
                 borderColor = ContextCompat.getColor(mContext, borderColorRes);
             } catch (Exception e) {

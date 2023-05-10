@@ -7,8 +7,9 @@ import android.view.View
 import android.widget.TextView
 import androidx.core.widget.TextViewCompat
 import com.aliya.uimode.R
+import java.util.*
 
-open class TextViewWidget : ViewWidget() {
+open class TextViewWidget : AbstractWidget() {
 
     override fun onRegisterStyleable() {
         super.onRegisterStyleable()
@@ -18,7 +19,7 @@ open class TextViewWidget : ViewWidget() {
 
     override fun onApply(v: View, styleable: IntArray, typedArray: TypedArray): Boolean {
         val textView = v as TextView
-        if (styleable.equals( R.styleable.TextViewHelper)) {
+        if (Arrays.equals(styleable, R.styleable.TextViewHelper)) {
             val indexCount = typedArray.indexCount
 
             var drawableLeft = textView.compoundDrawablesRelative[0]
@@ -27,10 +28,10 @@ open class TextViewWidget : ViewWidget() {
             var drawableBottom = textView.compoundDrawablesRelative[0]
             var tintColorStateList: ColorStateList? = null
             for (i in 0 until indexCount) {
-                val attr = typedArray.getIndex(i)
-                val typedValue = typedArray.peekValue(attr)
+                val indeInAttrArray = typedArray.getIndex(i)
+                val typedValue = typedArray.peekValue(indeInAttrArray)
                 if (typedValue != null) {
-                    when (attr) {
+                    when (indeInAttrArray) {
                         R.styleable.TextViewHelper_android_textColor -> {
                             val colorStateList = TypedValueUtils.getColorStateList(
                                 v,
@@ -148,7 +149,7 @@ open class TextViewWidget : ViewWidget() {
             return true
         }
 
-        return super.onApply(v, styleable, typedArray)
+        return false
     }
 
 }

@@ -16,7 +16,7 @@ import android.util.AttributeSet;
 import android.util.TypedValue;
 
 import com.aliya.uimode.R;
-import com.aliya.uimode.mode.UiMode;
+import com.aliya.uimode.factory.ViewStore;
 
 /**
  * ImageView遮罩 - 助手
@@ -29,9 +29,9 @@ public class MaskHelper {
     private PorterDuffXfermode xfermodeMask;
 
     // 从属性中获取的 attr id; 来自 ?attr/
-    private int mMaskAttrId = UiMode.NO_ID;
+    private int mMaskAttrId = ViewStore.NO_ID;
     // 从属性中获取的 color res id; 来自 @color/
-    private int mMaskColorResId = UiMode.NO_ID;
+    private int mMaskColorResId = ViewStore.NO_ID;
     // 从属性中获取的 color; 来自 #xxxxxx
     private Integer mMaskColorHex = null;
 
@@ -112,9 +112,9 @@ public class MaskHelper {
     }
 
     public void resolveRealMaskColor() {
-        if (mMaskAttrId != UiMode.NO_ID) {
+        if (mMaskAttrId != ViewStore.NO_ID) {
             resolveColorAttribute(mMaskAttrId);
-        } else if (mMaskColorResId != UiMode.NO_ID) {
+        } else if (mMaskColorResId != ViewStore.NO_ID) {
             mApplyMaskColor = ContextCompat.getColor(mContext, mMaskColorResId);
         } else if (mMaskColorHex != null) {
             mApplyMaskColor = mMaskColorHex; // 先赋值

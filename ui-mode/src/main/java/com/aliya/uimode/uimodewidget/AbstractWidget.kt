@@ -8,10 +8,10 @@ import android.util.AttributeSet
 import android.util.Log
 import android.util.TypedValue
 import android.view.View
+import androidx.annotation.CallSuper
 import com.aliya.uimode.R
 import com.aliya.uimode.factory.ViewStore
-import com.aliya.uimode.mode.Attr
-import com.aliya.uimode.mode.UiMode
+import com.aliya.uimode.intef.UiModeChangeListener
 import com.aliya.uimode.utils.AppResourceUtils
 
 abstract class AbstractWidget : IApplyAttrResourceId {
@@ -29,6 +29,8 @@ abstract class AbstractWidget : IApplyAttrResourceId {
 
     companion object {
         const val TAG = "AbstractWidget"
+
+        const val IGNORE_ATTR_NAME = "uiMode_ignore"
     }
 
     /**
@@ -38,7 +40,7 @@ abstract class AbstractWidget : IApplyAttrResourceId {
 
     private val mStyleableKeySet: HashSet<IntArray> = HashSet()
 
-    private val mCustomtyleableKeySet: HashSet<IntArray> = HashSet()
+    private val mCustomStyleableKeySet: HashSet<IntArray> = HashSet()
 
     init {
     }
@@ -47,10 +49,12 @@ abstract class AbstractWidget : IApplyAttrResourceId {
 
     }
 
+
+    @CallSuper
     override fun onApplyCustom(v: View, typedArrayMap: Map<IntArray, TypedArray>) {
     }
 
-    override fun assemble(view: View, attributeSet: AttributeSet) {
+    override fun assemble(view: View, attributeSet: AttributeSet):Boolean {
 
         var ignoreValue = ""
         val ignoreAttrNames = HashSet<String>()
@@ -63,9 +67,12 @@ abstract class AbstractWidget : IApplyAttrResourceId {
             view.setTag(R.id.tag_ui_mode_widget_style, styleResId)
             isSave = true
         }
+        if(view is UiModeChangeListener){
+            isSave = true
+        }
         for (i in 0 until N) {
             val attrName: String = attributeSet.getAttributeName(i)
-            if (Attr.IGNORE == attrName) {
+            if (IGNORE_ATTR_NAME == attrName) {
                 ignoreValue = attributeSet.getAttributeValue(i)
             }else {
                 val attrValueId =  parseAttrId(attributeSet.getAttributeValue(i))
@@ -95,7 +102,8 @@ abstract class AbstractWidget : IApplyAttrResourceId {
                 ignoreAttrIds.add(AppResourceUtils.getAttrId(view.context, it))
             }
 
-            val cachedTypeArrayMap = HashMap<IntArray, CachedTypeArray>()
+            val tagCachedTypeArrayMap = view.getTag(R.id.tag_ui_mode_type_array_map)
+            val cachedTypeArrayMap = if(tagCachedTypeArrayMap != null && tagCachedTypeArrayMap is HashMap<*, *>)  tagCachedTypeArrayMap as HashMap<IntArray, CachedTypeArray>  else HashMap<IntArray, CachedTypeArray>()
 
             for (styleable in mStyleableKeySet) {
                 val typedArray = view.context.obtainStyledAttributes(attributeSet, styleable)
@@ -105,7 +113,7 @@ abstract class AbstractWidget : IApplyAttrResourceId {
                     for (i in 0 until indexCount) {
                         val indexInStyleable = typedArray.getIndex(i)
                         val typedValue = TypedValue()
-                        if (typedArray.getValue(i, typedValue) && isLegalType(typedValue) &&
+                        if (typedArray.getValue(indexInStyleable, typedValue) && isLegalType(typedValue) &&
                             !ignoreAttrIds.contains(styleable[indexInStyleable])
                         ) {
                             if(attrValueMap.containsKey(styleable[indexInStyleable])){
@@ -114,7 +122,7 @@ abstract class AbstractWidget : IApplyAttrResourceId {
                             }
                             cachedTypeArray.putTypeValue(indexInStyleable, typedValue)
                         }
-                        cachedTypeArray.putIndexAttr(i, indexInStyleable)
+                        cachedTypeArray.putIndexAttr(indexInStyleable, indexInStyleable)
                     }
                     if (!cachedTypeArray.isEmpty()) {
                         cachedTypeArrayMap.put(styleable, cachedTypeArray)
@@ -128,10 +136,12 @@ abstract class AbstractWidget : IApplyAttrResourceId {
             }
         }
 
-        if(mCustomtyleableKeySet.isNotEmpty()){
-            val cachedTypeArrayMap = HashMap<IntArray, CachedTypeArray>()
+        if(mCustomStyleableKeySet.isNotEmpty()){
 
-            for (styleable in mCustomtyleableKeySet) {
+            val tagCachedTypeArrayMap = view.getTag(R.id.tag_ui_mode_custom_type_array_map)
+            val cachedTypeArrayMap = if(tagCachedTypeArrayMap != null && tagCachedTypeArrayMap is HashMap<*, *>)  tagCachedTypeArrayMap as HashMap<IntArray, CachedTypeArray>  else HashMap<IntArray, CachedTypeArray>()
+
+            for (styleable in mCustomStyleableKeySet) {
                 val typedArray = view.context.obtainStyledAttributes(attributeSet, styleable)
                 val indexCount = typedArray.indexCount
                 val cachedTypeArray = CachedTypeArray(view.resources, view.context)
@@ -139,7 +149,7 @@ abstract class AbstractWidget : IApplyAttrResourceId {
                     for (i in 0 until indexCount) {
                         val indexInStyleable = typedArray.getIndex(i)
                         val typedValue = TypedValue()
-                        if (typedArray.getValue(i, typedValue)) {
+                        if (typedArray.getValue(indexInStyleable, typedValue)) {
                             cachedTypeArray.putTypeValue(indexInStyleable, typedValue)
                         }
                         cachedTypeArray.putIndexAttr(i, indexInStyleable)
@@ -156,9 +166,7 @@ abstract class AbstractWidget : IApplyAttrResourceId {
             }
         }
 
-        if(isSave){
-            ViewStore.saveView(view.context,view)
-        }
+        return isSave
 
 
     }
@@ -210,7 +218,7 @@ abstract class AbstractWidget : IApplyAttrResourceId {
 
     }
     protected fun registerCustomAttrArray(styleable:IntArray){
-        mCustomtyleableKeySet.add(styleable)
+        mCustomStyleableKeySet.add(styleable)
     }
 
 
@@ -262,7 +270,7 @@ abstract class AbstractWidget : IApplyAttrResourceId {
                 // no-op
             }
         }
-        return UiMode.NO_ID
+        return ViewStore.NO_ID
     }
 
 

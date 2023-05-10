@@ -12,7 +12,7 @@ import java.util.Stack;
  */
 final class AppStack {
 
-    private static Stack<Activity> sStack;
+    private volatile static Stack<Activity> sStack;
 
     public static void pushActivity(Activity activity) {
         if (activity == null) return;
@@ -35,6 +35,9 @@ final class AppStack {
     }
 
     private static void createStack() {
+        if(sStack != null){
+            return;
+        }
         synchronized (AppStack.class) {
             if (sStack == null) {
                 sStack = new Stack<>();
