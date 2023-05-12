@@ -14,6 +14,7 @@ import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.LayoutInflater.Factory2
 import android.view.View
+import androidx.annotation.AnyRes
 import androidx.annotation.DrawableRes
 import androidx.annotation.StyleableRes
 import androidx.appcompat.app.AppCompatActivity
@@ -288,7 +289,7 @@ object UiModeManager {
         v: View,
         styleableRes: IntArray,
         @StyleableRes index: Int,
-        @DrawableRes resourceId: Int
+        @AnyRes resourceId: Int
     ) {
         val tag = v.getTag(R.id.tag_ui_mode_type_array_map)
         var map: HashMap<IntArray, TypedArray?>? = null

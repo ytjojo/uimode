@@ -184,13 +184,9 @@ abstract class AbstractWidget : IApplyAttrResourceId {
                         attrResId
                     )
                 )
-                if(attrResId == android.R.attr.textColor){
-                    Log.e("","")
-                }
-                if (typedArray != null && typedArray.indexCount > 0 && attrResId == android.R.attr.textColor) {
+                if (typedArray != null && typedArray.indexCount > 0) {
                     val typedValue = TypedValue()
-                    typedArray.getValue(0, typedValue)
-                    if (typedValue.type != TypedValue.TYPE_NULL) {
+                    if (typedArray.getValue(0, typedValue) && isLegalType(typedValue)) {
                         cachedTypeArray.putTypeValue(index,typedValue)
                     }
 
