@@ -55,6 +55,9 @@
         <activity
             android:name="com.aliya.uimode.sample.SimpleTestActivity"
             android:configChanges="uiMode"
+            android:label="示例页" />  <activity
+            android:name="com.aliya.uimode.sample.LocalModeActivity"
+            android:configChanges="uiMode"
             android:label="示例页" />
 
         <receiver

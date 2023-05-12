@@ -8,7 +8,7 @@
     android:orientation="vertical"
     tools:context=".TextViewSimpleActivity">
 
-    <com.aliya.uimode.sample.view.TopBar
+    <com.aliya.uimode.sample.view.LocalTopBar
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorPrimary" />
@@ -33,7 +33,6 @@
         android:textColor="@color/_484848_7a7b7d" />
 
     <TextView
-        android:id="@+id/tv_custom"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"

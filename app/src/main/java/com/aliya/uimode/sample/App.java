@@ -7,8 +7,10 @@ import android.os.Handler;
 import android.provider.Settings;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatDelegate;
 
+import com.aliya.uimode.UiModeManager;
 import com.noober.background.BLAutoInjectController;
 
 /**
@@ -60,5 +62,11 @@ public class App extends Application {
             default:
                 return "未知 - " + configUiMode;
         }
+    }
+
+    @Override
+    public void onConfigurationChanged(@NonNull Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        UiModeManager.INSTANCE.onSystemConfigurationChanged();
     }
 }

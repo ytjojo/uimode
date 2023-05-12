@@ -5,6 +5,8 @@ import android.app.Application
 import android.app.Application.ActivityLifecycleCallbacks
 import android.content.Context
 import android.content.res.CachedTypeArray
+import android.content.res.Configuration
+import android.content.res.Resources
 import android.content.res.TypedArray
 import android.os.Build
 import android.os.Bundle
@@ -43,19 +45,25 @@ object UiModeManager {
     private var mIgnoreActivitySet = HashSet<Class<Activity>>()
 
 
-    fun addIgnoreActivity(clazz:Class<Activity>){
+    @NightMode
+    var appUiMode = AppCompatDelegate.MODE_NIGHT_NO
+
+    var appConfigurationUiMode = Configuration.UI_MODE_NIGHT_NO
+
+    fun addIgnoreActivity(clazz: Class<Activity>) {
         mIgnoreActivitySet.add(clazz)
     }
-    fun removeIgnoreActivity(clazz:Class<Activity>){
+
+    fun removeIgnoreActivity(clazz: Class<Activity>) {
         mIgnoreActivitySet.remove(clazz)
     }
 
-    fun isContainsIgnoreActivity(clazz:Class<out Activity>):Boolean{
-        for(item in mIgnoreActivitySet){
-            if(item.equals(clazz)){
+    fun isContainsIgnoreActivity(clazz: Class<out Activity>): Boolean {
+        for (item in mIgnoreActivitySet) {
+            if (item.equals(clazz)) {
                 return true
             }
-            if(item.isAssignableFrom(clazz)){
+            if (item.isAssignableFrom(clazz)) {
                 return true
             }
         }
@@ -110,6 +118,13 @@ object UiModeManager {
 
     @JvmStatic
     fun setDefaultUiMode(@NightMode mode: Int): Boolean {
+
+        appUiMode = mode
+        if (appUiMode == AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM) {
+            appConfigurationUiMode = getConfigurationUiMode(Resources.getSystem().configuration)
+        } else {
+            appConfigurationUiMode = convertFromAppDelegateToConfigurationMode(appUiMode)
+        }
         /**
          * 1. 设置默认 uiMode
          * 2. 遍历 AppCompatDelegate 执行 applyDayNight
@@ -144,21 +159,19 @@ object UiModeManager {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
                     if (activity.isDestroyed) continue
                 }
-                if(isContainsIgnoreActivity(activity::class.java)){
+                if (isContainsIgnoreActivity(activity::class.java)) {
                     continue
                 }
-                run {
-                    // 跟随系统时，以下方法仍需要调用
-                    if (activity is AppCompatActivity) {
-                        activity.delegate.applyDayNight()
-                    }
-                    if (uiModeChange) {
-                        val theme = AppResourceUtils.getManifestActivityTheme(activity)
-                        if (theme != 0) {
-                            activity.theme.applyStyle(theme, true)
-                        } else if (appTheme != 0) {
-                            activity.theme.applyStyle(appTheme, true)
-                        }
+                // 跟随系统时，以下方法仍需要调用
+                if (activity is AppCompatActivity) {
+                    activity.delegate.applyDayNight()
+                }
+                if (uiModeChange) {
+                    val theme = AppResourceUtils.getManifestActivityTheme(activity)
+                    if (theme != 0) {
+                        activity.theme.applyStyle(theme, true)
+                    } else if (appTheme != 0) {
+                        activity.theme.applyStyle(appTheme, true)
                     }
                 }
                 if (activity is UiModeChangeListener) {
@@ -190,11 +203,14 @@ object UiModeManager {
      * @param inflater [android.app.Activity.getLayoutInflater]
      */
     @JvmStatic
-    fun setInflaterFactor(inflater: LayoutInflater?,before:LayoutInflater.Factory2? = null) {
+    fun setInflaterFactor(inflater: LayoutInflater?, before: LayoutInflater.Factory2? = null) {
         if (sAppContext != null) {
-            if(before != null){
-                LayoutInflaterCompat.setFactory2(inflater!!, FactoryMerger(before, obtainInflaterFactory()))
-            }else{
+            if (before != null) {
+                LayoutInflaterCompat.setFactory2(
+                    inflater!!,
+                    FactoryMerger(before, obtainInflaterFactory())
+                )
+            } else {
                 LayoutInflaterCompat.setFactory2(inflater!!, obtainInflaterFactory())
             }
 
@@ -205,10 +221,33 @@ object UiModeManager {
 
     fun cancelLocalNightMode(activity: AppCompatActivity) {
         activity.delegate.localNightMode = AppCompatDelegate.MODE_NIGHT_UNSPECIFIED
+        setLocalNightMode(activity, AppCompatDelegate.MODE_NIGHT_UNSPECIFIED)
     }
 
-    fun setLocalNightMode(activity: AppCompatActivity,@@NightMode uiMode:Int) {
+    fun setLocalNightMode(activity: AppCompatActivity, @NightMode uiMode: Int) {
+//        var currentMode = AppResourceUtils.calculateNightMode(activity)
+        var currentMode = getUiModeFromConfiguration(activity.resources.configuration)
+
         activity.delegate.localNightMode = uiMode
+        var newMode = AppResourceUtils.calculateNightMode(activity)
+        if (newMode == AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM) {
+            newMode = getSystemUiMode()
+        }
+        if (newMode != currentMode) {
+            //todo
+        }
+        applyUiModeViews(activity)
+
+    }
+
+
+    @NightMode
+    fun getSystemUiMode(): Int {
+        return getUiModeFromConfiguration(Resources.getSystem().configuration)
+    }
+
+    fun getConfigurationUiMode(config:Configuration): Int {
+        return  config.uiMode and Configuration.UI_MODE_NIGHT_MASK
     }
 
     /**
@@ -229,6 +268,7 @@ object UiModeManager {
     fun setLogDebug(isDebug: Boolean) {
         HideLog.setIsDebug(isDebug)
     }
+
     internal object LayoutInflaterFactory {
         /**
          * 通过软引用单例来优化内存
@@ -271,6 +311,62 @@ object UiModeManager {
         cachedTypeArray.putTypeValue(index, typedValue)
         saveView(v.context, v)
         onUiModeChanged(v)
+    }
+
+
+    fun onSystemConfigurationChanged() {
+
+        if (appUiMode != AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM) {
+            AppResourceUtils.updateUiModeForApplication(sAppContext, appUiMode)
+            return
+        }
+
+        var configurationUiMode: Int = getConfigurationUiMode(Resources.getSystem().configuration)
+        AppCompatDelegate.getDefaultNightMode()
+        if (appConfigurationUiMode != configurationUiMode) {
+            setUiMode(appUiMode)
+        }
+
+
+    }
+
+    /**
+     * 判断当前
+     * 是否手动选择夜间模式， 或者跟随系统且系统为夜间模式
+     */
+    fun isNight(): Boolean {
+        return appConfigurationUiMode == Configuration.UI_MODE_NIGHT_YES
+    }
+
+    @NightMode
+    private fun getUiModeFromConfiguration(newConfig: Configuration): Int {
+        var configurationUiMode: Int = newConfig.uiMode and Configuration.UI_MODE_NIGHT_MASK
+        val mode = when (configurationUiMode) {
+            Configuration.UI_MODE_NIGHT_NO -> AppCompatDelegate.MODE_NIGHT_NO
+            Configuration.UI_MODE_NIGHT_YES -> AppCompatDelegate.MODE_NIGHT_YES
+            else -> AppCompatDelegate.MODE_NIGHT_NO
+        }
+        return mode
+    }
+
+    private fun convertFromAppDelegateToConfigurationMode(mode: Int): Int {
+        val configUiMode = when (mode) {
+            AppCompatDelegate.MODE_NIGHT_YES -> Configuration.UI_MODE_NIGHT_YES
+            AppCompatDelegate.MODE_NIGHT_NO -> Configuration.UI_MODE_NIGHT_NO
+            AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM -> {
+                // If we're following the system, we just use the system default from the
+                // application context
+                val appConfig: Configuration =
+                    sAppContext!!.getResources().getConfiguration()
+                appConfig.uiMode and Configuration.UI_MODE_NIGHT_MASK
+            }
+            else -> {
+                val appConfig: Configuration =
+                    sAppContext!!.getResources().getConfiguration()
+                appConfig.uiMode and Configuration.UI_MODE_NIGHT_MASK
+            }
+        }
+        return configUiMode
     }
 
 

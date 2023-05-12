@@ -2,6 +2,7 @@ package com.aliya.uimode.sample.base;
 
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.widget.Toast;
 
 import com.aliya.uimode.UiModeManager;
 import com.aliya.uimode.intef.UiModeChangeListener;
@@ -32,12 +33,14 @@ public class BaseActivity extends AppCompatActivity implements UiModeChangeListe
 
     @Override
     public void onConfigurationChanged(@NonNull Configuration newConfig) {
+        nightMode = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
         super.onConfigurationChanged(newConfig);
         final int newNightMode = newConfig.uiMode & Configuration.UI_MODE_NIGHT_MASK;
         if (AppUiMode.getUiMode() == AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM && nightMode != newNightMode) {
-            UiModeManager.applyUiModeViews(this);
+//            UiModeManager.applyUiModeViews(this);
             nightMode = newNightMode;
         }
+        Toast.makeText(this,"系统uiMode = " + UiModeManager.INSTANCE.getSystemUiMode(),Toast.LENGTH_SHORT).show();
     }
 
     @Override

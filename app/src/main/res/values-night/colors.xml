@@ -12,7 +12,19 @@
     <color name="_3f51b5_3f5182">#3f5182</color>
     <color name="_303f9f_303f6c">#303f6c</color>
     <color name="_d12324_520d0d">#520d0d</color>
-    <color name="_ff4081_aa4081">#3f5182</color>
+    <color name="_ff4081_aa4081">#aa4081</color>
 
     <color name="_3f0000ff_3f00ff00">#3f00ff00</color>
+
+
+
+    <color name="text_dark_primary">#E7E7E7</color>
+    <color name="text_medium_primary">#999999</color>
+    <color name="text_light_primary">#E7E7E7</color>
+    <color name="text_light_primary_stable">#9696A6</color>
+    <color name="text_light_secondary">#646472</color>
+    <color name="divider_color">#0D1528</color>
+    <color name="divider_dark_color">#14141E</color>
+    <color name="light_border">#EEEEEE</color>
+    <color name="window_background">#121A31</color>
 </resources>

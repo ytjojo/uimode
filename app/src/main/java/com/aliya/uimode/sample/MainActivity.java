@@ -29,7 +29,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         findViewById(R.id.btn_go_text_view_simple).setOnClickListener(this);
         findViewById(R.id.btn_go_bug_simple).setOnClickListener(this);
         findViewById(R.id.btn_go_simple_test).setOnClickListener(this);
-        ((TopBar)findViewById(R.id.top_bar)).setTitle("主界面");
+        findViewById(R.id.btn_go_local_set).setOnClickListener(this);
+        ((TopBar) findViewById(R.id.top_bar)).setTitle("主界面");
 
     }
 
@@ -63,6 +64,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
             case R.id.btn_go_simple_test:
                 startActivity(new Intent(this, SimpleTestActivity.class));
+                break;
+            case R.id.btn_go_local_set:
+                startActivity(new Intent(this, LocalModeActivity.class));
                 break;
 
         }
