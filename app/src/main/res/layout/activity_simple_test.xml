@@ -15,6 +15,7 @@
         android:layout_height="wrap_content"
         android:background="@color/colorPrimary" />
     <TextView
+        android:id="@+id/tv_mask_custom"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginStart="16dp"
         app:layout_constraintTop_toBottomOf="@+id/top_bar"
@@ -26,6 +27,6 @@
         android:drawableTop="@mipmap/ic_home"
         android:text="自定义"
         android:textColor="@color/_484848_7a7b7d"
-        app:maskColor="@color/_484848_7a7b7d" />
+        app:drawableTint="@color/_484848_7a7b7d" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -122,7 +122,7 @@ abstract class AbstractWidget : IApplyAttrResourceId {
                             }
                             cachedTypeArray.putTypeValue(indexInStyleable, typedValue)
                         }
-                        cachedTypeArray.putIndexAttr(indexInStyleable, indexInStyleable)
+                        cachedTypeArray.putIndexAttr(i, indexInStyleable)
                     }
                     if (!cachedTypeArray.isEmpty()) {
                         cachedTypeArrayMap.put(styleable, cachedTypeArray)
