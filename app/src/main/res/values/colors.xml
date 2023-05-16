@@ -26,6 +26,9 @@
     <color name="_3f0000ff_3f00ff00">#3f0000ff</color>
 
 
+    <color name="red_back">@color/md_red_100_color_code</color>
+
+
 
 
 

@@ -3,6 +3,7 @@ package com.aliya.uimode.uimodewidget
 import android.content.res.ColorStateList
 import android.content.res.TypedArray
 import android.os.Build
+import android.util.AttributeSet
 import android.view.View
 import androidx.annotation.CallSuper
 import androidx.core.view.ViewCompat
@@ -16,6 +17,7 @@ open class ViewWidget : AbstractWidget() {
         registerAttrArray(R.styleable.ViewBackgroundHelper)
         registerAttrArray(R.styleable.UiModeView)
     }
+
 
     override fun onApply(v: View, styleable: IntArray, typedArray: TypedArray): Boolean {
         if (Arrays.equals(styleable, R.styleable.ViewBackgroundHelper)) {

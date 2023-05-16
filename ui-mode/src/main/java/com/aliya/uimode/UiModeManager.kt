@@ -16,12 +16,14 @@ import android.view.LayoutInflater.Factory2
 import android.view.View
 import androidx.annotation.AnyRes
 import androidx.annotation.DrawableRes
+import androidx.annotation.StyleRes
 import androidx.annotation.StyleableRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.app.AppCompatDelegate.NightMode
 import androidx.core.view.LayoutInflaterCompat
 import com.aliya.uimode.factory.FactoryMerger
+import com.aliya.uimode.factory.UiModeDelegate
 import com.aliya.uimode.factory.UiModeDelegate.onUiModeChanged
 import com.aliya.uimode.factory.UiModeInflaterFactory
 import com.aliya.uimode.factory.ViewStore.applyUiMode
@@ -312,6 +314,11 @@ object UiModeManager {
         cachedTypeArray.putTypeValue(index, typedValue)
         saveView(v.context, v)
         onUiModeChanged(v)
+    }
+
+
+    fun applyStyle(v: View,@StyleRes style:Int) {
+        UiModeDelegate.applyStyle(v,style)
     }
 
 

@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.aliya.uimode.sample">
 
+    <uses-permission android:name="android.permission.INTERNET"/>
     <application
         android:name="com.aliya.uimode.sample.App"
         android:allowBackup="true"
@@ -51,7 +52,10 @@
         <activity
             android:name="com.aliya.uimode.sample.BugSimpleActivity"
             android:configChanges="uiMode"
-            android:label="Bug示例页" />
+            android:label="Bug示例页" /> <activity
+            android:name="com.aliya.uimode.sample.StyleTestActivity"
+            android:configChanges="uiMode"
+            android:label="style示例页" />
         <activity
             android:name="com.aliya.uimode.sample.SimpleTestActivity"
             android:configChanges="uiMode"

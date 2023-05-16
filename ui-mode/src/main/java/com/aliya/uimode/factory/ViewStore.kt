@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.Application
 import android.content.Context
 import android.view.View
+import com.aliya.uimode.R
 import com.aliya.uimode.utils.AppResourceUtils
 import com.aliya.uimode.utils.AppUtil
 import java.lang.ref.ReferenceQueue
@@ -19,7 +20,7 @@ object ViewStore {
 
     fun saveView(ctx: Context?, v: View?) {
         if (ctx == null || v == null) return
-
+        v.setTag(R.id.tag_ui_mode_is_save_store,true)
         // 寻找 context 装饰器对应的 activity 或 application
         if (ctx is Application) {
             putView2Map(ctx, v, mContextViewMap, referenceQueue)

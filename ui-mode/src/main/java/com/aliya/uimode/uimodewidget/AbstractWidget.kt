@@ -9,6 +9,7 @@ import android.util.Log
 import android.util.TypedValue
 import android.view.View
 import androidx.annotation.CallSuper
+import androidx.annotation.StyleRes
 import com.aliya.uimode.R
 import com.aliya.uimode.factory.ViewStore
 import com.aliya.uimode.intef.UiModeChangeListener
@@ -175,7 +176,7 @@ abstract class AbstractWidget : IApplyAttrResourceId {
         return typedValue.type != TypedValue.TYPE_NULL && typedValue.resourceId != 0
     }
 
-    override fun applyStyle(view: View, styleRes: Int) {
+    override fun applyStyle(view: View,@StyleRes styleRes: Int) {
         mStyleableKeySet.forEach { styleable ->
             val cachedTypeArray = CachedTypeArray(view.resources,view.context)
             styleable.forEachIndexed { index,attrResId->

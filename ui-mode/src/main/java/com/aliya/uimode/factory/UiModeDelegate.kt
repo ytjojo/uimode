@@ -3,6 +3,8 @@ package com.aliya.uimode.factory
 import android.content.res.TypedArray
 import android.util.AttributeSet
 import android.view.View
+import androidx.annotation.StyleRes
+import androidx.annotation.StyleableRes
 import com.aliya.uimode.R
 import com.aliya.uimode.UiModeManager
 import com.aliya.uimode.intef.UiModeChangeListener
@@ -76,6 +78,23 @@ object UiModeDelegate {
         }
 
 
+    }
+
+
+    fun applyStyle(v: View,@StyleRes style:Int) {
+        val tagStyle = v.getTag(R.id.tag_ui_mode_widget_style)
+        val list = WidgetRegister.getListBySuperclass(v::class.java)
+        if(style != tagStyle){
+            v.setTag(R.id.tag_ui_mode_widget_style,style)
+            val theme = v.context.theme
+            list.forEach {
+                it.applyStyle(v, style)
+            }
+        }
+
+        if(v.getTag(R.id.tag_ui_mode_is_save_store) != true){
+            ViewStore.saveView(v.context,v)
+        }
     }
 
 

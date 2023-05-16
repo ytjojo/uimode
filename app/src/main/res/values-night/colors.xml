@@ -14,6 +14,9 @@
     <color name="_d12324_520d0d">#520d0d</color>
     <color name="_ff4081_aa4081">#aa4081</color>
 
+
+    <color name="red_back">@color/md_red_900_color_code</color>
+
     <color name="_3f0000ff_3f00ff00">#3f00ff00</color>
 
 

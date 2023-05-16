@@ -2,6 +2,7 @@ package com.aliya.uimode.uimodewidget
 
 import android.content.res.ColorStateList
 import android.content.res.TypedArray
+import android.graphics.drawable.Drawable
 import android.os.Build
 import android.view.View
 import android.widget.TextView
@@ -22,10 +23,11 @@ open class TextViewWidget : AbstractWidget() {
         if (Arrays.equals(styleable, R.styleable.TextViewHelper)) {
             val indexCount = typedArray.indexCount
 
-            var drawableLeft = textView.compoundDrawablesRelative[0]
-            var drawableTop = textView.compoundDrawablesRelative[0]
-            var drawableRight = textView.compoundDrawablesRelative[0]
-            var drawableBottom = textView.compoundDrawablesRelative[0]
+
+            var drawableLeft:Drawable? = null
+            var drawableTop:Drawable? = null
+            var drawableRight:Drawable? = null
+            var drawableBottom:Drawable? = null
             var tintColorStateList: ColorStateList? = null
             for (i in 0 until indexCount) {
                 val indeInAttrArray = typedArray.getIndex(i)
@@ -136,12 +138,26 @@ open class TextViewWidget : AbstractWidget() {
                 }
             }
 
-            textView.setCompoundDrawablesRelativeWithIntrinsicBounds(
-                drawableLeft,
-                drawableTop,
-                drawableRight,
-                drawableBottom
-            )
+
+            if (drawableLeft != null || drawableTop != null || drawableRight != null || drawableBottom != null)
+                if(drawableLeft == null){
+                    drawableLeft = textView.compoundDrawablesRelative[0]
+                }
+                if(drawableTop == null){
+                    drawableTop = textView.compoundDrawablesRelative[1]
+                }
+                if(drawableRight == null){
+                    drawableRight = textView.compoundDrawablesRelative[2]
+                }
+                if(drawableBottom == null){
+                    drawableBottom = textView.compoundDrawablesRelative[3]
+                }
+                textView.setCompoundDrawablesRelativeWithIntrinsicBounds(
+                    drawableLeft,
+                    drawableTop,
+                    drawableRight,
+                    drawableBottom
+                )
 
             if (tintColorStateList != null) {
                 TextViewCompat.setCompoundDrawableTintList(textView, tintColorStateList)
