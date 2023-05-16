@@ -1,7 +1,7 @@
 package com.wogoo.backgroud;
 
 import android.content.Context;
-import android.content.res.CachedTypeArray;
+import android.content.res.CachedTypedArray;
 import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
 import android.graphics.drawable.AnimationDrawable;
@@ -19,7 +19,6 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
-import com.aliya.uimode.uimodewidget.TypedValueUtils;
 import com.noober.background.drawable.DrawableFactory;
 
 import java.lang.reflect.InvocationTargetException;
@@ -36,11 +35,11 @@ public class BackgroundTypedArrayDelegate {
     private static TypedArray getTypedArray(View v, int[] styleableAttrs, Map<int[], TypedArray> typedArrayMap) {
         TypedArray typedArray = typedArrayMap.get(styleableAttrs);
         if (typedArray != null) {
-            CachedTypeArray cachedTypeArray = (CachedTypeArray) typedArray;
+            CachedTypedArray cachedTypedArray = (CachedTypedArray) typedArray;
             int count = typedArray.getIndexCount();
             for (int i = 0; i < count; i++) {
-                int index = cachedTypeArray.getIndex(i);
-                TypedValue typedValue = cachedTypeArray.peekValue(index);
+                int index = cachedTypedArray.getIndex(i);
+                TypedValue typedValue = cachedTypedArray.peekValue(index);
                 if(typedValue != null && typedValue.type != TypedValue.TYPE_NULL && typedValue.resourceId != 0){
                     typedValue.data = v.getResources().getColor(typedValue.resourceId);
                 }
@@ -48,7 +47,7 @@ public class BackgroundTypedArrayDelegate {
 
             return typedArray;
         } else {
-            return new CachedTypeArray(v.getResources(), v.getContext());
+            return new CachedTypedArray(v.getResources(), v.getContext());
         }
     }
 

@@ -1,11 +1,10 @@
 package com.aliya.uimode.uimodewidget
 
-import android.content.res.CachedTypeArray
+import android.content.res.CachedTypedArray
 import android.content.res.Resources.Theme
 import android.content.res.TypedArray
 import android.text.TextUtils
 import android.util.AttributeSet
-import android.util.Log
 import android.util.TypedValue
 import android.view.View
 import androidx.annotation.CallSuper
@@ -104,12 +103,12 @@ abstract class AbstractWidget : IApplyAttrResourceId {
             }
 
             val tagCachedTypeArrayMap = view.getTag(R.id.tag_ui_mode_type_array_map)
-            val cachedTypeArrayMap = if(tagCachedTypeArrayMap != null && tagCachedTypeArrayMap is HashMap<*, *>)  tagCachedTypeArrayMap as HashMap<IntArray, CachedTypeArray>  else HashMap<IntArray, CachedTypeArray>()
+            val cachedTypeArrayMap = if(tagCachedTypeArrayMap != null && tagCachedTypeArrayMap is HashMap<*, *>)  tagCachedTypeArrayMap as HashMap<IntArray, CachedTypedArray>  else HashMap<IntArray, CachedTypedArray>()
 
             for (styleable in mStyleableKeySet) {
                 val typedArray = view.context.obtainStyledAttributes(attributeSet, styleable)
                 val indexCount = typedArray.indexCount
-                val cachedTypeArray = CachedTypeArray(view.resources, view.context)
+                val cachedTypeArray = CachedTypedArray(view.resources, view.context)
                 if (indexCount > 0) {
                     for (i in 0 until indexCount) {
                         val indexInStyleable = typedArray.getIndex(i)
@@ -140,12 +139,12 @@ abstract class AbstractWidget : IApplyAttrResourceId {
         if(mCustomStyleableKeySet.isNotEmpty()){
 
             val tagCachedTypeArrayMap = view.getTag(R.id.tag_ui_mode_custom_type_array_map)
-            val cachedTypeArrayMap = if(tagCachedTypeArrayMap != null && tagCachedTypeArrayMap is HashMap<*, *>)  tagCachedTypeArrayMap as HashMap<IntArray, CachedTypeArray>  else HashMap<IntArray, CachedTypeArray>()
+            val cachedTypeArrayMap = if(tagCachedTypeArrayMap != null && tagCachedTypeArrayMap is HashMap<*, *>)  tagCachedTypeArrayMap as HashMap<IntArray, CachedTypedArray>  else HashMap<IntArray, CachedTypedArray>()
 
             for (styleable in mCustomStyleableKeySet) {
                 val typedArray = view.context.obtainStyledAttributes(attributeSet, styleable)
                 val indexCount = typedArray.indexCount
-                val cachedTypeArray = CachedTypeArray(view.resources, view.context)
+                val cachedTypeArray = CachedTypedArray(view.resources, view.context)
                 if (indexCount > 0) {
                     for (i in 0 until indexCount) {
                         val indexInStyleable = typedArray.getIndex(i)
@@ -177,8 +176,12 @@ abstract class AbstractWidget : IApplyAttrResourceId {
     }
 
     override fun applyStyle(view: View,@StyleRes styleRes: Int) {
+
+        val tagCachedTypeArrayMap = view.getTag(R.id.tag_ui_mode_type_array_map) as? HashMap<IntArray, CachedTypedArray>?
+
         mStyleableKeySet.forEach { styleable ->
-            val cachedTypeArray = CachedTypeArray(view.resources,view.context)
+            val styleTypedArray = CachedTypedArray(view.resources,view.context)
+            val attrTypedArray = tagCachedTypeArrayMap?.get(styleable) as? CachedTypedArray?
             styleable.forEachIndexed { index,attrResId->
                 val typedArray = view.context.obtainStyledAttributes(
                     styleRes, intArrayOf(
@@ -188,17 +191,18 @@ abstract class AbstractWidget : IApplyAttrResourceId {
                 if (typedArray != null && typedArray.indexCount > 0) {
                     val typedValue = TypedValue()
                     if (typedArray.getValue(0, typedValue) && isLegalType(typedValue)) {
-                        cachedTypeArray.putTypeValue(index,typedValue)
+                        styleTypedArray.putTypeValue(index,typedValue)
+                        attrTypedArray?.putTypeValue(index,typedValue)
                     }
 
                 }
-                cachedTypeArray.putIndexAttr(index,index)
+                styleTypedArray.putIndexAttr(index,index)
                 if (typedArray != null) {
                     typedArray.recycle()
                 }
             }
-            if(!cachedTypeArray.isEmpty()){
-                onApply(view,styleable, cachedTypeArray)
+            if(!styleTypedArray.isEmpty()){
+                onApply(view,styleable, styleTypedArray)
             }
         }
 

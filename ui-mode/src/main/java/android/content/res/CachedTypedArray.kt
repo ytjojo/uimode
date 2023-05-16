@@ -12,7 +12,7 @@ import androidx.annotation.StyleableRes
 import androidx.core.content.ContextCompat
 import com.aliya.uimode.utils.DrawableCompatUtil
 
-class CachedTypeArray(val mResources: Resources, val context: Context) : TypedArray() {
+class CachedTypedArray(val mResources: Resources, val context: Context) : TypedArray() {
 
 
     val indexToAttr = SparseIntArray()

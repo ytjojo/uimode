@@ -4,7 +4,7 @@ import android.app.Activity
 import android.app.Application
 import android.app.Application.ActivityLifecycleCallbacks
 import android.content.Context
-import android.content.res.CachedTypeArray
+import android.content.res.CachedTypedArray
 import android.content.res.Configuration
 import android.content.res.Resources
 import android.content.res.TypedArray
@@ -15,7 +15,6 @@ import android.view.LayoutInflater
 import android.view.LayoutInflater.Factory2
 import android.view.View
 import androidx.annotation.AnyRes
-import androidx.annotation.DrawableRes
 import androidx.annotation.StyleRes
 import androidx.annotation.StyleableRes
 import androidx.appcompat.app.AppCompatActivity
@@ -301,9 +300,9 @@ object UiModeManager {
             map = HashMap()
             v.setTag(R.id.tag_ui_mode_type_array_map, map)
         }
-        var cachedTypeArray = map[styleableRes] as CachedTypeArray?
+        var cachedTypeArray = map[styleableRes] as CachedTypedArray?
         if (cachedTypeArray == null) {
-            cachedTypeArray = CachedTypeArray(v.resources, v.context)
+            cachedTypeArray = CachedTypedArray(v.resources, v.context)
             map!![styleableRes] = cachedTypeArray
             cachedTypeArray.putIndexAttr(0, index)
             map[styleableRes] = cachedTypeArray
