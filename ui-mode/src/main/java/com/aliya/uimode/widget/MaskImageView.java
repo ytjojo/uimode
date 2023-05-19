@@ -5,7 +5,7 @@ import android.graphics.Canvas;
 import androidx.appcompat.widget.AppCompatImageView;
 import android.util.AttributeSet;
 
-import com.aliya.uimode.intef.UiModeChangeListener;
+import com.aliya.uimode.factory.UiModeChangeListener;
 
 /**
  * 遮罩ImageView

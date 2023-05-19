@@ -22,6 +22,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.app.AppCompatDelegate.NightMode
 import androidx.core.view.LayoutInflaterCompat
 import com.aliya.uimode.factory.FactoryMerger
+import com.aliya.uimode.factory.UiModeChangeListener
 import com.aliya.uimode.factory.UiModeDelegate
 import com.aliya.uimode.factory.UiModeDelegate.onUiModeChanged
 import com.aliya.uimode.factory.UiModeInflaterFactory
@@ -29,7 +30,6 @@ import com.aliya.uimode.factory.ViewStore.applyUiMode
 import com.aliya.uimode.factory.ViewStore.dispatchApplyUiMode
 import com.aliya.uimode.factory.ViewStore.removeUselessViews
 import com.aliya.uimode.factory.ViewStore.saveView
-import com.aliya.uimode.intef.UiModeChangeListener
 import com.aliya.uimode.utils.AppResourceUtils
 import java.lang.ref.SoftReference
 

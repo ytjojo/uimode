@@ -11,7 +11,7 @@ import android.os.Build;
 import androidx.annotation.NonNull;
 import androidx.core.graphics.drawable.DrawableCompat;
 
-import com.aliya.uimode.intef.UiModeChangeListener;
+import com.aliya.uimode.factory.UiModeChangeListener;
 
 /**
  * 遮罩 Drawable 包装类

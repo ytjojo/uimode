@@ -86,7 +86,7 @@ class TypedValueUtils {
                     return typedValue.resourceId
                 }
                 TypedValue.TYPE_ATTRIBUTE -> {
-                    if (abstractWidget.validTheme(v)) {
+                    if (v.context.theme != null) {
                         val attrTypedValue =
                             abstractWidget.resolveAttribute(v, typedValue.resourceId)
                         attrTypedValue?.apply {

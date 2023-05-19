@@ -8,7 +8,7 @@ import com.aliya.uimode.uimodewidget.*
 object WidgetRegister {
 
 
-    private val mCacheTypeRegister = HashMap<Class<*>, AbstractWidget>()
+    private val mCacheTypeRegister = LinkedHashMap<Class<*>, AbstractWidget>()
 
     private val mOnViewUiModeChangedMap = HashMap<Class<*>, OnViewUiModeChanged<*>>()
 
@@ -33,6 +33,7 @@ object WidgetRegister {
         registerDefault()
         widget.onRegisterStyleable()
         return mCacheTypeRegister.put(key, widget)!!
+
 
     }
 

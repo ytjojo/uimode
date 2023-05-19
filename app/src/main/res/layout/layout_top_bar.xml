@@ -14,6 +14,41 @@
         android:src="@mipmap/ic_nav_bar_back"
         app:maskColor="@android:color/transparent" />
 
+    <LinearLayout
+        android:id="@+id/select_local"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right|center_vertical"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <Button
+            android:id="@+id/btn_day"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:text="日间"
+            android:textColor="@color/tc_top_bar_title" />
+
+        <Button
+            android:id="@+id/btn_night"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:text="夜间"
+            android:textColor="@color/tc_top_bar_title" />
+
+        <Button
+            android:id="@+id/btn_cancel_local"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:text=" 取消 "
+            android:textColor="@color/tc_top_bar_title" />
+
+
+    </LinearLayout>
+
     <TextView
         android:id="@+id/tv_title"
         android:layout_width="wrap_content"
@@ -39,7 +74,7 @@
         android:layout_height="match_parent"
         android:layout_gravity="right|center_vertical"
         android:background="@null"
-        android:text=" 主界面 "
+        android:text="返回主页"
         android:textColor="@color/tc_top_bar_title" />
 
 </merge>

@@ -1,5 +1,7 @@
 package com.aliya.uimode.uimodewidget
 
+import android.app.Activity
+import android.content.Context
 import android.content.res.CachedTypedArray
 import android.content.res.Resources.Theme
 import android.content.res.TypedArray
@@ -10,9 +12,11 @@ import android.view.View
 import androidx.annotation.CallSuper
 import androidx.annotation.StyleRes
 import com.aliya.uimode.R
+import com.aliya.uimode.factory.UiModeChangeListener
 import com.aliya.uimode.factory.ViewStore
-import com.aliya.uimode.intef.UiModeChangeListener
 import com.aliya.uimode.utils.AppResourceUtils
+import com.aliya.uimode.utils.AppUtil
+
 
 abstract class AbstractWidget : IApplyAttrResourceId {
 
@@ -149,7 +153,7 @@ abstract class AbstractWidget : IApplyAttrResourceId {
                     for (i in 0 until indexCount) {
                         val indexInStyleable = typedArray.getIndex(i)
                         val typedValue = TypedValue()
-                        if (typedArray.getValue(indexInStyleable, typedValue)) {
+                        if (typedArray.getValue(indexInStyleable, typedValue) && !onAssemble(view,styleable,indexInStyleable,typedValue)) {
                             cachedTypeArray.putTypeValue(indexInStyleable, typedValue)
                         }
                         cachedTypeArray.putIndexAttr(i, indexInStyleable)
@@ -169,6 +173,10 @@ abstract class AbstractWidget : IApplyAttrResourceId {
         return isSave
 
 
+    }
+
+    open fun onAssemble(view: View, styleable:IntArray,indexInStyleable:Int,typedValue: TypedValue):Boolean{
+        return false
     }
 
     private fun isLegalType(typedValue: TypedValue): Boolean {
@@ -254,11 +262,17 @@ abstract class AbstractWidget : IApplyAttrResourceId {
      */
     open fun resolveAttribute(v: View, resId: Int): TypedValue? {
         val typedValue = AppResourceUtils.getTypedValue()
-        val success = getTheme(v)!!.resolveAttribute(resId,typedValue , true)
-        if(success){
+        val success = getTheme(v)?.resolveAttribute(resId,typedValue , true)
+        if(success == true){
             return typedValue
         }
         return null
+    }
+
+    private fun getActivityTheme(v: View): Theme? {
+        val context: Context = v.context
+        val activity = AppUtil.findActivity(context)
+        return if (activity != null) activity.theme else context.getTheme()
     }
 
     private  fun parseAttrId(attrValue: String): Int {

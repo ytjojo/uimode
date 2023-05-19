@@ -7,12 +7,21 @@
     android:orientation="vertical"
     tools:context=".ThemeSimpleActivity">
 
+
+    <com.aliya.uimode.sample.view.LocalTopBar
+        android:id="@+id/local_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        />
+
     <com.aliya.uimode.sample.view.TopBar
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorPrimaryScarlet" />
 
     <FrameLayout
+        android:id="@+id/frameLayout_theme_ripple"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="?attr/selectableItemBackground"
@@ -20,12 +29,15 @@
         android:theme="@style/ViewTheme">
 
         <TextView
+            android:id="@+id/tv_click"
+            android:theme="@style/ViewTheme"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:text="点我看\n水  波  纹"
+            android:background="?colorControlHighlight"
             android:gravity="center"
-            android:textColor="@color/text_color" />
+            android:textColor="?colorControlHighlight" />
 
     </FrameLayout>
 

@@ -317,11 +317,11 @@ public class AppResourceUtils {
     }
 
     public static int getAttrId(Context context, String identifier) {
-        int id = context.getResources().getIdentifier(identifier, "attr", context.getPackageName());
+        int id = context.getResources().getIdentifier(identifier, "attr", "android");
         if (id != 0) {
             return id;
         }
-        return context.getResources().getIdentifier(identifier, "attr", "android");
+        return context.getResources().getIdentifier(identifier, "attr", context.getPackageName());
     }
 
     /**

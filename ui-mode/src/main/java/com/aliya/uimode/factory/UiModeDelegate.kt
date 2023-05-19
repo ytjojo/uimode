@@ -2,12 +2,12 @@ package com.aliya.uimode.factory
 
 import android.content.res.TypedArray
 import android.util.AttributeSet
+import android.util.TypedValue
 import android.view.View
 import androidx.annotation.StyleRes
-import androidx.annotation.StyleableRes
 import com.aliya.uimode.R
 import com.aliya.uimode.UiModeManager
-import com.aliya.uimode.intef.UiModeChangeListener
+import com.aliya.uimode.uimodewidget.TypedValueUtils
 import com.aliya.uimode.utils.AppUtil
 
 object UiModeDelegate {
@@ -38,9 +38,17 @@ object UiModeDelegate {
 
 
     fun onUiModeChanged(v: View) {
+        val tagThemeTypedValue = v.getTag(R.id.tag_ui_mode_theme_typed_value) as? TypedValue?
+        tagThemeTypedValue?.let {
+            val theme = TypedValueUtils.getStyle(v, it, WidgetRegister.get(View::class.java)!!)
+            if (theme != 0) {
+                v.getContext().getTheme()?.applyStyle(theme, true)
+            }
+        }
 
-        val tagStyle = v.getTag(R.id.tag_ui_mode_widget_style)
+
         val list = WidgetRegister.getListBySuperclass(v::class.java)
+        val tagStyle = v.getTag(R.id.tag_ui_mode_widget_style)
         if (tagStyle != null && tagStyle is Int) {
             val styleResId = tagStyle
             list.forEach {

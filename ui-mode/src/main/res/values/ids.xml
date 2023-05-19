@@ -10,5 +10,6 @@
     <item name="tag_ui_mode_is_save_store" type="id" />
 
     <item name="tag_ui_mode_on_ui_mode_changed" type="id" />
+    <item name="tag_ui_mode_theme_typed_value" type="id" />
 
 </resources>

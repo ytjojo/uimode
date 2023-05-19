@@ -4,6 +4,7 @@ import android.content.res.ColorStateList
 import android.content.res.TypedArray
 import android.os.Build
 import android.util.AttributeSet
+import android.util.TypedValue
 import android.view.View
 import androidx.annotation.CallSuper
 import androidx.core.view.ViewCompat
@@ -19,8 +20,47 @@ open class ViewWidget : AbstractWidget() {
     }
 
 
+    override fun onAssemble(view: View, styleable: IntArray, indexInStyleable: Int,typedValue: TypedValue): Boolean {
+        if(styleable.equals( R.styleable.UiModeView) && indexInStyleable == R.styleable.UiModeView_android_theme){
+            view.setTag(R.id.tag_ui_mode_theme_typed_value,typedValue)
+            return true
+        }
+        return false
+    }
     override fun onApply(v: View, styleable: IntArray, typedArray: TypedArray): Boolean {
-        if (Arrays.equals(styleable, R.styleable.ViewBackgroundHelper)) {
+
+        if (Arrays.equals(styleable, R.styleable.UiModeView)) {
+            val indexCount = typedArray.indexCount
+            for (i in 0 until indexCount) {
+                val indexInAttrArray = typedArray.getIndex(i)
+                val typedValue = typedArray.peekValue(indexInAttrArray)
+                if (typedValue != null) {
+                    when (indexInAttrArray) {
+                        R.styleable.UiModeView_android_foreground -> {
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                v.foreground = TypedValueUtils.getDrawable(
+                                    v,
+                                    typedValue,
+                                    this
+                                )
+                            }
+                        }
+                        R.styleable.UiModeView_view_invalidate -> {
+                            v.invalidate()
+                        }
+
+                        R.styleable.UiModeView_android_theme -> {
+                            val style = TypedValueUtils.getStyle(v, typedValue, this)
+                            if (style != 0) {
+                                v.getContext().getTheme()?.applyStyle(style, true)
+                            }
+                        }
+
+                    }
+                }
+            }
+            return true
+        }else if (Arrays.equals(styleable, R.styleable.ViewBackgroundHelper)) {
             val indexCount = typedArray.indexCount
             var background = v.background
             var colorStateList: ColorStateList? = null
@@ -57,37 +97,6 @@ open class ViewWidget : AbstractWidget() {
 
             return true
 
-        } else if (Arrays.equals(styleable, R.styleable.UiModeView)) {
-            val indexCount = typedArray.indexCount
-            for (i in 0 until indexCount) {
-                val indexInAttrArray = typedArray.getIndex(i)
-                val typedValue = typedArray.peekValue(indexInAttrArray)
-                if (typedValue != null) {
-                    when (indexInAttrArray) {
-                        R.styleable.UiModeView_android_foreground -> {
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                                v.foreground = TypedValueUtils.getDrawable(
-                                    v,
-                                    typedValue,
-                                    this
-                                )
-                            }
-                        }
-                        R.styleable.UiModeView_view_invalidate -> {
-                            v.invalidate()
-                        }
-
-                        R.styleable.UiModeView_android_theme -> {
-                            val style = TypedValueUtils.getStyle(v, typedValue, this)
-                            if (style != 0) {
-                                v.getContext().getTheme()?.applyStyle(style, true)
-                            }
-                        }
-
-                    }
-                }
-            }
-            return true
         }
         return false
     }

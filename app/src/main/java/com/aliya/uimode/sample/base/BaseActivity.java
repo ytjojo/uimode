@@ -5,8 +5,9 @@ import android.os.Bundle;
 import android.widget.Toast;
 
 import com.aliya.uimode.UiModeManager;
-import com.aliya.uimode.intef.UiModeChangeListener;
+import com.aliya.uimode.factory.UiModeChangeListener;
 import com.aliya.uimode.sample.AppUiMode;
+import com.aliya.uimode.utils.AppResourceUtils;
 import com.noober.background.BackgroundFactory;
 
 import androidx.annotation.NonNull;
@@ -40,7 +41,7 @@ public class BaseActivity extends AppCompatActivity implements UiModeChangeListe
 //            UiModeManager.applyUiModeViews(this);
             nightMode = newNightMode;
         }
-        Toast.makeText(this,"系统uiMode = " + UiModeManager.INSTANCE.getSystemUiMode(),Toast.LENGTH_SHORT).show();
+        Toast.makeText(this,"系统uiMode = " + UiModeManager.INSTANCE.getSystemUiMode() + "当前uiMode = " + AppResourceUtils.calculateNightMode(this),Toast.LENGTH_SHORT).show();
     }
 
     @Override

@@ -27,7 +27,7 @@
 
     <style name="ViewTheme">
         <!--水波纹颜色-->
-        <item name="colorControlHighlight">#33fdc247</item>
+        <item name="colorControlHighlight">@color/md_green_200_color_code</item>
     </style>
     <style name="textStyle1">
         <!--水波纹颜色-->
