@@ -1,7 +1,7 @@
 package com.wogoo.backgroud
 
 import android.view.View
-import com.aliya.uimode.factory.WidgetRegister
+import com.aliya.uimode.core.WidgetRegister
 
 class BackgroundRegister {
 

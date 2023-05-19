@@ -20,7 +20,7 @@ import android.util.AttributeSet;
 import android.view.View;
 
 import com.aliya.uimode.R;
-import com.aliya.uimode.factory.ViewStore;
+import com.aliya.uimode.core.ViewStore;
 
 /**
  * 实现圆角 - 助手

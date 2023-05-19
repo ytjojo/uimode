@@ -20,6 +20,9 @@ open class ViewWidget : AbstractWidget() {
     }
 
 
+    override fun assemble(view: View, attributeSet: AttributeSet): Boolean {
+        return super.assemble(view, attributeSet)
+    }
     override fun onAssemble(view: View, styleable: IntArray, indexInStyleable: Int,typedValue: TypedValue): Boolean {
         if(styleable.equals( R.styleable.UiModeView) && indexInStyleable == R.styleable.UiModeView_android_theme){
             view.setTag(R.id.tag_ui_mode_theme_typed_value,typedValue)

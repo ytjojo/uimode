@@ -131,12 +131,13 @@
                         app:uiMode_ignore="src" />
 
                     <ImageView
+                        android:background="@color/bg_color"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="15dp"
                         android:src="@mipmap/ic_nav_bar_back_dark"
                         app:maskColor="@color/_fdc247_7e6023"
-                        app:uiMode_ignore="src" />
+                        app:uiMode_ignore="background" />
 
                 </LinearLayout>
 

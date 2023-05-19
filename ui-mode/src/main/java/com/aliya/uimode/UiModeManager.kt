@@ -21,15 +21,15 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.app.AppCompatDelegate.NightMode
 import androidx.core.view.LayoutInflaterCompat
-import com.aliya.uimode.factory.FactoryMerger
-import com.aliya.uimode.factory.UiModeChangeListener
-import com.aliya.uimode.factory.UiModeDelegate
-import com.aliya.uimode.factory.UiModeDelegate.onUiModeChanged
-import com.aliya.uimode.factory.UiModeInflaterFactory
-import com.aliya.uimode.factory.ViewStore.applyUiMode
-import com.aliya.uimode.factory.ViewStore.dispatchApplyUiMode
-import com.aliya.uimode.factory.ViewStore.removeUselessViews
-import com.aliya.uimode.factory.ViewStore.saveView
+import com.aliya.uimode.core.FactoryMerger
+import com.aliya.uimode.core.UiModeChangeListener
+import com.aliya.uimode.core.UiModeDelegate
+import com.aliya.uimode.core.UiModeDelegate.onUiModeChanged
+import com.aliya.uimode.core.UiModeInflaterFactory
+import com.aliya.uimode.core.ViewStore.applyUiMode
+import com.aliya.uimode.core.ViewStore.dispatchApplyUiMode
+import com.aliya.uimode.core.ViewStore.removeUselessViews
+import com.aliya.uimode.core.ViewStore.saveView
 import com.aliya.uimode.utils.AppResourceUtils
 import java.lang.ref.SoftReference
 
@@ -194,7 +194,7 @@ object UiModeManager {
      *  设置 UiMode 相关的 Factory2
      *
      *
-     * 如果还需要设置自己的 Factory, [com.aliya.uimode.factory.FactoryMerger], 参考以下代码
+     * 如果还需要设置自己的 Factory, [com.aliya.uimode.core.FactoryMerger], 参考以下代码
      *
      * <pre>
      * LayoutInflater.Factory2 before = UiModeManager.obtainInflaterFactory();

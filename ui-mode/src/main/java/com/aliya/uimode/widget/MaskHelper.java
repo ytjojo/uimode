@@ -16,7 +16,7 @@ import android.util.AttributeSet;
 import android.util.TypedValue;
 
 import com.aliya.uimode.R;
-import com.aliya.uimode.factory.ViewStore;
+import com.aliya.uimode.core.ViewStore;
 
 /**
  * ImageView遮罩 - 助手

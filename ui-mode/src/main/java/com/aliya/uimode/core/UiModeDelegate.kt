@@ -1,4 +1,4 @@
-package com.aliya.uimode.factory
+package com.aliya.uimode.core
 
 import android.content.res.TypedArray
 import android.util.AttributeSet

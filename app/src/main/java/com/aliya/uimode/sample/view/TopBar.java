@@ -12,7 +12,7 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
-import com.aliya.uimode.factory.UiModeChangeListener;
+import com.aliya.uimode.core.UiModeChangeListener;
 import com.aliya.uimode.sample.AppUiMode;
 import com.aliya.uimode.sample.MainActivity;
 import com.aliya.uimode.sample.R;

@@ -5,7 +5,7 @@ import android.os.Bundle;
 import android.widget.Toast;
 
 import com.aliya.uimode.UiModeManager;
-import com.aliya.uimode.factory.UiModeChangeListener;
+import com.aliya.uimode.core.UiModeChangeListener;
 import com.aliya.uimode.sample.AppUiMode;
 import com.aliya.uimode.utils.AppResourceUtils;
 import com.noober.background.BackgroundFactory;

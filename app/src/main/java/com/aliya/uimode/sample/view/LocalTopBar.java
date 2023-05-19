@@ -1,10 +1,7 @@
 package com.aliya.uimode.sample.view;
 
 import android.app.Activity;
-import android.content.ComponentName;
 import android.content.Context;
-import android.content.pm.ActivityInfo;
-import android.content.pm.PackageManager;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,7 +13,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDelegate;
 
 import com.aliya.uimode.UiModeManager;
-import com.aliya.uimode.factory.UiModeChangeListener;
+import com.aliya.uimode.core.UiModeChangeListener;
 import com.aliya.uimode.sample.R;
 import com.aliya.uimode.sample.base.BaseActivity;
 import com.aliya.uimode.utils.AppUtil;
