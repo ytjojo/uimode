@@ -4,6 +4,7 @@ import android.content.res.ColorStateList
 import android.content.res.TypedArray
 import android.graphics.drawable.Drawable
 import android.os.Build
+import android.util.TypedValue
 import android.view.View
 import android.widget.TextView
 import androidx.core.widget.TextViewCompat
@@ -18,10 +19,30 @@ open class TextViewWidget : AbstractWidget() {
 
     }
 
+    override fun onAssemble(
+        view: View,
+        styleable: IntArray,
+        indexInStyleable: Int,
+        typedValue: TypedValue
+    ): Boolean {
+        return false
+    }
+
     override fun onApply(v: View, styleable: IntArray, typedArray: TypedArray): Boolean {
         val textView = v as TextView
         if (Arrays.equals(styleable, R.styleable.TextViewHelper)) {
             val indexCount = typedArray.indexCount
+            if(indexCount > 0){
+                val typedValue = typedArray.peekValue(R.styleable.TextViewHelper_android_textAppearance )
+                if (typedValue != null) {
+                    val style = TypedValueUtils.getStyle(v, typedValue, this)
+                    if (style != 0) {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                            v.setTextAppearance(style)
+                        }
+                    }
+                }
+            }
 
 
             var drawableLeft:Drawable? = null
@@ -34,6 +55,12 @@ open class TextViewWidget : AbstractWidget() {
                 val typedValue = typedArray.peekValue(indeInAttrArray)
                 if (typedValue != null) {
                     when (indeInAttrArray) {
+
+                        R.styleable.TextViewHelper_android_textAppearance -> {
+
+
+                        }
+
                         R.styleable.TextViewHelper_android_textColor -> {
                             val colorStateList = TypedValueUtils.getColorStateList(
                                 v,

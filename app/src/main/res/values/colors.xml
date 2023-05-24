@@ -28,7 +28,9 @@
 
     <color name="red_back">@color/md_red_100_color_code</color>
 
+    <color name="text_yellow">@color/md_yellow_400_color_code</color>
 
+    <color name="card_back_color">#F6F6F8</color>
 
 
 

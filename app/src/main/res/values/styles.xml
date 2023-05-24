@@ -44,8 +44,12 @@
         <item name="android:background">@color/md_green_800_color_code</item>
     </style>
     <style name="backStyleRed">
-        <!--水波纹颜色-->
         <item name="android:background">@color/red_back</item>
+    </style>
+
+
+    <style name="textyellowstyle">
+        <item name="android:textColor">@color/text_yellow</item>
     </style>
 
 </resources>

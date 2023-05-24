@@ -20,6 +20,7 @@ class StyleTestActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_style_test)
+        tvChange.setTextAppearance()
         tvChange.setOnClickListener {
             val mode = delegate.localNightMode
 
@@ -50,7 +51,7 @@ class StyleTestActivity : BaseActivity() {
 
         findViewById<View>(R.id.tv_simple1).setOnClickListener {
             index = index % 3
-            com.aliya.uimode.UiModeManager.applyStyle(it, styleInt[index])
+            UiModeManager.applyStyle(it, styleInt[index])
             index++
 
         }

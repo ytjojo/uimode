@@ -131,7 +131,7 @@ abstract class AbstractWidget : IApplyAttrResourceId {
                                 "assemble",
                                 "view  = " + view.toString() + " attrName " + view.context.resources.getResourceName(
                                     styleable[indexInStyleable]
-                                ) + " resourceId = " + Integer.toHexString(typedValue.resourceId)
+                                ) + " resourceId = " + Integer.toHexString(typedValue.resourceId) + " resourceName = " +  view.context.resources.getResourceName(typedValue.resourceId)
                             )
                             if (attrValueMap.isNotEmpty()) {
                                 val attrName =
