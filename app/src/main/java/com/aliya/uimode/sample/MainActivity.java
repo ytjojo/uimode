@@ -74,6 +74,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 startActivity(new Intent(this, StyleTestActivity.class));
                 break;
 
+            case R.id.btn_go_backlib_test:
+                startActivity(new Intent(this, NooberBackgroundActivity.class));
+
+                break;
         }
     }
 

@@ -24,7 +24,7 @@ public class App extends Application {
     private final String PATH_VIVO_UI_MODE = "vivo_nightmode_used";
 
     static {
-        BLAutoInjectController.setEnableAutoInject(false);
+       AppUiMode.disableAutoInfect();
     }
     @Override
     public void onCreate() {
@@ -67,6 +67,6 @@ public class App extends Application {
     @Override
     public void onConfigurationChanged(@NonNull Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        UiModeManager.INSTANCE.onSystemConfigurationChanged();
+        AppUiMode.onSystemConfigurationChanged();
     }
 }

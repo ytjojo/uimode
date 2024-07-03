@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_color"
+    android:orientation="vertical"
+    tools:context=".ImageViewSimpleActivity">
+
+    <com.aliya.uimode.sample.view.TopBar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <ImageView
+                android:src="@mipmap/ic_star_pressed"
+                android:layout_width="50dp"
+                android:layout_height="50dp"/>
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:src="@mipmap/ic_star_pressed"
+
+                app:tint="@color/_ff4081_aa4081"
+                android:layout_width="50dp"
+                android:layout_height="50dp"/>
+
+            <com.noober.background.view.BLTextView
+                android:text="账号"
+                android:gravity="center"
+                android:layout_width="50dp"
+                app:bl_corners_radius="10dp"
+                app:bl_stroke_width="2dp"
+                android:textSize="14sp"
+                android:textColor="@color/text_dark_primary"
+                app:bl_stroke_color="@color/_ff4081_aa4081"
+                android:layout_height="24dp"/>
+            <com.noober.background.view.BLTextView
+                android:text="账号"
+                android:gravity="center"
+                android:layout_width="50dp"
+                app:bl_corners_radius="10dp"
+                android:textSize="14sp"
+                android:textColor="@color/text_dark_primary"
+                app:bl_solid_color="@color/_ff4081_aa4081"
+                android:layout_height="24dp"/>
+
+
+            <com.noober.background.view.BLTextView
+                android:text="账号"
+                android:gravity="center"
+                android:layout_width="100dp"
+                android:textSize="14sp"
+                app:bl_corners_radius="10dp"
+                android:textColor="@color/text_dark_primary"
+                app:bl_gradient_startColor="@color/_ff4081_aa4081"
+                app:bl_gradient_angle="0"
+                app:bl_gradient_endColor="@color/_fdc247_7e6023"
+                android:layout_height="24dp"/>
+
+        </LinearLayout>
+
+
+    </ScrollView>
+</LinearLayout>
+

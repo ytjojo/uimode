@@ -328,7 +328,7 @@ object UiModeManager {
             return
         }
 
-        var configurationUiMode: Int = getConfigurationUiMode(Resources.getSystem().configuration)
+        val configurationUiMode: Int = getConfigurationUiMode(Resources.getSystem().configuration)
         AppCompatDelegate.getDefaultNightMode()
         if (appConfigurationUiMode != configurationUiMode) {
             setUiMode(appUiMode)

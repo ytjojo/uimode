@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 
 import com.aliya.uimode.UiModeManager;
+import com.noober.background.BLAutoInjectController;
 import com.wogoo.backgroud.BackgroundRegister;
 
 import java.lang.annotation.Retention;
@@ -90,5 +91,14 @@ public final class AppUiMode {
     @IntDef({MODE_NIGHT_NO, MODE_NIGHT_YES, MODE_NIGHT_FOLLOW_SYSTEM})
     @Retention(RetentionPolicy.SOURCE)
     @interface ApplyableNightMode {}
+
+
+    public static void disableAutoInfect(){
+        BLAutoInjectController.setEnableAutoInject(false);
+    }
+
+    public static void onSystemConfigurationChanged(){
+        UiModeManager.INSTANCE.onSystemConfigurationChanged();
+    }
 
 }

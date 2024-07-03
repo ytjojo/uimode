@@ -3,7 +3,7 @@
 buildscript {
     ext.kotlin_version = '1.4.31'
     repositories {
-        apply from: "https://gitee.com/a_liYa/gradleconfig/raw/master/dependency/versions.gradle"
+        apply from: "versions.gradle"
         addAliyunRepos(repositories)
         mavenCentral()
 //        addRepos(repositories)
@@ -22,7 +22,6 @@ allprojects {
         addAliyunRepos(repositories)
         maven { url "https://jitpack.io" }
         jcenter()
-//        addRepos(repositories)
     }
 
     tasks.withType(Javadoc) {

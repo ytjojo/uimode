@@ -20,7 +20,6 @@ class StyleTestActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_style_test)
-        tvChange.setTextAppearance()
         tvChange.setOnClickListener {
             val mode = delegate.localNightMode
 
