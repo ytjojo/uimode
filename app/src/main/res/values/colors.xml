@@ -10,7 +10,7 @@
     <color name="bg_color">@color/_ffffff_202124</color>
     <color name="text_color">@color/_484848_7a7b7d</color>
     <color name="tc_top_bar_title">@color/_ffffff_202124</color>
-
+    <color name="text_dark_primary">#293241</color>
     <color name="_520d0d">#520d0d</color>
     <color name="_ffffff_202124">#ffffff</color>
     <color name="_484848_7a7b7d">#484848</color>
@@ -347,9 +347,6 @@
     <color name="md_blue_grey_900_color_code">#263238</color>
 
 
-
-
-    <color name="text_dark_primary">#333333</color>
     <color name="text_dark_primary_stable">#333333</color>
     <color name="text_medium_primary">#666666</color>
     <color name="text_medium_primary_stable">#666666</color>

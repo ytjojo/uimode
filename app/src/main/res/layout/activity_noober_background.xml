@@ -68,6 +68,25 @@
                 app:bl_gradient_endColor="@color/_fdc247_7e6023"
                 android:layout_height="24dp"/>
 
+            <ImageView
+                android:src="@drawable/community_ic_draft_box"
+                app:tint="@color/_484848_7a7b7d"
+                android:layout_width="40dp"
+                android:layout_height="40dp"/>
+
+
+            <com.noober.background.view.BLTextView
+                android:text="账号"
+                android:gravity="center"
+                android:padding="10dp"
+                android:layout_width="50dp"
+                app:bl_corners_radius="10dp"
+                android:textSize="14sp"
+                android:textColor="@color/text_dark_primary"
+                app:bl_stroke_color="@color/text_dark_primary"
+                app:bl_stroke_width="1dp"
+                android:layout_height="wrap_content"/>
+
         </LinearLayout>
 
 

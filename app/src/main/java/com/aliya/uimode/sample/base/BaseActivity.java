@@ -30,10 +30,7 @@ public class BaseActivity extends AppCompatActivity implements UiModeChangeListe
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-
-        LayoutInflater.Factory2 before = UiModeManager.INSTANCE.obtainInflaterFactory();
-        LayoutInflater.Factory2 after = new BackgroundFactory(); // 赋值自己的Factory
-        LayoutInflaterCompat.setFactory2(getLayoutInflater(), new FactoryMerger(before, after));
+        LayoutInflaterCompat.setFactory2(getLayoutInflater(), UiModeManager.INSTANCE.obtainInflaterFactory());
         super.onCreate(savedInstanceState);
         nightMode = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
     }

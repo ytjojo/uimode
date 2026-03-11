@@ -15,6 +15,7 @@ import android.view.LayoutInflater
 import android.view.LayoutInflater.Factory2
 import android.view.View
 import androidx.annotation.AnyRes
+import androidx.annotation.IntDef
 import androidx.annotation.StyleRes
 import androidx.annotation.StyleableRes
 import androidx.appcompat.app.AppCompatActivity
@@ -31,7 +32,6 @@ import com.aliya.uimode.core.ViewStore.dispatchApplyUiMode
 import com.aliya.uimode.core.ViewStore.removeUselessViews
 import com.aliya.uimode.core.ViewStore.saveView
 import com.aliya.uimode.utils.AppResourceUtils
-import java.lang.ref.SoftReference
 
 /**
  * UiMode管理类
@@ -47,8 +47,11 @@ object UiModeManager {
     private var mIgnoreActivitySet = HashSet<Class<Activity>>()
 
 
-    @NightMode
+    @ConfigAbleNightMode
     var appUiMode = AppCompatDelegate.MODE_NIGHT_NO
+
+    @NightMode
+    var systemUiMode = AppCompatDelegate.MODE_NIGHT_NO
 
     var appConfigurationUiMode = Configuration.UI_MODE_NIGHT_NO
 
@@ -81,6 +84,9 @@ object UiModeManager {
         return false
     }
 
+    private val defaultFactory by lazy {
+        FactoryMerger(ArrayList(),UiModeInflaterFactory(sFactory2))
+    }
 
     private val lifecycleCallbacks: ActivityLifecycleCallbacks =
         object : ActivityLifecycleCallbacks {
@@ -107,6 +113,7 @@ object UiModeManager {
     @JvmStatic
     fun init(context: Context, factory2: Factory2?) {
         sAppContext = context.applicationContext
+        systemUiMode = getConfigurationUiMode( context.getResources().getConfiguration())
         HideLog.init(sAppContext)
         sFactory2 = factory2
         val appTheme = AppResourceUtils.getManifestApplicationTheme(sAppContext)
@@ -132,11 +139,12 @@ object UiModeManager {
      * 设置默认日夜间模式
      */
     @JvmStatic
-    fun setDefaultUiMode(@NightMode mode: Int): Boolean {
+    fun setDefaultUiMode(@ConfigAbleNightMode mode: Int): Boolean {
 
         appUiMode = mode
         if (appUiMode == AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM) {
-            appConfigurationUiMode = getConfigurationUiMode(Resources.getSystem().configuration)
+//            appConfigurationUiMode = getConfigurationUiMode(Resources.getSystem().configuration)
+            appConfigurationUiMode = convertFromAppDelegateToConfigurationMode(systemUiMode)
         } else {
             appConfigurationUiMode = convertFromAppDelegateToConfigurationMode(appUiMode)
         }
@@ -157,7 +165,7 @@ object UiModeManager {
      * 同时更新默认日夜间模式
      */
     @JvmStatic
-    fun setUiMode(@NightMode mode: Int) {
+    fun setUiMode(@ConfigAbleNightMode mode: Int) {
         if (sAppContext == null) {
             HideLog.e(TAG, "Using the ui mode, you need to initialize")
             return
@@ -212,37 +220,16 @@ object UiModeManager {
         applyUiMode(activity!!)
     }
 
-    /**
-     *
-     *  设置 UiMode 相关的 Factory2
-     *
-     *
-     * 如果还需要设置自己的 Factory, [com.aliya.uimode.core.FactoryMerger], 参考以下代码
-     *
-     * <pre>
-     * LayoutInflater.Factory2 before = UiModeManager.obtainInflaterFactory();
-     * LayoutInflater.Factory2 after; // 赋值自己的Factory
-     * LayoutInflaterCompat.setFactory2(inflater, new FactoryMerger(before, after))
-    </pre> *
-     *
-     * @param inflater [android.app.Activity.getLayoutInflater]
-     */
     @JvmStatic
-    fun setInflaterFactor(inflater: LayoutInflater?, before: LayoutInflater.Factory2? = null) {
-        if (sAppContext != null) {
-            if (before != null) {
-                LayoutInflaterCompat.setFactory2(
-                    inflater!!,
-                    FactoryMerger(before, obtainInflaterFactory())
-                )
-            } else {
-                LayoutInflaterCompat.setFactory2(inflater!!, obtainInflaterFactory())
-            }
-
-        } else {
-            HideLog.e(TAG, "Using the ui mode, you need to initialize")
-        }
+    fun setFactory2(inflater: LayoutInflater) {
+        LayoutInflaterCompat.setFactory2(inflater, obtainInflaterFactory())
     }
+    @JvmStatic
+    fun addFactory2(factory: LayoutInflater.Factory2) {
+        obtainInflaterFactory().before.add(factory)
+    }
+
+
 
 
     /**
@@ -257,14 +244,14 @@ object UiModeManager {
     /**
      * 设置指定当前Activity的夜间模式
      */
-    fun setLocalNightMode(activity: AppCompatActivity, @NightMode uiMode: Int) {
+    fun setLocalNightMode(activity: AppCompatActivity, @ConfigAbleNightMode uiMode: Int) {
 //        var currentMode = AppResourceUtils.calculateNightMode(activity)
         var currentMode = getUiModeFromConfiguration(activity.resources.configuration)
 
         activity.delegate.localNightMode = uiMode
         var newMode = AppResourceUtils.calculateNightMode(activity)
         if (newMode == AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM) {
-            newMode = getSystemUiMode()
+            newMode = systemUiMode
         }
         if (newMode != currentMode) {
             //todo
@@ -274,13 +261,7 @@ object UiModeManager {
     }
 
 
-    /**
-     * 获取系统日夜间模式
-     */
-    @NightMode
-    fun getSystemUiMode(): Int {
-        return getUiModeFromConfiguration(Resources.getSystem().configuration)
-    }
+
 
 
     /**
@@ -296,8 +277,8 @@ object UiModeManager {
      * @return LayoutInflaterFactory
      * @see .setInflaterFactor
      */
-    fun obtainInflaterFactory(): Factory2 {
-        return LayoutInflaterFactory.get()
+    fun obtainInflaterFactory(): FactoryMerger {
+        return defaultFactory
     }
 
     /**
@@ -309,20 +290,6 @@ object UiModeManager {
         HideLog.setIsDebug(isDebug)
     }
 
-    internal object LayoutInflaterFactory {
-        /**
-         * 通过软引用单例来优化内存
-         */
-        var sSoftInstance: SoftReference<UiModeInflaterFactory>? = null
-        fun get(): UiModeInflaterFactory {
-            var factory: UiModeInflaterFactory? = sSoftInstance?.get()
-            if (sSoftInstance == null) {
-                factory = UiModeInflaterFactory(sFactory2)
-                sSoftInstance = SoftReference(factory)
-            }
-            return factory!!
-        }
-    }
 
 
     /**
@@ -370,6 +337,7 @@ object UiModeManager {
     *系统配置改变,在Application中调用
      */
     fun onSystemConfigurationChanged() {
+        systemUiMode = getConfigurationUiMode(Resources.getSystem().configuration)
 
         if (appUiMode != AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM) {
             AppResourceUtils.updateUiModeForApplication(sAppContext, appUiMode)
@@ -393,11 +361,22 @@ object UiModeManager {
         return appConfigurationUiMode == Configuration.UI_MODE_NIGHT_YES
     }
 
+    /**
+     * 判断是否支持跟随系统
+     */
+    fun isFollowSystemAvailable(): Boolean {
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
+    }
+
+    fun isFollowSystem(): Boolean {
+        return appUiMode == AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+    }
+
 
     /**
      * 获取 Configuration 日夜间模式
      */
-    @NightMode
+    @ConfigAbleNightMode
     private fun getUiModeFromConfiguration(newConfig: Configuration): Int {
         var configurationUiMode: Int = newConfig.uiMode and Configuration.UI_MODE_NIGHT_MASK
         val mode = when (configurationUiMode) {
@@ -432,5 +411,11 @@ object UiModeManager {
         return configUiMode
     }
 
-
+    @IntDef(
+        AppCompatDelegate.MODE_NIGHT_NO,
+        AppCompatDelegate.MODE_NIGHT_YES,
+        AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+    )
+    @Retention(AnnotationRetention.SOURCE)
+    annotation class ConfigAbleNightMode
 }

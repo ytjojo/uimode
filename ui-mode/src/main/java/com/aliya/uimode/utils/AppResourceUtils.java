@@ -347,7 +347,7 @@ public class AppResourceUtils {
                 newNightMode = Configuration.UI_MODE_NIGHT_NO;
                 break;
             default:
-                newNightMode = Resources.getSystem().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+                newNightMode =res.getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
                 break;
         }
 
@@ -400,7 +400,7 @@ public class AppResourceUtils {
                 uiMode = Configuration.UI_MODE_NIGHT_NO;
                 break;
             default:
-                uiMode = Resources.getSystem().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+                uiMode = res.getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
                 break;
         }
 

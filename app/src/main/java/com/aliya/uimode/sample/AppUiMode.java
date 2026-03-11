@@ -9,6 +9,7 @@ import android.view.View;
 
 import com.aliya.uimode.UiModeManager;
 import com.noober.background.BLAutoInjectController;
+import com.noober.background.BackgroundFactory;
 import com.wogoo.backgroud.BackgroundRegister;
 
 import java.lang.annotation.Retention;
@@ -79,6 +80,7 @@ public final class AppUiMode {
                 return onCreateView(null, name, context, attrs);
             }
         });
+        UiModeManager.addFactory2(new BackgroundFactory());
         UiModeManager.setDefaultUiMode(_get().uiMode);
     }
 
