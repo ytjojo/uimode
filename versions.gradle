@@ -45,7 +45,6 @@ versions.fitwindow = "3.0.0"
 versions.decoradapter = "1.0.0"
 versions.android_compat = "1.0.0"
 versions.permission = "1.0.0"
-versions.novoda_bintray = "0.9.2" // 最高支持 gradle-plugin:3.5.4 发布时不能高于此版本
 
 def androidx = [:]
 androidx.appcompat = "androidx.appcompat:appcompat:$versions.androidx_appcompat"
@@ -98,7 +97,6 @@ deps.gson = "com.google.code.gson:gson:$versions.gson"
 deps.butterknife = butterknife
 deps.swipebacklayout = "me.imid.swipebacklayout.lib:library:$versions.swipebacklayout"
 deps.aliya = aliya
-deps.novoda_bintray = "com.novoda:bintray-release:$versions.novoda_bintray"
 deps.kotlin_stdlib = "org.jetbrains.kotlin:kotlin-stdlib:$versions.kotlin"
 
 ext.deps = deps
@@ -119,9 +117,9 @@ ext.addAliyunRepos = this.&addAliyunRepos
 
 
 def build_versions = [:]
-build_versions.min_sdk = 14
-build_versions.compile_sdk = 28
-build_versions.target_sdk = 28
+build_versions.min_sdk = 21
+build_versions.compile_sdk = 35
+build_versions.target_sdk = 30
 ext.build_versions = build_versions
 
  /*

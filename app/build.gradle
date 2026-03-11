@@ -3,14 +3,19 @@ apply plugin: 'com.android.application'
 
 apply plugin: 'kotlin-android'
 
+//kotlin
+apply plugin: 'kotlin-kapt'
+//protobuf
+
 android {
-    compileSdkVersion 31
-    buildToolsVersion "31.0.0"
+    namespace 'com.aliya.uimode.sample'
+    compileSdkVersion 35
+    buildToolsVersion "35.0.0"
 
     defaultConfig {
         applicationId "com.aliya.uimode.sample"
         minSdkVersion 21
-        targetSdkVersion 28
+        targetSdkVersion 30
         versionCode 1
         versionName "1.0"
 
@@ -30,10 +35,20 @@ android {
     }
     compileOptions {
 //        coreLibraryDesugaringEnabled true
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
 
+    kapt {
+        javacOptions {
+            option('-target', '17')
+            option('-source', '17')
+        }
+    }
+
+}
+kotlin {
+    jvmToolchain(17)
 }
 
 dependencies {

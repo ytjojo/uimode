@@ -15,7 +15,7 @@ open class ViewWidget : AbstractWidget() {
 
     @CallSuper
     override fun onRegisterStyleable() {
-        registerAttrArray(R.styleable.ViewBackgroundHelper)
+        registerAttrArray(androidx.appcompat.R.styleable.ViewBackgroundHelper)
         registerAttrArray(R.styleable.UiModeView)
     }
 
@@ -63,7 +63,7 @@ open class ViewWidget : AbstractWidget() {
                 }
             }
             return true
-        }else if (Arrays.equals(styleable, R.styleable.ViewBackgroundHelper)) {
+        }else if (Arrays.equals(styleable, androidx.appcompat.R.styleable.ViewBackgroundHelper)) {
             val indexCount = typedArray.indexCount
             var background = v.background
             var colorStateList: ColorStateList? = null
@@ -72,14 +72,14 @@ open class ViewWidget : AbstractWidget() {
                 val typedValue = typedArray.peekValue(attr)
                 if (typedValue != null) {
                     when (attr) {
-                        R.styleable.ViewBackgroundHelper_android_background -> {
+                        androidx.appcompat.R.styleable.ViewBackgroundHelper_android_background -> {
                             background = TypedValueUtils.getDrawable(
                                 v,
                                 typedValue,
                                 this
                             )
                         }
-                        R.styleable.ViewBackgroundHelper_backgroundTint -> {
+                        androidx.appcompat.R.styleable.ViewBackgroundHelper_backgroundTint -> {
 
                             colorStateList = TypedValueUtils.getColorStateList(
                                 v,

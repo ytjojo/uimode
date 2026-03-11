@@ -10,17 +10,17 @@ class BackgroundViewWidget : ViewWidget() {
     override fun onRegisterStyleable() {
         super.onRegisterStyleable()
 
-        registerCustomAttrArray(R.styleable.background);
-        registerCustomAttrArray(R.styleable.background_press);
-        registerCustomAttrArray(R.styleable.background_selector);
-        registerCustomAttrArray(R.styleable.text_selector);
-        registerCustomAttrArray(R.styleable.background_button_drawable);
-        registerCustomAttrArray(R.styleable.bl_other);
-        registerCustomAttrArray(R.styleable.bl_anim);
-        registerCustomAttrArray(R.styleable.background_multi_selector);
-        registerCustomAttrArray(R.styleable.background_multi_selector_text);
+        registerCustomAttrArray(com.noober.background.R.styleable.background);
+        registerCustomAttrArray(com.noober.background.R.styleable.background_press);
+        registerCustomAttrArray(com.noober.background.R.styleable.background_selector);
+        registerCustomAttrArray(com.noober.background.R.styleable.text_selector);
+        registerCustomAttrArray(com.noober.background.R.styleable.background_button_drawable);
+        registerCustomAttrArray(com.noober.background.R.styleable.bl_other);
+        registerCustomAttrArray(com.noober.background.R.styleable.bl_anim);
+        registerCustomAttrArray(com.noober.background.R.styleable.background_multi_selector);
+        registerCustomAttrArray(com.noober.background.R.styleable.background_multi_selector_text);
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            registerCustomAttrArray(R.styleable.background_selector_pre_21);
+            registerCustomAttrArray(com.noober.background.R.styleable.background_selector_pre_21);
         }
     }
 

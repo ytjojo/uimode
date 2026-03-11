@@ -1,27 +1,81 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
 buildscript {
-    ext.kotlin_version = '1.4.31'
+    ext.kotlin_version = '2.2.21'
     repositories {
         apply from: "versions.gradle"
-        addAliyunRepos(repositories)
+
+        maven { url 'https://maven.aliyun.com/repository/public/' }
+        maven { url 'https://maven.aliyun.com/repository/google/' }
+        // 添加JitPack仓库
+        maven { url 'https://jitpack.io' }
+
+        //优先命中阿里云镜像，加速国内构建
+        maven { url 'https://maven.aliyun.com/repository/google' }
+        maven { url 'https://maven.aliyun.com/repository/central' }
+
+        //官方源作为兜底
+        gradlePluginPortal()
+        google()
         mavenCentral()
-//        addRepos(repositories)
+
+        // 美团 Walle 插件（发布在 JitPack）
+        maven { url 'https://jitpack.io' }
+
+
+        // 华为 HMS PUSH
+        maven {url 'https://developer.huawei.com/repo/'}
+        // 荣耀 PUSH
+        maven {url 'https://developer.hihonor.com/repo'}
     }
     dependencies {
 //        classpath deps.gradle_plugin
-        classpath deps.novoda_bintray
-        classpath 'com.android.tools.build:gradle:3.6.4'
-        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.6.20'
+        classpath 'com.android.tools.build:gradle:8.13.0'
+        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:2.2.21'
 //        classpath 'com.novoda:bintray-release:0.9.2'
     }
 }
 
 allprojects {
     repositories {
-        addAliyunRepos(repositories)
-        maven { url "https://jitpack.io" }
-        jcenter()
+//        addAliyunRepos(repositories)
+
+        maven { url 'https://maven.aliyun.com/repository/public/' }
+        maven { url 'https://maven.aliyun.com/repository/google/' }
+        // 添加JitPack仓库
+        maven { url 'https://jitpack.io' }
+
+        // 同样先镜像后官方，顺序=命中优先级
+        maven { url 'https://maven.aliyun.com/repository/google' }//等同于google()
+        maven { url 'https://maven.aliyun.com/repository/central' }//等同于mavenCentral()
+        maven { url 'https://maven.aliyun.com/nexus/content/groups/public/' }//公共聚合仓（google+central+jcenter 等）
+
+        //官方源作为兜底
+        google()
+        mavenCentral()
+
+        // 厂商 Push & 三方库
+        maven { url 'https://developer.huawei.com/repo/' }
+        maven { url 'https://developer.hihonor.com/repo' }
+        maven { url 'https://mvn.getui.com/nexus/content/repositories/releases/' }
+        maven { url 'https://jitpack.io' } //com.github相关
+        //oppo推送
+        maven {
+            url 'https://maven.columbus.heytapmobi.com/repository/releases/'
+            credentials {
+                username 'nexus'
+                password 'c0b08da17e3ec36c3870fed674a0bcb36abc2e23'
+            }
+        }
+        //凡泰sdk
+        maven{
+            url "https://gradle.finogeeks.club/repository/applet/"
+            // 他们没说有下面的也无所谓
+            credentials{
+                username "applet"
+                password "123321"
+            }
+        }
     }
 
     tasks.withType(Javadoc) {

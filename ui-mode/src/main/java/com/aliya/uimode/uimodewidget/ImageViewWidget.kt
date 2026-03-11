@@ -11,21 +11,21 @@ open class ImageViewWidget : AbstractWidget() {
 
     override fun onRegisterStyleable() {
         super.onRegisterStyleable()
-        registerAttrArray(R.styleable.AppCompatImageView)
+        registerAttrArray(androidx.appcompat.R.styleable.AppCompatImageView)
     }
 
 
 
     override fun onApply(v: View, styleable: IntArray, typedArray: TypedArray): Boolean {
         val imageView = v as AppCompatImageView
-        if (Arrays.equals(styleable,R.styleable.AppCompatImageView)) {
+        if (Arrays.equals(styleable,androidx.appcompat.R.styleable.AppCompatImageView)) {
             val indexCount = typedArray.indexCount
             for (i in 0 until indexCount) {
                 val indexInStyleable = typedArray.getIndex(i)
                 val typedValue = typedArray.peekValue(indexInStyleable)
                 if (typedValue != null) {
                     when (indexInStyleable) {
-                        R.styleable.AppCompatImageView_android_src, R.styleable.AppCompatImageView_srcCompat -> {
+                        androidx.appcompat.R.styleable.AppCompatImageView_android_src,androidx.appcompat. R.styleable.AppCompatImageView_srcCompat -> {
                             imageView.setImageDrawable(
                                 TypedValueUtils.getDrawable(
                                     v,
@@ -34,7 +34,7 @@ open class ImageViewWidget : AbstractWidget() {
                                 )
                             )
                         }
-                        R.styleable.AppCompatImageView_tint -> {
+                        androidx.appcompat.R.styleable.AppCompatImageView_tint -> {
                            val colorStateList = TypedValueUtils.getColorStateList(
                                 v,
                                 typedValue,

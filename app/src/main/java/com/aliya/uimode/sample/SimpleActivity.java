@@ -21,24 +21,22 @@ public class SimpleActivity extends BaseActivity {
         setContentView(R.layout.activity_simple);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.tv_tab:
-                if (v.isSelected()) {
-                    v.setSelected(false);
-                    v.setEnabled(false);
+
+        int id = v.getId();
+        if (id == R.id.tv_tab) {
+            if (v.isSelected()) {
+                v.setSelected(false);
+                v.setEnabled(false);
+            } else {
+                if (v.isEnabled()) {
+                    v.setSelected(true);
                 } else {
-                    if (v.isEnabled()) {
-                        v.setSelected(true);
-                    } else {
-                        v.setEnabled(true);
-                    }
+                    v.setEnabled(true);
                 }
-                break;
-            case R.id.ll_test:
-                v.setBackgroundResource(R.drawable.bg_fillet);
-                break;
+            }
+        } else if (id == R.id.ll_test) {
+            v.setBackgroundResource(R.drawable.bg_fillet);
         }
     }
 

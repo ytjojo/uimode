@@ -22,7 +22,7 @@ public class ImageViewSimpleActivity extends BaseActivity {
         setContentView(R.layout.activity_image_view_simple);
 
         ivWord = (ImageView) findViewById(R.id.iv_word);
-        UiModeManager.INSTANCE.saveViewValue(ivWord, R.styleable.AppCompatImageView,R.styleable.AppCompatImageView_android_src, R.mipmap.ic_ui_mode_word);
+        UiModeManager.INSTANCE.saveViewValue(ivWord, androidx.appcompat.R.styleable.AppCompatImageView,androidx.appcompat.R.styleable.AppCompatImageView_android_src, R.mipmap.ic_ui_mode_word);
 
     }
 

@@ -68,39 +68,33 @@ public class LocalTopBar extends FrameLayout implements View.OnClickListener, Ui
     @Override
     public void onClick(View v) {
         BaseActivity activity = (BaseActivity) AppUtil.findActivity(getContext());
-        switch (v.getId()) {
-            case R.id.btn_switch:
-                switchUiMode();
-                break;
-            case R.id.btn_back:
-                if (getContext() instanceof Activity) {
-                    ((Activity) getContext()).finish();
-                }
-                break;
-            case R.id.btn_home:
-                mLocalView.setVisibility(View.VISIBLE);
-                mBtnSwitch.setVisibility(View.GONE);
-                mBtnShowLocal.setVisibility(View.GONE);
-                break;
-            case R.id.btn_day:
+        if (v.getId() == R.id.btn_switch) {
+            switchUiMode();
+        } else if (v.getId() == R.id.btn_back) {
+            if (getContext() instanceof Activity) {
+                ((Activity) getContext()).finish();
+            }
+        } else if (v.getId() == R.id.btn_home) {
+            mLocalView.setVisibility(View.VISIBLE);
+            mBtnSwitch.setVisibility(View.GONE);
+            mBtnShowLocal.setVisibility(View.GONE);
+        } else if (v.getId() == R.id.btn_day) {
 
-                int nextUiMode = AppCompatDelegate.MODE_NIGHT_NO;
-                UiModeManager.INSTANCE.setLocalNightMode(activity, nextUiMode);
-                bindModeView();
-                break;
-            case R.id.btn_night:
-                nextUiMode = AppCompatDelegate.MODE_NIGHT_YES;
-                UiModeManager.INSTANCE.setLocalNightMode(activity, nextUiMode);
-                bindModeView();
-                break;
-            case R.id.btn_cancel_local:
-                nextUiMode = AppCompatDelegate.MODE_NIGHT_UNSPECIFIED;
-                UiModeManager.INSTANCE.setLocalNightMode(activity, nextUiMode);
-                bindModeView();
-                mLocalView.setVisibility(View.GONE);
-                mBtnSwitch.setVisibility(View.VISIBLE);
-                mBtnShowLocal.setVisibility(View.VISIBLE);
-                break;
+            int nextUiMode = AppCompatDelegate.MODE_NIGHT_NO;
+            UiModeManager.INSTANCE.setLocalNightMode(activity, nextUiMode);
+            bindModeView();
+
+        } else if (v.getId() == R.id.btn_night) {
+            int nextUiMode = AppCompatDelegate.MODE_NIGHT_YES;
+            UiModeManager.INSTANCE.setLocalNightMode(activity, nextUiMode);
+            bindModeView();
+        } else if (v.getId() == R.id.btn_cancel_local) {
+            int nextUiMode = AppCompatDelegate.MODE_NIGHT_UNSPECIFIED;
+            UiModeManager.INSTANCE.setLocalNightMode(activity, nextUiMode);
+            bindModeView();
+            mLocalView.setVisibility(View.GONE);
+            mBtnSwitch.setVisibility(View.VISIBLE);
+            mBtnShowLocal.setVisibility(View.VISIBLE);
 
         }
     }

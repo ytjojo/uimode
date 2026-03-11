@@ -76,18 +76,14 @@ public class TopBar extends FrameLayout implements View.OnClickListener, UiModeC
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.btn_switch:
-                switchUiMode();
-                break;
-            case R.id.btn_back:
-                if (getContext() instanceof Activity) {
-                    ((Activity) getContext()).finish();
-                }
-                break;
-            case R.id.btn_home:
-                getContext().startActivity(new Intent(getContext(), MainActivity.class));
-                break;
+        if (v.getId() == R.id.btn_switch) {
+            switchUiMode();
+        } else if (v.getId() == R.id.btn_back) {
+            if (getContext() instanceof Activity) {
+                ((Activity) getContext()).finish();
+            }
+        } else if (v.getId() == R.id.btn_home) {
+            getContext().startActivity(new Intent(getContext(), MainActivity.class));
         }
     }
 
@@ -108,7 +104,7 @@ public class TopBar extends FrameLayout implements View.OnClickListener, UiModeC
     }
 
     private void bindModeView() {
-        switch(AppUiMode.getUiMode()) {
+        switch (AppUiMode.getUiMode()) {
             case AppCompatDelegate.MODE_NIGHT_NO:
                 mBtnSwitch.setText("白间");
                 break;

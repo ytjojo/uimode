@@ -52,14 +52,23 @@ object UiModeManager {
 
     var appConfigurationUiMode = Configuration.UI_MODE_NIGHT_NO
 
+    /**
+     * 添加忽略日夜间切换的activity
+     */
     fun addIgnoreActivity(clazz: Class<Activity>) {
         mIgnoreActivitySet.add(clazz)
     }
 
+    /**
+     * 移除忽略日夜间切换的activity
+     */
     fun removeIgnoreActivity(clazz: Class<Activity>) {
         mIgnoreActivitySet.remove(clazz)
     }
 
+    /**
+     * 判断是否忽略日夜间切换的activity
+     */
     fun isContainsIgnoreActivity(clazz: Class<out Activity>): Boolean {
         for (item in mIgnoreActivitySet) {
             if (item.equals(clazz)) {
@@ -118,6 +127,10 @@ object UiModeManager {
         }
     }
 
+
+    /**
+     * 设置默认日夜间模式
+     */
     @JvmStatic
     fun setDefaultUiMode(@NightMode mode: Int): Boolean {
 
@@ -138,6 +151,11 @@ object UiModeManager {
         return AppResourceUtils.updateUiModeForApplication(sAppContext, mode)
     }
 
+
+    /**
+     * 设置日夜间模式
+     * 同时更新默认日夜间模式
+     */
     @JvmStatic
     fun setUiMode(@NightMode mode: Int) {
         if (sAppContext == null) {
@@ -184,6 +202,11 @@ object UiModeManager {
         dispatchApplyUiMode()
     }
 
+
+    /**
+     * 内部调用
+     *遍历Activity中的View，应用日夜间模式
+     */
     @JvmStatic
     fun applyUiModeViews(activity: Activity?) {
         applyUiMode(activity!!)
@@ -221,11 +244,19 @@ object UiModeManager {
         }
     }
 
+
+    /**
+     * 取消指定当前Activity的夜间模式
+     */
     fun cancelLocalNightMode(activity: AppCompatActivity) {
         activity.delegate.localNightMode = AppCompatDelegate.MODE_NIGHT_UNSPECIFIED
         setLocalNightMode(activity, AppCompatDelegate.MODE_NIGHT_UNSPECIFIED)
     }
 
+
+    /**
+     * 设置指定当前Activity的夜间模式
+     */
     fun setLocalNightMode(activity: AppCompatActivity, @NightMode uiMode: Int) {
 //        var currentMode = AppResourceUtils.calculateNightMode(activity)
         var currentMode = getUiModeFromConfiguration(activity.resources.configuration)
@@ -243,11 +274,18 @@ object UiModeManager {
     }
 
 
+    /**
+     * 获取系统日夜间模式
+     */
     @NightMode
     fun getSystemUiMode(): Int {
         return getUiModeFromConfiguration(Resources.getSystem().configuration)
     }
 
+
+    /**
+     * 获取 Configuration 日夜间模式
+     */
     fun getConfigurationUiMode(config:Configuration): Int {
         return  config.uiMode and Configuration.UI_MODE_NIGHT_MASK
     }
@@ -286,6 +324,10 @@ object UiModeManager {
         }
     }
 
+
+    /**
+     * 保存 View 的属性值
+     */
     fun saveViewValue(
         v: View,
         styleableRes: IntArray,
@@ -316,11 +358,17 @@ object UiModeManager {
     }
 
 
+    /**
+     * 应用样式
+     */
     fun applyStyle(v: View,@StyleRes style:Int) {
         UiModeDelegate.applyStyle(v,style)
     }
 
 
+    /**
+    *系统配置改变,在Application中调用
+     */
     fun onSystemConfigurationChanged() {
 
         if (appUiMode != AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM) {
@@ -345,6 +393,10 @@ object UiModeManager {
         return appConfigurationUiMode == Configuration.UI_MODE_NIGHT_YES
     }
 
+
+    /**
+     * 获取 Configuration 日夜间模式
+     */
     @NightMode
     private fun getUiModeFromConfiguration(newConfig: Configuration): Int {
         var configurationUiMode: Int = newConfig.uiMode and Configuration.UI_MODE_NIGHT_MASK
@@ -356,6 +408,10 @@ object UiModeManager {
         return mode
     }
 
+
+    /**
+     * 将 AppCompatDelegate.MODE_NIGHT_XXX 转换成 Configuration.UI_MODE_NIGHT_XXX
+     */
     private fun convertFromAppDelegateToConfigurationMode(mode: Int): Int {
         val configUiMode = when (mode) {
             AppCompatDelegate.MODE_NIGHT_YES -> Configuration.UI_MODE_NIGHT_YES

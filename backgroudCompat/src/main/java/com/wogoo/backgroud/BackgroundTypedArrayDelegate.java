@@ -53,18 +53,18 @@ public class BackgroundTypedArrayDelegate {
 
     @Nullable
     public static View setViewBackground(Context context, Map<int[], TypedArray> typedArrayMap, View view) {
-        TypedArray typedArray = getTypedArray(view, R.styleable.background, typedArrayMap);
-        TypedArray pressTa = getTypedArray(view, R.styleable.background_press, typedArrayMap);
-        TypedArray selectorTa = getTypedArray(view, R.styleable.background_selector, typedArrayMap);
-        TypedArray textTa = getTypedArray(view, R.styleable.text_selector, typedArrayMap);
-        TypedArray buttonTa = getTypedArray(view, R.styleable.background_button_drawable, typedArrayMap);
-        TypedArray otherTa = getTypedArray(view, R.styleable.bl_other, typedArrayMap);
-        TypedArray animTa = getTypedArray(view, R.styleable.bl_anim, typedArrayMap);
-        TypedArray multiSelTa = getTypedArray(view, R.styleable.background_multi_selector, typedArrayMap);
-        TypedArray multiTextTa = getTypedArray(view, R.styleable.background_multi_selector_text, typedArrayMap);
+        TypedArray typedArray = getTypedArray(view,com.noober.background. R.styleable.background, typedArrayMap);
+        TypedArray pressTa = getTypedArray(view, com.noober.background.R.styleable.background_press, typedArrayMap);
+        TypedArray selectorTa = getTypedArray(view, com.noober.background.R.styleable.background_selector, typedArrayMap);
+        TypedArray textTa = getTypedArray(view,com.noober.background. R.styleable.text_selector, typedArrayMap);
+        TypedArray buttonTa = getTypedArray(view,com.noober.background. R.styleable.background_button_drawable, typedArrayMap);
+        TypedArray otherTa = getTypedArray(view,com.noober.background. R.styleable.bl_other, typedArrayMap);
+        TypedArray animTa = getTypedArray(view,com.noober.background. R.styleable.bl_anim, typedArrayMap);
+        TypedArray multiSelTa = getTypedArray(view,com.noober.background. R.styleable.background_multi_selector, typedArrayMap);
+        TypedArray multiTextTa = getTypedArray(view,com.noober.background. R.styleable.background_multi_selector_text, typedArrayMap);
         TypedArray selectorPre21Ta = null;
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            selectorPre21Ta = typedArrayMap.get(R.styleable.background_selector_pre_21);
+            selectorPre21Ta = typedArrayMap.get(com.noober.background.R.styleable.background_selector_pre_21);
         }
 
         try {
@@ -112,7 +112,7 @@ public class BackgroundTypedArrayDelegate {
             } else if (animTa.getIndexCount() > 0) {
                 AnimationDrawable animationDrawable = DrawableFactory.getAnimationDrawable(animTa);
                 setBackground(animationDrawable, view, typedArray);
-                if (animTa.getBoolean(R.styleable.bl_anim_bl_anim_auto_start, false)) {
+                if (animTa.getBoolean(com.noober.background.R.styleable.bl_anim_bl_anim_auto_start, false)) {
                     animationDrawable.start();
                 }
             }
@@ -123,9 +123,9 @@ public class BackgroundTypedArrayDelegate {
                 ((TextView) view).setTextColor(DrawableFactory.getMultiTextColorSelectorColorCreator(context, multiTextTa));
             }
 
-            if (typedArray.getBoolean(R.styleable.background_bl_ripple_enable, false) &&
-                    typedArray.hasValue(R.styleable.background_bl_ripple_color)) {
-                int color = typedArray.getColor(R.styleable.background_bl_ripple_color, 0);
+            if (typedArray.getBoolean(com.noober.background.R.styleable.background_bl_ripple_enable, false) &&
+                    typedArray.hasValue(com.noober.background.R.styleable.background_bl_ripple_color)) {
+                int color = typedArray.getColor(com.noober.background.R.styleable.background_bl_ripple_color, 0);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     Drawable contentDrawable = (stateListDrawable == null ? drawable : stateListDrawable);
                     RippleDrawable rippleDrawable = new RippleDrawable(ColorStateList.valueOf(color), contentDrawable, contentDrawable);
@@ -142,8 +142,8 @@ public class BackgroundTypedArrayDelegate {
                 }
             }
 
-            if (otherTa.hasValue(R.styleable.bl_other_bl_function)) {
-                String methodName = otherTa.getString(R.styleable.bl_other_bl_function);
+            if (otherTa.hasValue(com.noober.background.R.styleable.bl_other_bl_function)) {
+                String methodName = otherTa.getString(com.noober.background.R.styleable.bl_other_bl_function);
                 if (!TextUtils.isEmpty(methodName)) {
                     final Context currentContext = view.getContext();
                     final Class parentClass = currentContext.getClass();
@@ -189,17 +189,17 @@ public class BackgroundTypedArrayDelegate {
     private static void setDrawable(Drawable drawable, View view, TypedArray otherTa, TypedArray typedArray) {
 
         if (view instanceof TextView) {
-            if (otherTa.hasValue(R.styleable.bl_other_bl_position)) {
-                if (otherTa.getInt(R.styleable.bl_other_bl_position, 0) == 1) {
+            if (otherTa.hasValue(com.noober.background.R.styleable.bl_other_bl_position)) {
+                if (otherTa.getInt(com.noober.background.R.styleable.bl_other_bl_position, 0) == 1) {
                     drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
                     ((TextView) view).setCompoundDrawables(drawable, null, null, null);
-                } else if (otherTa.getInt(R.styleable.bl_other_bl_position, 0) == 2) {
+                } else if (otherTa.getInt(com.noober.background.R.styleable.bl_other_bl_position, 0) == 2) {
                     drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
                     ((TextView) view).setCompoundDrawables(null, drawable, null, null);
-                } else if (otherTa.getInt(R.styleable.bl_other_bl_position, 0) == 4) {
+                } else if (otherTa.getInt(com.noober.background.R.styleable.bl_other_bl_position, 0) == 4) {
                     drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
                     ((TextView) view).setCompoundDrawables(null, null, drawable, null);
-                } else if (otherTa.getInt(R.styleable.bl_other_bl_position, 0) == 8) {
+                } else if (otherTa.getInt(com.noober.background.R.styleable.bl_other_bl_position, 0) == 8) {
                     drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
                     ((TextView) view).setCompoundDrawables(null, null, null, drawable);
                 }
@@ -214,14 +214,14 @@ public class BackgroundTypedArrayDelegate {
 
 
     private static void setBackground(Drawable drawable, View view, TypedArray typedArray) {
-        if (typedArray.hasValue(R.styleable.background_bl_stroke_width) && typedArray.hasValue(R.styleable.background_bl_stroke_position)) {
+        if (typedArray.hasValue(com.noober.background.R.styleable.background_bl_stroke_width) && typedArray.hasValue(com.noober.background.R.styleable.background_bl_stroke_position)) {
             //bl_stroke_position flag默认值
             int left = 1 << 1;
             int top = 1 << 2;
             int right = 1 << 3;
             int bottom = 1 << 4;
-            float width = typedArray.getDimension(R.styleable.background_bl_stroke_width, 0f);
-            int position = typedArray.getInt(R.styleable.background_bl_stroke_position, 0);
+            float width = typedArray.getDimension(com.noober.background.R.styleable.background_bl_stroke_width, 0f);
+            int position = typedArray.getInt(com.noober.background.R.styleable.background_bl_stroke_position, 0);
             float leftValue = hasStatus(position, left) ? width : -width;
             float topValue = hasStatus(position, top) ? width : -width;
             float rightValue = hasStatus(position, right) ? width : -width;
