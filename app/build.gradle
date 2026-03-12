@@ -56,6 +56,6 @@ dependencies {
     implementation deps.androidx.appcompat
     implementation deps.androidx.recyclerview
     implementation deps.androidx.constraintlayout
-    implementation project(':ui-mode')
+    implementation project(':uimode')
     implementation project(':backgroudCompat')
 }

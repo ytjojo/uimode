@@ -92,6 +92,9 @@ object UiModeManager {
         object : ActivityLifecycleCallbacks {
             override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
                 AppStack.pushActivity(activity)
+                if(isEnableAutoInject){
+                    setFactory2(activity.layoutInflater)
+                }
             }
 
             override fun onActivityStarted(activity: Activity) {}
@@ -104,6 +107,10 @@ object UiModeManager {
                 removeUselessViews(activity)
             }
         }
+
+
+     var isEnableAutoInject: Boolean = true
+
 
     /**
      * 初始化： 持有ApplicationContext引用，保存支持的Attr
@@ -128,9 +135,7 @@ object UiModeManager {
                 lifecycleCallbacks
             )
             val inflater = LayoutInflater.from(sAppContext)
-            if (inflater.factory2 == null) {
-                LayoutInflaterCompat.setFactory2(inflater, obtainInflaterFactory())
-            }
+            this.setFactory2(inflater)
         }
     }
 
@@ -222,11 +227,20 @@ object UiModeManager {
 
     @JvmStatic
     fun setFactory2(inflater: LayoutInflater) {
-        LayoutInflaterCompat.setFactory2(inflater, obtainInflaterFactory())
+
+        if (inflater.factory2 == null) {
+            LayoutInflaterCompat.setFactory2(inflater, obtainInflaterFactory())
+        }else {
+            if (inflater.factory2 !is FactoryMerger) {
+                val factoryMerger = obtainInflaterFactory()
+                addFactory2(inflater.factory2)
+                LayoutInflaterCompat.setFactory2(inflater, factoryMerger)
+            }
+        }
     }
     @JvmStatic
     fun addFactory2(factory: LayoutInflater.Factory2) {
-        obtainInflaterFactory().before.add(factory)
+        obtainInflaterFactory().addBeforeFactory(factory)
     }
 
 

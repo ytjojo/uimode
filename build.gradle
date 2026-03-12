@@ -1,10 +1,15 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
-
+apply from: "versions.gradle"
 buildscript {
+    Properties properties = new Properties()
+    properties.load(project.rootProject.file('local.properties').newDataInputStream())
+    ext.mavenHost = properties.getProperty("mavenHost")
     ext.kotlin_version = '2.2.21'
     repositories {
-        apply from: "versions.gradle"
 
+        maven {
+            url uri('repo')
+        }
         maven { url 'https://maven.aliyun.com/repository/public/' }
         maven { url 'https://maven.aliyun.com/repository/google/' }
         // 添加JitPack仓库
@@ -27,19 +32,22 @@ buildscript {
         maven {url 'https://developer.huawei.com/repo/'}
         // 荣耀 PUSH
         maven {url 'https://developer.hihonor.com/repo'}
+        maven {
+            url "${mavenHost}"
+            allowInsecureProtocol = true
+        }
     }
     dependencies {
-//        classpath deps.gradle_plugin
         classpath 'com.android.tools.build:gradle:8.13.0'
         classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:2.2.21'
-//        classpath 'com.novoda:bintray-release:0.9.2'
     }
 }
 
 allprojects {
     repositories {
-//        addAliyunRepos(repositories)
-
+        maven {
+            url uri('../repo')
+        }
         maven { url 'https://maven.aliyun.com/repository/public/' }
         maven { url 'https://maven.aliyun.com/repository/google/' }
         // 添加JitPack仓库
@@ -75,6 +83,10 @@ allprojects {
                 username "applet"
                 password "123321"
             }
+        }
+        maven {
+            url "${mavenHost}"
+            allowInsecureProtocol = true
         }
     }
 

@@ -3,10 +3,13 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 
 ext {
-    version_code = 301
-    version_name = '3.0.1'
+    bintrayName = 'uimode'
+    artifact = bintrayName
+    libraryName = 'uimode'
+    libraryDescription = 'uimode dynamic change and manage by TypedValue'
+//    libraryVersion = "1.0.0"
+    libraryVersion = uimode_main_release_version
 }
-
 android {
     namespace 'com.aliya.uimode'
     compileSdkVersion 35
@@ -14,16 +17,18 @@ android {
     defaultConfig {
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode version_code
-        versionName version_name
+        versionCode 1
+        versionName libraryVersion
     }
 
     buildTypes {
         release {
+            debuggable false
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
     compileOptions {
 //        coreLibraryDesugaringEnabled true
         sourceCompatibility JavaVersion.VERSION_17
@@ -34,6 +39,12 @@ android {
         javacOptions {
             option('-target', '17')
             option('-source', '17')
+        }
+    }
+    publishing {
+        singleVariant("release") {
+            withSourcesJar()
+            withJavadocJar()
         }
     }
 }
@@ -49,9 +60,4 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     implementation "org.jetbrains.kotlin:kotlin-stdlib:${kotlin_version}"
 }
-
-
-//apply from: "${rootDir}/publish.gradle"
-//repositories {
-//    mavenCentral()
-//}
+apply from: '../mevenUpload.gradle'

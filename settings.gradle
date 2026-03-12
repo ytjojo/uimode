@@ -1,2 +1,2 @@
-include ':ui-mode', ':app'
+include ':uimode', ':app'
 include ':backgroudCompat'
