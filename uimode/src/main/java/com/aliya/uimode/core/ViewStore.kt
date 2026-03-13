@@ -4,6 +4,9 @@ import android.app.Activity
 import android.app.Application
 import android.content.Context
 import android.view.View
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.LifecycleOwner
 import com.aliya.uimode.R
 import com.aliya.uimode.utils.AppResourceUtils
 import com.aliya.uimode.utils.AppUtil
@@ -16,6 +19,8 @@ object ViewStore {
     private val mContextViewMap: MutableMap<Context, MutableSet<WeakReference<View>>> = HashMap()
     private val mActivityViewMap: MutableMap<Context, MutableSet<WeakReference<View>>> = HashMap()
     private val referenceQueue = ReferenceQueue<View>()
+
+    private val uiModeChangeListenerMap= HashMap<LifecycleOwner, ArrayList<UiModeChangeListener>>()
     const val NO_ID = 0 // 这里只能是0
 
     fun saveView(ctx: Context?, v: View?) {
@@ -64,6 +69,7 @@ object ViewStore {
         for ((_, value) in mContextViewMap) {
             onApplyUiMode(value)
         }
+        ViewStore.dispatchUiModeChangeListener()
     }
 
     fun applyUiMode(activity: Activity) {
@@ -118,6 +124,45 @@ object ViewStore {
             }
             referenceQueue.poll()
         }
+    }
+
+
+    fun registerUiModeChangeListener(lifecycleOwner: LifecycleOwner, listener: UiModeChangeListener) {
+        if(!lifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.CREATED)){
+             return
+        }
+        val list = uiModeChangeListenerMap[lifecycleOwner]
+        if (list == null) {
+            uiModeChangeListenerMap[lifecycleOwner] = ArrayList()
+            uiModeChangeListenerMap[lifecycleOwner]!!.add(listener)
+        } else {
+            list.add(listener)
+        }
+        lifecycleOwner.lifecycle.addObserver(object : LifecycleEventObserver {
+            override fun onStateChanged(
+                source: LifecycleOwner,
+                event: Lifecycle.Event
+            ) {
+                when (event) {
+                    Lifecycle.Event.ON_DESTROY -> {
+                        uiModeChangeListenerMap.remove(lifecycleOwner)?.clear()
+                    }
+                    else -> {
+
+                    }
+                }
+            }
+
+        })
+    }
+
+    fun dispatchUiModeChangeListener() {
+        uiModeChangeListenerMap.forEach { k,v ->
+            v.forEach { l->
+                l.onUiModeChange()
+            }
+        }
+
     }
 
 }

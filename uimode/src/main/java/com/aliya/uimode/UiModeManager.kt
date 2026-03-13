@@ -14,7 +14,10 @@ import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.LayoutInflater.Factory2
 import android.view.View
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.annotation.AnyRes
+import androidx.annotation.ColorRes
 import androidx.annotation.IntDef
 import androidx.annotation.StyleRes
 import androidx.annotation.StyleableRes
@@ -27,10 +30,7 @@ import com.aliya.uimode.core.UiModeChangeListener
 import com.aliya.uimode.core.UiModeDelegate
 import com.aliya.uimode.core.UiModeDelegate.onUiModeChanged
 import com.aliya.uimode.core.UiModeInflaterFactory
-import com.aliya.uimode.core.ViewStore.applyUiMode
-import com.aliya.uimode.core.ViewStore.dispatchApplyUiMode
-import com.aliya.uimode.core.ViewStore.removeUselessViews
-import com.aliya.uimode.core.ViewStore.saveView
+import com.aliya.uimode.core.ViewStore
 import com.aliya.uimode.utils.AppResourceUtils
 
 /**
@@ -44,7 +44,7 @@ object UiModeManager {
     private const val TAG = "UiMode"
     private var sAppContext: Context? = null
     private var sFactory2: Factory2? = null
-    private var mIgnoreActivitySet = HashSet<Class<Activity>>()
+    private var mIgnoreActivitySet = HashSet<Class<out Activity>>()
 
 
     @ConfigAbleNightMode
@@ -58,14 +58,14 @@ object UiModeManager {
     /**
      * 添加忽略日夜间切换的activity
      */
-    fun addIgnoreActivity(clazz: Class<Activity>) {
+    fun addIgnoreActivity(clazz: Class<out Activity>) {
         mIgnoreActivitySet.add(clazz)
     }
 
     /**
      * 移除忽略日夜间切换的activity
      */
-    fun removeIgnoreActivity(clazz: Class<Activity>) {
+    fun removeIgnoreActivity(clazz: Class<out Activity>) {
         mIgnoreActivitySet.remove(clazz)
     }
 
@@ -104,12 +104,12 @@ object UiModeManager {
             override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {}
             override fun onActivityDestroyed(activity: Activity) {
                 AppStack.removeActivity(activity)
-                removeUselessViews(activity)
+                ViewStore.removeUselessViews(activity)
             }
         }
 
 
-     var isEnableAutoInject: Boolean = true
+     var isEnableAutoInject: Boolean = false
 
 
     /**
@@ -212,7 +212,7 @@ object UiModeManager {
                 }
             }
         }
-        dispatchApplyUiMode()
+        ViewStore.dispatchApplyUiMode()
     }
 
 
@@ -222,7 +222,7 @@ object UiModeManager {
      */
     @JvmStatic
     fun applyUiModeViews(activity: Activity?) {
-        applyUiMode(activity!!)
+        ViewStore.applyUiMode(activity!!)
     }
 
     @JvmStatic
@@ -254,6 +254,14 @@ object UiModeManager {
         setLocalNightMode(activity, AppCompatDelegate.MODE_NIGHT_UNSPECIFIED)
     }
 
+
+    /**
+     * 恢复指定当前Activity的夜间模式到默认
+     */
+    fun recoveryToDefaultUiMode(activity: AppCompatActivity){
+        activity.delegate.localNightMode = this.appUiMode
+        setLocalNightMode(activity, AppCompatDelegate.MODE_NIGHT_UNSPECIFIED)
+    }
 
     /**
      * 设置指定当前Activity的夜间模式
@@ -305,9 +313,22 @@ object UiModeManager {
     }
 
 
+    /**
+     * 保存手动创建的View
+     */
+    fun saveView(context: Context,v: View){
+        ViewStore.saveView(context,v)
+    }
 
     /**
      * 保存 View 的属性值
+     * androidx.appcompat.R.styleable.AppCompatImageView
+     * com.aliya.uimode.R.styleable.ProgressBarHelper
+     * com.aliya.uimode.R.styleable.SeekBarHelper
+     * com.aliya.uimode.R.styleable.TextViewHelper
+     * com.aliya.uimode.R.styleable.ToolbarHelper
+     * com.aliya.uimode.R.styleable.UiModeView
+     * androidx.appcompat.R.styleable.ViewBackgroundHelper
      */
     fun saveViewValue(
         v: View,
@@ -336,6 +357,52 @@ object UiModeManager {
         cachedTypeArray.putTypeValue(index, typedValue)
         saveView(v.context, v)
         onUiModeChanged(v)
+    }
+
+
+    fun saveViewValueTextColor(view: TextView, @ColorRes color: Int) {
+        saveViewValue(
+            view,
+            R.styleable.TextViewHelper,
+            R.styleable.TextViewHelper_android_textColor,
+            color
+        )
+    }
+
+    fun saveViewValueBackground(view: View, @AnyRes res: Int) {
+        saveViewValue(
+            view,
+            androidx.appcompat.R.styleable.ViewBackgroundHelper,
+            androidx.appcompat.R.styleable.ViewBackgroundHelper_android_background,
+            res
+        )
+    }
+
+    fun saveViewValueBackgroundTint(view: View, @AnyRes res: Int) {
+        saveViewValue(
+            view,
+            androidx.appcompat.R.styleable.ViewBackgroundHelper,
+            androidx.appcompat.R.styleable.ViewBackgroundHelper_backgroundTint,
+            res
+        )
+    }
+
+    fun saveViewValueImageSrc(view: ImageView, @AnyRes res: Int) {
+        saveViewValue(
+            view,
+            androidx.appcompat.R.styleable.AppCompatImageView,
+            androidx.appcompat.R.styleable.AppCompatImageView_android_src,
+            res
+        )
+    }
+
+    fun saveViewValueImageTint(view: ImageView, @AnyRes res: Int) {
+        saveViewValue(
+            view,
+            androidx.appcompat.R.styleable.AppCompatImageView,
+            androidx.appcompat.R.styleable.AppCompatImageView_tint,
+            res
+        )
     }
 
 

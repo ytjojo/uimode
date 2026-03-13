@@ -7,8 +7,8 @@ ext {
     artifact = bintrayName
     libraryName = 'uimode'
     libraryDescription = 'uimode dynamic change and manage by TypedValue'
-//    libraryVersion = "1.0.0"
-    libraryVersion = uimode_main_release_version
+    libraryVersion = "1.0.1"
+//    libraryVersion = uimode_main_release_version
 }
 android {
     namespace 'com.aliya.uimode'

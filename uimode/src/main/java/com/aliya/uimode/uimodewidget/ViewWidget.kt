@@ -2,10 +2,12 @@ package com.aliya.uimode.uimodewidget
 
 import android.content.res.ColorStateList
 import android.content.res.TypedArray
+import android.graphics.PorterDuff
 import android.os.Build
 import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.View
+import android.widget.ImageView
 import androidx.annotation.CallSuper
 import androidx.core.view.ViewCompat
 import com.aliya.uimode.R
@@ -34,6 +36,8 @@ open class ViewWidget : AbstractWidget() {
 
         if (Arrays.equals(styleable, R.styleable.UiModeView)) {
             val indexCount = typedArray.indexCount
+            var colorFilterColor: Int? = null
+            var colorFilterMode: PorterDuff.Mode? = null
             for (i in 0 until indexCount) {
                 val indexInAttrArray = typedArray.getIndex(i)
                 val typedValue = typedArray.peekValue(indexInAttrArray)
@@ -58,9 +62,26 @@ open class ViewWidget : AbstractWidget() {
                                 v.getContext().getTheme()?.applyStyle(style, true)
                             }
                         }
+                        R.styleable.UiModeView_view_colorFilter -> {
+                            colorFilterColor = TypedValueUtils.getColor(v, typedValue, this)
+                        }
+
+                        R.styleable.UiModeView_view_colorFilterMode -> {
+                            colorFilterMode = TypedValueUtils.getPorterDuffMode(v, typedValue, this)
+                        }
 
                     }
                 }
+            }
+            colorFilterColor?.let { color ->
+                val mode = colorFilterMode ?: PorterDuff.Mode.SRC_IN
+                if(v is ImageView){
+                    v.setColorFilter(color, mode)
+                }else {
+                    v.background?.setColorFilter(color, mode)
+                    v.foreground?.setColorFilter(color, mode)
+                }
+
             }
             return true
         }else if (Arrays.equals(styleable, androidx.appcompat.R.styleable.ViewBackgroundHelper)) {

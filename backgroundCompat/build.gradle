@@ -1,0 +1,73 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
+
+apply from: '../versions.gradle'
+
+
+ext {
+
+    bintrayName = 'backgroundCompat'
+    artifact = bintrayName
+    libraryName = 'BackgroundCompat'
+    libraryDescription = 'BackgroundCompat suport uimode changed by com.noober.background'
+//    libraryVersion = '1.0.0'
+    libraryVersion = uimode_main_release_version
+}
+android {
+    namespace 'com.wogoo.backgroud'
+    compileSdkVersion 35
+
+    defaultConfig {
+        minSdkVersion 21
+        targetSdkVersion 30
+
+        versionCode 1
+        versionName libraryVersion
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
+    }
+
+    buildTypes {
+        release {
+            debuggable false
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    publishing {
+        singleVariant("release") {
+            withSourcesJar()
+            withJavadocJar()
+        }
+    }
+    compileOptions {
+//        coreLibraryDesugaringEnabled true
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    kapt {
+        javacOptions {
+            option('-target', '17')
+            option('-source', '17')
+        }
+    }
+}
+
+kotlin {
+    jvmToolchain(17)
+}
+
+dependencies {
+
+
+    implementation deps.androidx.appcompat
+//    implementation project(':uimode')
+    implementation 'com.wogoo.android:uimode:1.0.1'
+    api 'com.noober.background:core:1.6.5'
+}
+
+
+apply from: '../mevenUpload.gradle'

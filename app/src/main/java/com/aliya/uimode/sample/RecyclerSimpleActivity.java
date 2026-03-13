@@ -1,6 +1,8 @@
 package com.aliya.uimode.sample;
 
 import android.os.Bundle;
+
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -59,7 +61,9 @@ public class RecyclerSimpleActivity extends BaseActivity {
         }
 
         public void bindData(int position) {
-            ((TextView) itemView).setText("item " + position);
+            TextView tv =  ((TextView) itemView.findViewById(R.id.tv_title));
+            tv.setText("item " + position);
+            tv.setTextColor(ContextCompat.getColor(tv.getContext(),R.color.text_dark_primary));
         }
 
     }

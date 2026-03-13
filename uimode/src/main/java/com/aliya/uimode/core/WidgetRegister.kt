@@ -21,7 +21,17 @@ object WidgetRegister {
     }
 
     fun <T:View> getViewUiModeChanged(clazz: Class<T>): OnViewUiModeChanged<T>?{
-        return mOnViewUiModeChangedMap.get(clazz) as? OnViewUiModeChanged<T>?
+        if (View::class.java.isAssignableFrom(clazz)) {
+            var superclass: Class<*>? = clazz
+            while (superclass != null && View::class.java.isAssignableFrom(clazz)) {
+                val onViewUiModeChanged = mOnViewUiModeChangedMap.get(superclass) as? OnViewUiModeChanged<T>?
+                if (onViewUiModeChanged != null) {
+                    return onViewUiModeChanged
+                }
+                superclass = superclass.superclass
+            }
+        }
+        return null
     }
 
     fun isContains(clazz: Class<*>): Boolean {

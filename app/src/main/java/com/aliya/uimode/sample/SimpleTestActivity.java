@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 
+import com.aliya.uimode.UiModeManager;
 import com.aliya.uimode.sample.base.BaseActivity;
 
 public class SimpleTestActivity extends BaseActivity {

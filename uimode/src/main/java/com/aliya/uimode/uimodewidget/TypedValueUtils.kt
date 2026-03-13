@@ -1,11 +1,13 @@
 package com.aliya.uimode.uimodewidget
 
 import android.content.res.ColorStateList
+import android.graphics.PorterDuff
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.util.TypedValue
 import android.view.View
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.core.content.ContextCompat
 import com.aliya.uimode.utils.DrawableCompatUtil
 
 class TypedValueUtils {
@@ -99,6 +101,124 @@ class TypedValueUtils {
                 }
             }
             return 0
+        }
+
+
+        fun getColor(
+            v: View,
+            typedValue: TypedValue,
+            abstractWidget: AbstractWidget
+        ): Int? {
+            when (typedValue.type) {
+                TypedValue.TYPE_STRING -> {
+                    return ContextCompat.getColor(v.context, typedValue.resourceId)
+                }
+                TypedValue.TYPE_ATTRIBUTE -> {
+                    if (abstractWidget.validTheme(v)) {
+                        val attrTypedValue =
+                            abstractWidget.resolveAttribute(v, typedValue.resourceId)
+                        attrTypedValue?.apply {
+                            return getColor(v, this, abstractWidget)
+                        }
+                    }
+                }
+                else -> {
+                    if(typedValue.resourceId != 0){
+                        return ContextCompat.getColor(v.context, typedValue.resourceId)
+                    }else{
+                        if (typedValue.type > TypedValue.TYPE_FIRST_INT && typedValue.type < TypedValue.TYPE_LAST_INT) {
+                            return typedValue.data
+                        }
+                    }
+
+                }
+            }
+            return null
+        }
+
+
+
+        fun getPorterDuffMode(
+            v: View,
+            typedValue: TypedValue,
+            abstractWidget: AbstractWidget
+        ): PorterDuff.Mode? {
+            when (typedValue.type) {
+                TypedValue.TYPE_STRING -> {
+                    val modeName = v.context.getString(typedValue.resourceId)
+                    return parsePorterDuffMode(modeName)
+                }
+                TypedValue.TYPE_ATTRIBUTE -> {
+                    if (abstractWidget.validTheme(v)) {
+                        val attrTypedValue =
+                            abstractWidget.resolveAttribute(v, typedValue.resourceId)
+                        attrTypedValue?.apply {
+                            return getPorterDuffMode(v, this, abstractWidget)
+                        }
+                    }
+                }
+                else -> {
+                    if(typedValue.resourceId != 0){
+                        val modeName = v.context.getString(typedValue.resourceId)
+                        return parsePorterDuffMode(modeName)
+                    }else{
+                        if (typedValue.type > TypedValue.TYPE_FIRST_INT && typedValue.type < TypedValue.TYPE_LAST_INT) {
+                            return parsePorterDuffModeFromInt(typedValue.data)
+                        }
+                    }
+
+                }
+            }
+            return null
+        }
+
+        private fun parsePorterDuffMode(modeName: String): PorterDuff.Mode? {
+            return when (modeName.lowercase()) {
+                "clear" -> PorterDuff.Mode.CLEAR
+                "src" -> PorterDuff.Mode.SRC
+                "dst" -> PorterDuff.Mode.DST
+                "src_over" -> PorterDuff.Mode.SRC_OVER
+                "dst_over" -> PorterDuff.Mode.DST_OVER
+                "src_in" -> PorterDuff.Mode.SRC_IN
+                "dst_in" -> PorterDuff.Mode.DST_IN
+                "src_out" -> PorterDuff.Mode.SRC_OUT
+                "dst_out" -> PorterDuff.Mode.DST_OUT
+                "src_atop" -> PorterDuff.Mode.SRC_ATOP
+                "dst_atop" -> PorterDuff.Mode.DST_ATOP
+                "xor" -> PorterDuff.Mode.XOR
+                "darken" -> PorterDuff.Mode.DARKEN
+                "lighten" -> PorterDuff.Mode.LIGHTEN
+                "multiply" -> PorterDuff.Mode.MULTIPLY
+                "screen" -> PorterDuff.Mode.SCREEN
+                "add" -> PorterDuff.Mode.ADD
+                "overlay" -> PorterDuff.Mode.OVERLAY
+                else -> null
+            }
+        }
+
+        private fun parsePorterDuffModeFromInt(value: Int): PorterDuff.Mode? {
+
+            return when (value) {
+                0 -> PorterDuff.Mode.CLEAR
+                1 -> PorterDuff.Mode.SRC
+                2 -> PorterDuff.Mode.DST
+                3 -> PorterDuff.Mode.SRC_OVER
+                4 -> PorterDuff.Mode.DST_OVER
+                5 -> PorterDuff.Mode.SRC_IN
+                6 -> PorterDuff.Mode.DST_IN
+                7 -> PorterDuff.Mode.SRC_OUT
+                8 -> PorterDuff.Mode.DST_OUT
+                9 -> PorterDuff.Mode.SRC_ATOP
+                10 -> PorterDuff.Mode.DST_ATOP
+                11 -> PorterDuff.Mode.XOR
+                12 -> PorterDuff.Mode.ADD
+                13 -> PorterDuff.Mode.MULTIPLY
+                14 -> PorterDuff.Mode.SCREEN
+                15 -> PorterDuff.Mode.OVERLAY
+                16 -> PorterDuff.Mode.DARKEN
+                17 -> PorterDuff.Mode.LIGHTEN
+                else -> null
+            }
         }
     }
 }

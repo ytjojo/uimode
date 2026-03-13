@@ -25,7 +25,7 @@ object UiModeDelegate {
                 isSave = result
             }
         }
-        val viewUiModeChanged =  WidgetRegister.getViewUiModeChanged(v::class.java)
+        val viewUiModeChanged = WidgetRegister.getViewUiModeChanged(v::class.java)
         if(viewUiModeChanged != null){
             isSave = true
             v.setTag(R.id.tag_ui_mode_on_ui_mode_changed,viewUiModeChanged)
