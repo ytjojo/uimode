@@ -45,6 +45,7 @@ class FactoryMerger(private val before:ArrayList<Factory2> = ArrayList(), privat
         if (before.isNotEmpty()) {
             for (factory in before) {
                 val v = factory.onCreateView(parent, name, context, attrs)
+                if (v != null) return v
             }
         }
         val v = mAfter.onCreateView(parent, name, context, attrs)

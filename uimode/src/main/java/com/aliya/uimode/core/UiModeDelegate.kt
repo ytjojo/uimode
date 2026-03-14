@@ -7,6 +7,7 @@ import android.view.View
 import androidx.annotation.StyleRes
 import com.aliya.uimode.R
 import com.aliya.uimode.UiModeManager
+import com.aliya.uimode.uimodewidget.AbstractWidget
 import com.aliya.uimode.uimodewidget.TypedValueUtils
 import com.aliya.uimode.utils.AppUtil
 
@@ -47,7 +48,7 @@ object UiModeDelegate {
         }
 
 
-        val list = WidgetRegister.getListBySuperclass(v::class.java)
+        val list: ArrayList<AbstractWidget> = WidgetRegister.getListBySuperclass(v::class.java)
         val tagStyle = v.getTag(R.id.tag_ui_mode_widget_style)
         if (tagStyle != null && tagStyle is Int) {
             val styleResId = tagStyle
@@ -58,7 +59,7 @@ object UiModeDelegate {
 
         val tag = v.getTag(R.id.tag_ui_mode_type_array_map)
         if (tag != null && tag is Map<*, *>) {
-            val typeArrayMap = tag as Map<IntArray, TypedArray>
+            val typeArrayMap = tag as Map<IntArray, CachedTypedValueArray>
 
             list.forEach {
                 typeArrayMap.forEach { entry ->
@@ -71,7 +72,7 @@ object UiModeDelegate {
 
         val tagCustom = v.getTag(R.id.tag_ui_mode_custom_type_array_map)
         if (tagCustom != null && tagCustom is Map<*, *>) {
-            val typedArrayMap = tagCustom as Map<IntArray, TypedArray>
+            val typedArrayMap = tagCustom as Map<IntArray, CachedTypedValueArray>
             list.forEach {
                 it.onApplyCustom(v, typedArrayMap)
             }

@@ -3,6 +3,7 @@ package com.aliya.uimode.uimodewidget
 import android.content.res.TypedArray
 import android.view.View
 import com.aliya.uimode.R
+import com.aliya.uimode.core.CachedTypedValueArray
 
 open class ProgressBarWidget: AbstractWidget() {
 
@@ -11,7 +12,7 @@ open class ProgressBarWidget: AbstractWidget() {
         registerAttrArray(R.styleable.ProgressBarHelper)
     }
 
-    override fun onApply(v: View, styleable: IntArray, typedArray: TypedArray): Boolean {
+    override fun onApply(v: View, styleable: IntArray, typedArray: CachedTypedValueArray): Boolean {
         return false
     }
 }

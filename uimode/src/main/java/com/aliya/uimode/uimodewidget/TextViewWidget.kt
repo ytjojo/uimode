@@ -9,6 +9,7 @@ import android.view.View
 import android.widget.TextView
 import androidx.core.widget.TextViewCompat
 import com.aliya.uimode.R
+import com.aliya.uimode.core.CachedTypedValueArray
 import java.util.*
 
 open class TextViewWidget : AbstractWidget() {
@@ -28,10 +29,10 @@ open class TextViewWidget : AbstractWidget() {
         return false
     }
 
-    override fun onApply(v: View, styleable: IntArray, typedArray: TypedArray): Boolean {
+    override fun onApply(v: View, styleable: IntArray, typedArray: CachedTypedValueArray): Boolean {
         val textView = v as TextView
         if (Arrays.equals(styleable, R.styleable.TextViewHelper)) {
-            val indexCount = typedArray.indexCount
+            val indexCount = typedArray.length()
             if(indexCount > 0){
                 val typedValue = typedArray.peekValue(R.styleable.TextViewHelper_android_textAppearance )
                 if (typedValue != null) {

@@ -4,7 +4,7 @@ import android.app.Activity
 import android.app.Application
 import android.app.Application.ActivityLifecycleCallbacks
 import android.content.Context
-import android.content.res.CachedTypedArray
+import com.aliya.uimode.core.CachedTypedValueArray
 import android.content.res.Configuration
 import android.content.res.Resources
 import android.content.res.TypedArray
@@ -32,6 +32,8 @@ import com.aliya.uimode.core.UiModeDelegate.onUiModeChanged
 import com.aliya.uimode.core.UiModeInflaterFactory
 import com.aliya.uimode.core.ViewStore
 import com.aliya.uimode.utils.AppResourceUtils
+import com.aliya.uimode.utils.LayoutInflaterHelper
+import java.lang.ref.WeakReference
 
 /**
  * UiMode管理类
@@ -232,6 +234,7 @@ object UiModeManager {
             LayoutInflaterCompat.setFactory2(inflater, obtainInflaterFactory())
         }else {
             if (inflater.factory2 !is FactoryMerger) {
+                LayoutInflaterHelper.setFactorySetFalse(inflater)
                 val factoryMerger = obtainInflaterFactory()
                 addFactory2(inflater.factory2)
                 LayoutInflaterCompat.setFactory2(inflater, factoryMerger)
@@ -337,16 +340,16 @@ object UiModeManager {
         @AnyRes resourceId: Int
     ) {
         val tag = v.getTag(R.id.tag_ui_mode_type_array_map)
-        var map: HashMap<IntArray, TypedArray?>? = null
+        var map: HashMap<IntArray, CachedTypedValueArray?>? = null
         if (tag != null) {
-            map = tag as HashMap<IntArray, TypedArray?>
+            map = tag as HashMap<IntArray, CachedTypedValueArray?>
         } else {
             map = HashMap()
             v.setTag(R.id.tag_ui_mode_type_array_map, map)
         }
-        var cachedTypeArray = map[styleableRes] as CachedTypedArray?
+        var cachedTypeArray = map[styleableRes] as CachedTypedValueArray?
         if (cachedTypeArray == null) {
-            cachedTypeArray = CachedTypedArray(v.resources, v.context)
+            cachedTypeArray = CachedTypedValueArray(v.resources, WeakReference(v.context))
             map!![styleableRes] = cachedTypeArray
             cachedTypeArray.putIndexAttr(0, index)
             map[styleableRes] = cachedTypeArray
@@ -418,6 +421,12 @@ object UiModeManager {
     *系统配置改变,在Application中调用
      */
     fun onSystemConfigurationChanged() {
+        /**
+         * 有可能其他进程调用, 这里只处理本进程
+         */
+        if(sAppContext == null){
+            return
+        }
         systemUiMode = getConfigurationUiMode(Resources.getSystem().configuration)
 
         if (appUiMode != AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM) {

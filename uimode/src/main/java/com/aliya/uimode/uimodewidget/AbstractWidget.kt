@@ -1,7 +1,7 @@
 package com.aliya.uimode.uimodewidget
 
 import android.content.Context
-import android.content.res.CachedTypedArray
+import com.aliya.uimode.core.CachedTypedValueArray
 import android.content.res.Resources.Theme
 import android.content.res.TypedArray
 import android.text.TextUtils
@@ -16,6 +16,7 @@ import com.aliya.uimode.core.UiModeChangeListener
 import com.aliya.uimode.core.ViewStore
 import com.aliya.uimode.utils.AppResourceUtils
 import com.aliya.uimode.utils.AppUtil
+import java.lang.ref.WeakReference
 
 
 abstract class AbstractWidget : IApplyAttrResourceId {
@@ -55,7 +56,7 @@ abstract class AbstractWidget : IApplyAttrResourceId {
 
 
     @CallSuper
-    override fun onApplyCustom(v: View, typedArrayMap: Map<IntArray, TypedArray>) {
+    override fun onApplyCustom(v: View, typedArrayMap: Map<IntArray, CachedTypedValueArray>) {
     }
 
     override fun assemble(view: View, attributeSet: AttributeSet): Boolean {
@@ -107,12 +108,12 @@ abstract class AbstractWidget : IApplyAttrResourceId {
 
             val tagCachedTypeArrayMap = view.getTag(R.id.tag_ui_mode_type_array_map)
             val cachedTypeArrayMap =
-                if (tagCachedTypeArrayMap != null && tagCachedTypeArrayMap is HashMap<*, *>) tagCachedTypeArrayMap as HashMap<IntArray, CachedTypedArray> else HashMap<IntArray, CachedTypedArray>()
+                if (tagCachedTypeArrayMap != null && tagCachedTypeArrayMap is HashMap<*, *>) tagCachedTypeArrayMap as HashMap<IntArray, CachedTypedValueArray> else HashMap<IntArray, CachedTypedValueArray>()
 
             for (styleable in mStyleableKeySet) {
                 val typedArray = view.context.obtainStyledAttributes(attributeSet, styleable)
                 val indexCount = typedArray.indexCount
-                val cachedTypeArray = CachedTypedArray(view.resources, view.context)
+                val cachedTypeArray = CachedTypedValueArray(view.resources, WeakReference(view.context))
                 if (indexCount > 0) {
                     for (i in 0 until indexCount) {
                         val indexInStyleable = typedArray.getIndex(i)
@@ -163,12 +164,12 @@ abstract class AbstractWidget : IApplyAttrResourceId {
 
             val tagCachedTypeArrayMap = view.getTag(R.id.tag_ui_mode_custom_type_array_map)
             val cachedTypeArrayMap =
-                if (tagCachedTypeArrayMap != null && tagCachedTypeArrayMap is HashMap<*, *>) tagCachedTypeArrayMap as HashMap<IntArray, CachedTypedArray> else HashMap<IntArray, CachedTypedArray>()
+                if (tagCachedTypeArrayMap != null && tagCachedTypeArrayMap is HashMap<*, *>) tagCachedTypeArrayMap as HashMap<IntArray, CachedTypedValueArray> else HashMap<IntArray, CachedTypedValueArray>()
 
             for (styleable in mCustomStyleableKeySet) {
                 val typedArray = view.context.obtainStyledAttributes(attributeSet, styleable)
                 val indexCount = typedArray.indexCount
-                val cachedTypeArray = CachedTypedArray(view.resources, view.context)
+                val cachedTypeArray = CachedTypedValueArray(view.resources, WeakReference(view.context))
                 if (indexCount > 0) {
                     for (i in 0 until indexCount) {
                         val indexInStyleable = typedArray.getIndex(i)
@@ -211,11 +212,11 @@ abstract class AbstractWidget : IApplyAttrResourceId {
     override fun applyStyle(view: View, @StyleRes styleRes: Int) {
 
         val tagCachedTypeArrayMap =
-            view.getTag(R.id.tag_ui_mode_type_array_map) as? HashMap<IntArray, CachedTypedArray>?
+            view.getTag(R.id.tag_ui_mode_type_array_map) as? HashMap<IntArray, CachedTypedValueArray>?
 
         mStyleableKeySet.forEach { styleable ->
-            val styleTypedArray = CachedTypedArray(view.resources, view.context)
-            val attrTypedArray = tagCachedTypeArrayMap?.get(styleable) as? CachedTypedArray?
+            val styleTypedArray = CachedTypedValueArray(view.resources, WeakReference(view.context))
+            val attrTypedArray = tagCachedTypeArrayMap?.get(styleable) as? CachedTypedValueArray?
             styleable.forEachIndexed { index, attrResId ->
                 val typedArray = view.context.obtainStyledAttributes(
                     styleRes, intArrayOf(

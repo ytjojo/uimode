@@ -20,7 +20,7 @@ object ViewStore {
     private val mActivityViewMap: MutableMap<Context, MutableSet<WeakReference<View>>> = HashMap()
     private val referenceQueue = ReferenceQueue<View>()
 
-    private val uiModeChangeListenerMap= HashMap<LifecycleOwner, ArrayList<UiModeChangeListener>>()
+    private val uiModeChangeListenerMap= HashMap<LifecycleOwner, ArrayList<WeakReference<UiModeChangeListener>>>()
     const val NO_ID = 0 // 这里只能是0
 
     fun saveView(ctx: Context?, v: View?) {
@@ -134,9 +134,9 @@ object ViewStore {
         val list = uiModeChangeListenerMap[lifecycleOwner]
         if (list == null) {
             uiModeChangeListenerMap[lifecycleOwner] = ArrayList()
-            uiModeChangeListenerMap[lifecycleOwner]!!.add(listener)
+            uiModeChangeListenerMap[lifecycleOwner]!!.add(WeakReference(listener))
         } else {
-            list.add(listener)
+            list.add(WeakReference(listener))
         }
         lifecycleOwner.lifecycle.addObserver(object : LifecycleEventObserver {
             override fun onStateChanged(
@@ -157,12 +157,11 @@ object ViewStore {
     }
 
     fun dispatchUiModeChangeListener() {
-        uiModeChangeListenerMap.forEach { k,v ->
-            v.forEach { l->
-                l.onUiModeChange()
+        for((_, value) in uiModeChangeListenerMap){
+            for (weakListener in value) {
+                weakListener.get()?.onUiModeChange()
             }
         }
-
     }
 
 }

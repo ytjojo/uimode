@@ -11,6 +11,7 @@ import android.widget.ImageView
 import androidx.annotation.CallSuper
 import androidx.core.view.ViewCompat
 import com.aliya.uimode.R
+import com.aliya.uimode.core.CachedTypedValueArray
 import java.util.*
 
 open class ViewWidget : AbstractWidget() {
@@ -32,10 +33,10 @@ open class ViewWidget : AbstractWidget() {
         }
         return false
     }
-    override fun onApply(v: View, styleable: IntArray, typedArray: TypedArray): Boolean {
+    override fun onApply(v: View, styleable: IntArray, typedArray: CachedTypedValueArray): Boolean {
 
         if (Arrays.equals(styleable, R.styleable.UiModeView)) {
-            val indexCount = typedArray.indexCount
+            val indexCount = typedArray.length()
             var colorFilterColor: Int? = null
             var colorFilterMode: PorterDuff.Mode? = null
             for (i in 0 until indexCount) {
@@ -85,7 +86,7 @@ open class ViewWidget : AbstractWidget() {
             }
             return true
         }else if (Arrays.equals(styleable, androidx.appcompat.R.styleable.ViewBackgroundHelper)) {
-            val indexCount = typedArray.indexCount
+            val indexCount = typedArray.length()
             var background = v.background
             var colorStateList: ColorStateList? = null
             for (i in 0 until indexCount) {

@@ -1,6 +1,8 @@
-package android.content.res
+package com.aliya.uimode.core
 
 import android.content.Context
+import android.content.res.ColorStateList
+import android.content.res.Resources
 import android.graphics.Typeface
 import android.graphics.drawable.Drawable
 import android.os.Build
@@ -11,8 +13,9 @@ import androidx.annotation.RequiresApi
 import androidx.annotation.StyleableRes
 import androidx.core.content.ContextCompat
 import com.aliya.uimode.utils.DrawableCompatUtil
+import java.lang.ref.WeakReference
 
-class CachedTypedArray(val mResources: Resources, val context: Context) : TypedArray() {
+class CachedTypedValueArray(val resources: Resources, val contextRef: WeakReference<Context>) {
 
 
     val indexToAttr = SparseIntArray()
@@ -20,16 +23,16 @@ class CachedTypedArray(val mResources: Resources, val context: Context) : TypedA
 
     val typeValues = SparseArray<TypedValue>()
 
-    fun isEmpty():Boolean{
-       return typeValues.size() == 0
+    fun isEmpty(): Boolean {
+        return typeValues.size() == 0
     }
 
-    fun putTypeValue(@StyleableRes index: Int,typedValue: TypedValue){
-        typeValues.put(index,typedValue)
+    fun putTypeValue(@StyleableRes index: Int, typedValue: TypedValue) {
+        typeValues.put(index, typedValue)
     }
 
-    fun putIndexAttr(index: Int,@StyleableRes attr:Int){
-        indexToAttr.put(index,attr)
+    fun putIndexAttr(index: Int, @StyleableRes attr: Int) {
+        indexToAttr.put(index, attr)
     }
 
     fun getReferenceId(@StyleableRes index: Int): Int {
@@ -37,7 +40,7 @@ class CachedTypedArray(val mResources: Resources, val context: Context) : TypedA
     }
 
 
-    override fun getBoolean(@StyleableRes index: Int, defValue: Boolean): Boolean {
+    fun getBoolean(@StyleableRes index: Int, defValue: Boolean): Boolean {
         val typedValue = typeValues.get(index)
         if (typedValue == null) {
             return defValue
@@ -51,11 +54,11 @@ class CachedTypedArray(val mResources: Resources, val context: Context) : TypedA
 
     }
 
-    override fun getChangingConfigurations(): Int {
+    fun getChangingConfigurations(): Int {
         throw UnsupportedOperationException("Cannot getChangingConfigurations")
     }
 
-    override fun getColor(@StyleableRes index: Int, defValue: Int): Int {
+    fun getColor(@StyleableRes index: Int, defValue: Int): Int {
 
         val typedValue = typeValues.get(index) ?: return defValue
         val type: Int = typedValue.type
@@ -68,6 +71,8 @@ class CachedTypedArray(val mResources: Resources, val context: Context) : TypedA
             return typedValue.data
         } else if (type == TypedValue.TYPE_STRING) {
             if (type != TypedValue.TYPE_NULL) {
+                val context = contextRef.get()
+                context ?: return defValue
                 val csl: ColorStateList =
                     ContextCompat.getColorStateList(context, typedValue.resourceId)!!
                 return csl.defaultColor
@@ -85,7 +90,7 @@ class CachedTypedArray(val mResources: Resources, val context: Context) : TypedA
         )
     }
 
-    override fun getColorStateList(@StyleableRes index: Int): ColorStateList? {
+    fun getColorStateList(@StyleableRes index: Int): ColorStateList? {
         val typedValue = typeValues.get(index) ?: return null
         if (typedValue.type != TypedValue.TYPE_NULL) {
             if (typedValue.type == TypedValue.TYPE_ATTRIBUTE) {
@@ -93,19 +98,21 @@ class CachedTypedArray(val mResources: Resources, val context: Context) : TypedA
                     "Failed to resolve attribute at index $index: $typedValue"
                 )
             }
+            val context = contextRef.get()
+            context ?: return null
             return ContextCompat.getColorStateList(context, typedValue.resourceId)
         }
         return null
     }
 
-    override fun getDimension(@StyleableRes index: Int, defValue: Float): Float {
+    fun getDimension(@StyleableRes index: Int, defValue: Float): Float {
         val typedValue = typeValues.get(index) ?: return defValue
 
         val type = typedValue.type
         if (type == TypedValue.TYPE_NULL) {
             return defValue
         } else if (type == TypedValue.TYPE_DIMENSION) {
-            return TypedValue.complexToDimension(typedValue.data, mResources.displayMetrics)
+            return TypedValue.complexToDimension(typedValue.data, resources.displayMetrics)
         } else if (type == TypedValue.TYPE_ATTRIBUTE) {
             throw UnsupportedOperationException(
                 "Failed to resolve attribute at index $index: $typedValue"
@@ -118,7 +125,7 @@ class CachedTypedArray(val mResources: Resources, val context: Context) : TypedA
         )
     }
 
-    override fun getDimensionPixelOffset(@StyleableRes index: Int, defValue: Int): Int {
+    fun getDimensionPixelOffset(@StyleableRes index: Int, defValue: Int): Int {
 
         val typedValue = typeValues.get(index) ?: return defValue
 
@@ -128,7 +135,7 @@ class CachedTypedArray(val mResources: Resources, val context: Context) : TypedA
         } else if (type == TypedValue.TYPE_DIMENSION) {
             return TypedValue.complexToDimensionPixelOffset(
                 typedValue.data,
-                mResources.displayMetrics
+                resources.displayMetrics
             )
         } else if (type == TypedValue.TYPE_ATTRIBUTE) {
             throw UnsupportedOperationException(
@@ -142,7 +149,7 @@ class CachedTypedArray(val mResources: Resources, val context: Context) : TypedA
         )
     }
 
-    override fun getDimensionPixelSize(@StyleableRes index: Int, defValue: Int): Int {
+    fun getDimensionPixelSize(@StyleableRes index: Int, defValue: Int): Int {
 
         val typedValue = typeValues.get(index) ?: return defValue
 
@@ -152,7 +159,7 @@ class CachedTypedArray(val mResources: Resources, val context: Context) : TypedA
         } else if (type == TypedValue.TYPE_DIMENSION) {
             return TypedValue.complexToDimensionPixelSize(
                 typedValue.data,
-                mResources.displayMetrics
+                resources.displayMetrics
             )
         } else if (type == TypedValue.TYPE_ATTRIBUTE) {
             throw UnsupportedOperationException(
@@ -166,7 +173,7 @@ class CachedTypedArray(val mResources: Resources, val context: Context) : TypedA
         )
     }
 
-    override fun getDrawable(@StyleableRes index: Int): Drawable? {
+    fun getDrawable(@StyleableRes index: Int): Drawable? {
         return getDrawableForDensity(index, 0)
     }
 
@@ -182,12 +189,14 @@ class CachedTypedArray(val mResources: Resources, val context: Context) : TypedA
                     "Failed to resolve attribute at index $index: $typedValue"
                 )
             }
-            return DrawableCompatUtil.getDrawable(context, typedValue.resourceId)
+            val context = contextRef.get()
+            context ?: return null
+            return DrawableCompatUtil.Companion.getDrawable(context, typedValue.resourceId)
         }
         return null
     }
 
-    override fun getFloat(@StyleableRes index: Int, defValue: Float): Float {
+    fun getFloat(@StyleableRes index: Int, defValue: Float): Float {
         val typedValue = typeValues.get(index) ?: return defValue
 
         val type = typedValue.type
@@ -215,7 +224,7 @@ class CachedTypedArray(val mResources: Resources, val context: Context) : TypedA
 
 
     @RequiresApi(Build.VERSION_CODES.O)
-    override fun getFont(@StyleableRes index: Int): Typeface? {
+    fun getFont(@StyleableRes index: Int): Typeface? {
         val typedValue = typeValues.get(index) ?: return null
 
         val type = typedValue.type
@@ -226,12 +235,14 @@ class CachedTypedArray(val mResources: Resources, val context: Context) : TypedA
                     "Failed to resolve attribute at index $index: $typedValue"
                 )
             }
+            val context = contextRef.get()
+            context ?: return null
             context.resources.getFont(typedValue.resourceId)
         }
         return null
     }
 
-    override fun getFraction(
+    fun getFraction(
         @StyleableRes index: Int,
         base: Int,
         pbase: Int,
@@ -262,15 +273,15 @@ class CachedTypedArray(val mResources: Resources, val context: Context) : TypedA
         )
     }
 
-    override fun getIndex(at: Int): Int {
+    fun getIndex(at: Int): Int {
         return indexToAttr[at]
     }
 
-    override fun getIndexCount(): Int {
+    fun getIndexCount(): Int {
         return indexToAttr.size()
     }
 
-    override fun getInt(@StyleableRes index: Int, defValue: Int): Int {
+    fun getInt(@StyleableRes index: Int, defValue: Int): Int {
         val typedValue = typeValues.get(index) ?: return defValue
 
         val type = typedValue.type
@@ -291,7 +302,7 @@ class CachedTypedArray(val mResources: Resources, val context: Context) : TypedA
     }
 
 
-    override fun getInteger(@StyleableRes index: Int, defValue: Int): Int {
+    fun getInteger(@StyleableRes index: Int, defValue: Int): Int {
         val typedValue = typeValues.get(index) ?: return defValue
 
         val type = typedValue.type
@@ -313,7 +324,7 @@ class CachedTypedArray(val mResources: Resources, val context: Context) : TypedA
         )
     }
 
-    override fun getLayoutDimension(@StyleableRes index: Int, defValue: Int): Int {
+    fun getLayoutDimension(@StyleableRes index: Int, defValue: Int): Int {
         val typedValue = typeValues.get(index) ?: return defValue
 
         val type = typedValue.type
@@ -324,41 +335,14 @@ class CachedTypedArray(val mResources: Resources, val context: Context) : TypedA
         } else if (type == TypedValue.TYPE_DIMENSION) {
             return TypedValue.complexToDimensionPixelSize(
                 typedValue.data,
-                mResources.displayMetrics
+                resources.displayMetrics
             )
         }
 
         return defValue
     }
 
-    override fun getLayoutDimension(@StyleableRes index: Int, name: String?): Int {
-
-
-        val typedValue = typeValues.get(index) ?: throw java.lang.UnsupportedOperationException(
-            positionDescription
-                    + ": You must supply a " + name + " attribute."
-        )
-
-        val type = typedValue.type
-        if (type >= TypedValue.TYPE_FIRST_INT
-            && type <= TypedValue.TYPE_LAST_INT
-        ) {
-            return typedValue.data
-        } else if (type == TypedValue.TYPE_DIMENSION) {
-            return TypedValue.complexToDimensionPixelSize(
-                typedValue.data,
-                mResources.displayMetrics
-            )
-        }
-
-
-        throw java.lang.UnsupportedOperationException(
-            positionDescription
-                    + ": You must supply a " + name + " attribute."
-        )
-    }
-
-    override fun getNonResourceString(@StyleableRes index: Int, ): String? {
+    fun getNonResourceString(@StyleableRes index: Int): String? {
 
         val typedValue = typeValues.get(index) ?: return null
         val type = typedValue.type
@@ -379,11 +363,11 @@ class CachedTypedArray(val mResources: Resources, val context: Context) : TypedA
 
     }
 
-    override fun getPositionDescription(): String {
+    fun getPositionDescription(): String {
         return "<internal>"
     }
 
-    override fun getResourceId(@StyleableRes index: Int, defValue: Int): Int {
+    fun getResourceId(@StyleableRes index: Int, defValue: Int): Int {
         val typedValue = typeValues.get(index) ?: return defValue
         val type = typedValue.type
         if (type == TypedValue.TYPE_NULL) {
@@ -395,13 +379,9 @@ class CachedTypedArray(val mResources: Resources, val context: Context) : TypedA
         return defValue
     }
 
-    override fun getResources(): Resources {
-        return mResources
-    }
-
 
     @RequiresApi(Build.VERSION_CODES.Q)
-    override fun getSourceResourceId(@StyleableRes index: Int, defaultValue: Int): Int {
+    fun getSourceResourceId(@StyleableRes index: Int, defaultValue: Int): Int {
 
         val typedValue = typeValues.get(index) ?: return defaultValue
         val resid = typedValue.sourceResourceId
@@ -412,7 +392,7 @@ class CachedTypedArray(val mResources: Resources, val context: Context) : TypedA
     }
 
 
-    override fun getString(@StyleableRes index: Int): String? {
+    fun getString(@StyleableRes index: Int): String? {
 
         val typedValue = typeValues.get(index) ?: return null
         val type = typedValue.type
@@ -426,7 +406,7 @@ class CachedTypedArray(val mResources: Resources, val context: Context) : TypedA
 
     }
 
-    override fun getText(@StyleableRes index: Int): CharSequence? {
+    fun getText(@StyleableRes index: Int): CharSequence? {
 
         val typedValue = typeValues.get(index) ?: return null
         val type = typedValue.type
@@ -438,18 +418,18 @@ class CachedTypedArray(val mResources: Resources, val context: Context) : TypedA
         return typedValue.coerceToString()
     }
 
-    override fun getTextArray(@StyleableRes index: Int): Array<CharSequence>? {
+    fun getTextArray(@StyleableRes index: Int): Array<CharSequence>? {
         val typedValue = typeValues.get(index) ?: return null
 
-        return mResources.getTextArray(typedValue.resourceId)
+        return resources.getTextArray(typedValue.resourceId)
     }
 
-    override fun getType(@StyleableRes index: Int): Int {
+    fun getType(@StyleableRes index: Int): Int {
         val typedValue = typeValues.get(index)
         return typedValue.type
     }
 
-    override fun getValue(@StyleableRes index: Int, outValue: TypedValue?): Boolean {
+    fun getValue(@StyleableRes index: Int, outValue: TypedValue?): Boolean {
         val typedValue = typeValues.get(index) ?: return false
         val type = typedValue.type
         if (type == TypedValue.TYPE_NULL) {
@@ -468,31 +448,33 @@ class CachedTypedArray(val mResources: Resources, val context: Context) : TypedA
         return true
     }
 
-    override fun length(): Int {
-        return indexCount
+    fun length(): Int {
+        return indexToAttr.size()
     }
 
-    override fun hasValueOrEmpty(@StyleableRes index: Int): Boolean {
-        val typedValue = typeValues.get(index)?: return false
+    fun hasValueOrEmpty(@StyleableRes index: Int): Boolean {
+        val typedValue = typeValues.get(index) ?: return false
         val type = typedValue.type
         return type != TypedValue.TYPE_NULL
                 || type == TypedValue.DATA_NULL_EMPTY;
     }
 
-    override fun hasValue(@StyleableRes index: Int): Boolean {
-        val typedValue = typeValues.get(index)?: return false
+    fun hasValue(@StyleableRes index: Int): Boolean {
+        val typedValue = typeValues.get(index) ?: return false
         val type = typedValue.type
         return type != TypedValue.TYPE_NULL
     }
 
-    override fun peekValue(@StyleableRes index: Int): TypedValue? {
+    fun peekValue(@StyleableRes index: Int): TypedValue? {
         return typeValues.get(index)
     }
 
-    override fun recycle() {
+    fun recycle() {
+        indexToAttr.clear()
+        typeValues.clear()
     }
 
-    override fun close() {
+    fun close() {
     }
 
 }
