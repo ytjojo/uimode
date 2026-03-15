@@ -141,6 +141,10 @@ object UiModeManager {
         }
     }
 
+    fun getAppContext(): Context? {
+        return sAppContext
+    }
+
 
     /**
      * 设置默认日夜间模式
@@ -347,10 +351,10 @@ object UiModeManager {
             map = HashMap()
             v.setTag(R.id.tag_ui_mode_type_array_map, map)
         }
-        var cachedTypeArray = map[styleableRes] as CachedTypedValueArray?
+        var cachedTypeArray = map[styleableRes] as? CachedTypedValueArray?
         if (cachedTypeArray == null) {
             cachedTypeArray = CachedTypedValueArray(v.resources, WeakReference(v.context))
-            map!![styleableRes] = cachedTypeArray
+            map[styleableRes] = cachedTypeArray
             cachedTypeArray.putIndexAttr(0, index)
             map[styleableRes] = cachedTypeArray
         }

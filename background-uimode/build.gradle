@@ -1,0 +1,83 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
+
+apply from: '../versions.gradle'
+
+
+def isPublishTask = gradle.startParameter.taskNames.any { it.toLowerCase().startsWith('publish') }
+
+if (isPublishTask) {
+    println "当前启动的是发布任务，任务列表：${gradle.startParameter.taskNames.join(', ')}"
+    // 在这里添加只在发布任务时执行的配置
+}
+
+ext {
+
+    bintrayName = 'background-uimode'
+    artifact = bintrayName
+    libraryName = 'Background-uimode'
+    libraryDescription = 'BackgroundCompat suport uimode changed by com.noober.background'
+//    libraryVersion = '1.0.0'
+    libraryVersion = uimode_main_release_version
+}
+android {
+    namespace 'com.wogoo.background'
+    compileSdkVersion 35
+
+    defaultConfig {
+        minSdkVersion 21
+        targetSdkVersion 30
+
+        versionCode 1
+        versionName libraryVersion
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
+    }
+
+    buildTypes {
+        release {
+            debuggable false
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    publishing {
+        singleVariant("release") {
+            withSourcesJar()
+            withJavadocJar()
+        }
+    }
+    compileOptions {
+//        coreLibraryDesugaringEnabled true
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    kapt {
+        javacOptions {
+            option('-target', '17')
+            option('-source', '17')
+        }
+    }
+}
+
+kotlin {
+    jvmToolchain(17)
+}
+
+dependencies {
+
+
+    implementation deps.androidx.appcompat
+    if(isPublishTask){
+        implementation 'com.wogoo.android:uimode:1.0.2'
+    }else{
+        implementation project(':uimode')
+    }
+    api 'com.wogoo.android:backround:1.6.6'
+}
+
+
+apply from: '../mevenUpload.gradle'

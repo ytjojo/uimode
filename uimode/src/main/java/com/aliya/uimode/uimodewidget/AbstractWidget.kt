@@ -130,10 +130,14 @@ abstract class AbstractWidget : IApplyAttrResourceId {
                         ) {
                             HideLog.i(
                                 "assemble",
-                                "view  = " + view.toString() + " attrName " + view.context.resources.getResourceName(
-                                    styleable[indexInStyleable]
-                                ) + " resourceId = " + Integer.toHexString(typedValue.resourceId) + " resourceName = " +  view.context.resources.getResourceName(typedValue.resourceId)
+                                " attrName "  + " resourceId = " + Integer.toHexString(typedValue.resourceId) + " path = "+ typedValue.string + " resourceName = " +  view.context.resources.getResourceName(typedValue.resourceId)
                             )
+//                            HideLog.i(
+//                                "assemble",
+//                                "view  = " + view.toString() + " attrName " + view.context.resources.getResourceName(
+//                                    styleable[indexInStyleable]
+//                                ) + " resourceId = " + Integer.toHexString(typedValue.resourceId) + " resourceName = " +  view.context.resources.getResourceName(typedValue.resourceId)
+//                            )
                             if (attrValueMap.isNotEmpty()) {
                                 val attrName =
                                     view.context.resources.getResourceName(styleable[indexInStyleable])

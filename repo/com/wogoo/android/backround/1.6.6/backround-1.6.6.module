@@ -1,0 +1,114 @@
+{
+  "formatVersion": "1.1",
+  "component": {
+    "group": "com.wogoo.android",
+    "module": "backround",
+    "version": "1.6.6",
+    "attributes": {
+      "org.gradle.status": "release"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "8.13"
+    }
+  },
+  "variants": [
+    {
+      "name": "releaseVariantReleaseApiPublication",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.libraryelements": "aar",
+        "org.gradle.usage": "java-api"
+      },
+      "files": [
+        {
+          "name": "backround-1.6.6.aar",
+          "url": "backround-1.6.6.aar",
+          "size": 70888,
+          "sha512": "4577891f02648f6d8733f06d301692f7189243f5dab87ded95e60753fff65b869d70f504f5caff748f1e64509ba046df3a0970f3c917b57f332a40734a230ccd",
+          "sha256": "922cf77bc9ae6b4f13f690a255fe3162b0e9f7ce0e08afb05842d883b6839183",
+          "sha1": "d11b147d0760aeadbf3e30eeb3d5174bbb9d8556",
+          "md5": "a4adddd624289e28ea22f525d799e9cc"
+        }
+      ]
+    },
+    {
+      "name": "releaseVariantReleaseRuntimePublication",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.libraryelements": "aar",
+        "org.gradle.usage": "java-runtime"
+      },
+      "dependencies": [
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-stdlib-jdk8",
+          "version": {
+            "requires": "2.2.21"
+          }
+        },
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-stdlib",
+          "version": {
+            "requires": "2.2.21"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "backround-1.6.6.aar",
+          "url": "backround-1.6.6.aar",
+          "size": 70888,
+          "sha512": "4577891f02648f6d8733f06d301692f7189243f5dab87ded95e60753fff65b869d70f504f5caff748f1e64509ba046df3a0970f3c917b57f332a40734a230ccd",
+          "sha256": "922cf77bc9ae6b4f13f690a255fe3162b0e9f7ce0e08afb05842d883b6839183",
+          "sha1": "d11b147d0760aeadbf3e30eeb3d5174bbb9d8556",
+          "md5": "a4adddd624289e28ea22f525d799e9cc"
+        }
+      ]
+    },
+    {
+      "name": "releaseVariantReleaseSourcePublication",
+      "attributes": {
+        "org.gradle.category": "documentation",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.docstype": "sources",
+        "org.gradle.usage": "java-runtime"
+      },
+      "files": [
+        {
+          "name": "backround-1.6.6-sources.jar",
+          "url": "backround-1.6.6-sources.jar",
+          "size": 37547,
+          "sha512": "43ee3c172390ea3f3c5f5b97eb9af44c3256480cf1306f0557144a4be08b76c5d1641e29449d2045e764252f1956a5ababdb3fe755040f09003a452514478142",
+          "sha256": "af1f9400bfafb9b30df4aefdbc6eb2ee9bfe0b895abb989774deef2bc029b365",
+          "sha1": "0d6a6dbae586b67a9b57db4291365682e765eb10",
+          "md5": "22db7d1065132d98e6e4f2e764cad499"
+        }
+      ]
+    },
+    {
+      "name": "releaseVariantReleaseJavaDocPublication",
+      "attributes": {
+        "org.gradle.category": "documentation",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.docstype": "javadoc",
+        "org.gradle.usage": "java-runtime"
+      },
+      "files": [
+        {
+          "name": "backround-1.6.6-javadoc.jar",
+          "url": "backround-1.6.6-javadoc.jar",
+          "size": 651440,
+          "sha512": "937bf37cc9ee9115e8d9e20ac1d99f32b0b469c51de8014a8c95957344019ef007e3d12eb87b6feed64eeb4c0497cff9e8ba06b09f81127d1ca63ce32424a380",
+          "sha256": "7a4027a00049ff68093608a45ccf250d85f4e9a583994e57fc5ba1418a6feef7",
+          "sha1": "f16317d37635697f3f3a10fccbc6b3967565f182",
+          "md5": "b79193ff276d776a842c571da9614955"
+        }
+      ]
+    }
+  ]
+}

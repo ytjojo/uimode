@@ -15,13 +15,15 @@ import androidx.core.content.ContextCompat
 import com.aliya.uimode.utils.DrawableCompatUtil
 import java.lang.ref.WeakReference
 
-class CachedTypedValueArray(val resources: Resources, val contextRef: WeakReference<Context>) {
+class CachedTypedValueArray(var resources: Resources, var contextRef: WeakReference<Context>) {
 
 
     val indexToAttr = SparseIntArray()
 
 
     val typeValues = SparseArray<TypedValue>()
+
+    constructor(mResources: Resources, context: Context) : this(mResources, WeakReference(context))
 
     fun isEmpty(): Boolean {
         return typeValues.size() == 0
@@ -472,6 +474,7 @@ class CachedTypedValueArray(val resources: Resources, val contextRef: WeakRefere
     fun recycle() {
         indexToAttr.clear()
         typeValues.clear()
+        contextRef.clear()
     }
 
     fun close() {
