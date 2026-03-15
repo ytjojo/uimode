@@ -15,6 +15,9 @@ class AppUtil {
          */
         @JvmStatic
         fun findActivity(context: Context?): Activity? {
+            if(context is Activity){
+                return context
+            }
             var contextWrapper = context
             while (contextWrapper is ContextWrapper) {
                 if (contextWrapper is Activity) {

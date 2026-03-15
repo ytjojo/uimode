@@ -122,7 +122,7 @@ object ViewStore {
                     iterator.remove()
                 }
             }
-            referenceQueue.poll()
+            ref = referenceQueue.poll()
         }
     }
 
