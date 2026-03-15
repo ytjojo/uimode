@@ -66,6 +66,6 @@
         android:text="下一步"
         android:textColor="@color/_ffffff_202124"
         app:bl_corners_radius="25dp"
-        app:bl_solid_color="@color/_ff4081_aa4081" />
+        app:bl_solid_color="@color/_ff4081_aa8080" />
 
 </LinearLayout>

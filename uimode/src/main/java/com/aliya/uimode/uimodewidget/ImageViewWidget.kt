@@ -27,7 +27,7 @@ open class ImageViewWidget : AbstractWidget() {
                 val typedValue = typedArray.peekValue(indexInStyleable)
                 if (typedValue != null) {
                     when (indexInStyleable) {
-                        androidx.appcompat.R.styleable.AppCompatImageView_android_src,androidx.appcompat. R.styleable.AppCompatImageView_srcCompat -> {
+                        androidx.appcompat.R.styleable.AppCompatImageView_android_src,androidx.appcompat.R.styleable.AppCompatImageView_srcCompat -> {
                             imageView.setImageDrawable(
                                 TypedValueUtils.getDrawable(
                                     v,

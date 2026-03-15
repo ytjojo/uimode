@@ -67,6 +67,7 @@ public class UiModeInflaterFactory implements LayoutInflater.Factory2 {
         switch (name) { // 拦截所有的ImageView、AppCompatImageView
             case "ImageView":
             case "android.support.v7.widget.AppCompatImageView":
+            case "androidx.appcompat.widget.AppCompatImageView":
                 view = new MaskImageView(context, attrs);
                 break;
             default:

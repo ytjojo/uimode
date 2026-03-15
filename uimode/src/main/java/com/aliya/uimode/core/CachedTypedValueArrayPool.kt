@@ -103,7 +103,6 @@ object CachedTypedValueArrayPool {
             }
 
             // 清理数据
-            array.recycle()
 
             resetCachedArray(array)
 

@@ -167,16 +167,7 @@ public class BackgroundTypedArrayDelegate {
             e.printStackTrace();
             return view;
         } finally {
-            typedArray.recycle();
-            pressTa.recycle();
-            selectorTa.recycle();
-            textTa.recycle();
-            buttonTa.recycle();
-            otherTa.recycle();
-            animTa.recycle();
-            multiSelTa.recycle();
-            multiTextTa.recycle();
-            textViewTa.recycle();
+
         }
     }
 

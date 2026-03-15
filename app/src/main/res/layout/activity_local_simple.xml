@@ -20,7 +20,7 @@
         android:layout_marginTop="25dp"
         android:drawableTop="@mipmap/ic_home"
         android:text="原图"
-        android:textColor="@color/_484848_7a7b7d"
+        android:textColor="@color/text_dark_primary"
         app:maskColor="@android:color/transparent" />
 
     <TextView
@@ -30,7 +30,7 @@
         android:layout_marginTop="25dp"
         android:drawableTop="@mipmap/ic_home"
         android:text="默认遮罩"
-        android:textColor="@color/_484848_7a7b7d" />
+        android:textColor="@color/text_dark_primary" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -39,7 +39,7 @@
         android:layout_marginTop="25dp"
         android:drawableTop="@mipmap/ic_home"
         android:text="自定义"
-        android:textColor="@color/_484848_7a7b7d"
+        android:textColor="@color/text_dark_primary"
         app:maskColor="@color/_484848_7a7b7d" />
 
     <RadioButton
@@ -51,20 +51,45 @@
         android:button="@null"
         android:drawableLeft="@drawable/ic_drawable_top"
         android:text="测试"
-        android:textColor="@color/_484848_7a7b7d" />
+        android:textColor="@color/text_dark_primary" />
 
     <com.noober.background.view.BLTextView
         android:id="@+id/tv_next"
         android:layout_width="100dp"
-        android:padding="5dp"
-        android:layout_gravity="center_horizontal"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
         android:layout_marginTop="25dp"
         android:enabled="false"
         android:gravity="center"
+        android:padding="5dp"
         android:text="下一步"
-        android:textColor="@color/_ffffff_202124"
+        android:textColor="@color/text_dark_primary"
         app:bl_corners_radius="25dp"
-        app:bl_solid_color="@color/_ff4081_aa4081" />
+        app:bl_solid_color="@color/_ff4081_aa8080" />
+
+
+    <ImageView
+        android:id="@+id/iv_tint_test"
+        android:tag="iv_tint_test"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="25dp"
+        android:layout_marginEnd="8dp"
+        android:src="@drawable/community_ic_draft_box"
+        app:tint="@color/text_dark_primary" />
+
+
+
+    <View
+        android:id="@+id/view_background_tint_test"
+        android:tag="view_background_tint_test"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="25dp"
+        android:layout_marginEnd="8dp"
+        android:background="@mipmap/ic_home"
+        app:backgroundTint="@color/text_dark_primary" />
 
 </LinearLayout>

@@ -24,68 +24,101 @@
             android:orientation="vertical">
 
             <ImageView
-                android:src="@mipmap/ic_star_pressed"
                 android:layout_width="50dp"
-                android:layout_height="50dp"/>
+                android:layout_height="50dp"
+                android:src="@mipmap/ic_star_pressed" />
 
             <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginTop="10dp"
                 android:src="@mipmap/ic_star_pressed"
-
-                app:tint="@color/_ff4081_aa4081"
-                android:layout_width="50dp"
-                android:layout_height="50dp"/>
+                app:tint="@color/_ff4081_aa8080" />
 
             <com.noober.background.view.BLTextView
-                android:text="账号"
-                android:gravity="center"
                 android:layout_width="50dp"
-                app:bl_corners_radius="10dp"
-                app:bl_stroke_width="2dp"
-                android:textSize="14sp"
+                android:layout_height="24dp"
+                android:layout_marginTop="10dp"
+                android:gravity="center"
+                android:text="账号"
                 android:textColor="@color/text_dark_primary"
-                app:bl_stroke_color="@color/_ff4081_aa4081"
-                android:layout_height="24dp"/>
-            <com.noober.background.view.BLTextView
-                android:text="账号"
-                android:gravity="center"
-                android:layout_width="50dp"
-                app:bl_corners_radius="10dp"
                 android:textSize="14sp"
+                app:bl_corners_radius="10dp"
+                app:bl_stroke_color="@color/_ff4081_aa8080"
+                app:bl_stroke_width="2dp" />
+
+            <com.noober.background.view.BLTextView
+                android:layout_width="50dp"
+                android:layout_height="24dp"
+                android:layout_marginTop="10dp"
+                android:gravity="center"
+                android:text="账号"
                 android:textColor="@color/text_dark_primary"
-                app:bl_solid_color="@color/_ff4081_aa4081"
-                android:layout_height="24dp"/>
+                android:textSize="14sp"
+                app:bl_corners_radius="10dp"
+                app:bl_solid_color="@color/_ff4081_aa8080" />
 
 
             <com.noober.background.view.BLTextView
-                android:text="账号"
-                android:gravity="center"
                 android:layout_width="100dp"
+                android:layout_height="24dp"
+                android:layout_marginTop="10dp"
+                android:gravity="center"
+                android:text="账号"
+                android:textColor="@color/text_dark_primary"
                 android:textSize="14sp"
                 app:bl_corners_radius="10dp"
-                android:textColor="@color/text_dark_primary"
-                app:bl_gradient_startColor="@color/_ff4081_aa4081"
                 app:bl_gradient_angle="0"
                 app:bl_gradient_endColor="@color/_fdc247_7e6023"
-                android:layout_height="24dp"/>
+                app:bl_gradient_startColor="@color/_ff4081_aa8080" />
 
             <ImageView
-                android:src="@drawable/community_ic_draft_box"
-                app:tint="@color/_484848_7a7b7d"
                 android:layout_width="40dp"
-                android:layout_height="40dp"/>
+                android:layout_height="40dp"
+                android:layout_marginTop="10dp"
+                android:src="@drawable/community_ic_draft_box"
+                app:tint="@color/text_dark_primary" />
 
 
             <com.noober.background.view.BLTextView
-                android:text="账号"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
                 android:gravity="center"
                 android:padding="10dp"
-                android:layout_width="50dp"
-                app:bl_corners_radius="10dp"
-                android:textSize="14sp"
+                android:text="账号"
                 android:textColor="@color/text_dark_primary"
+                android:textSize="14sp"
+                app:bl_corners_radius="10dp"
                 app:bl_stroke_color="@color/text_dark_primary"
-                app:bl_stroke_width="1dp"
-                android:layout_height="wrap_content"/>
+                app:bl_stroke_width="1dp" />
+
+            <com.noober.background.view.BLView
+                android:layout_width="50dp"
+                android:layout_height="20dp"
+                android:layout_marginTop="10dp"
+                android:gravity="center"
+                app:bl_corners_radius="10dp"
+                app:bl_solid_color="@color/text_dark_primary"
+                app:uiMode_ignore="" />
+
+            <com.noober.background.view.BLView
+                android:layout_width="50dp"
+                android:layout_height="20dp"
+                android:layout_marginTop="10dp"
+                android:gravity="center"
+                app:bl_corners_radius="10dp"
+                app:bl_solid_color="@color/text_dark_primary" />
+
+
+            <View
+                android:id="@+id/view_background_tint_test"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="25dp"
+                android:background="@mipmap/ic_home"
+                android:tag="view_background_tint_test"
+                app:backgroundTint="@color/text_dark_primary" />
 
         </LinearLayout>
 

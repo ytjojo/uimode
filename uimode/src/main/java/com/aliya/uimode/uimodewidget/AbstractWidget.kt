@@ -79,6 +79,9 @@ abstract class AbstractWidget : IApplyAttrResourceId {
             val attrName: String = attributeSet.getAttributeName(i)
             if (IGNORE_ATTR_NAME == attrName) {
                 ignoreValue = attributeSet.getAttributeValue(i)
+                if(ignoreValue.isEmpty()){
+                    return false
+                }
             } else {
                 val attrValueId = parseAttrId(attributeSet.getAttributeValue(i))
                 if (attrValueId != 0) {
