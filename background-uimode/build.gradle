@@ -18,7 +18,7 @@ ext {
     artifact = bintrayName
     libraryName = 'Background-uimode'
     libraryDescription = 'BackgroundCompat suport uimode changed by com.noober.background'
-    libraryVersion = '1.0.0'
+    libraryVersion = '1.0.1'
 //    libraryVersion = uimode_main_release_version
 }
 android {
@@ -76,7 +76,7 @@ dependencies {
     }else{
         implementation project(':uimode')
     }
-    api 'com.wogoo.android:backround:1.6.6'
+    api 'com.wogoo.android:background:1.6.6'
 }
 
 

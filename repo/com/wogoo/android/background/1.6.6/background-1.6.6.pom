@@ -8,7 +8,7 @@
   <!-- do_not_remove: published-with-gradle-metadata -->
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.wogoo.android</groupId>
-  <artifactId>backround</artifactId>
+  <artifactId>background</artifactId>
   <version>1.6.6</version>
   <packaging>aar</packaging>
   <dependencies>
