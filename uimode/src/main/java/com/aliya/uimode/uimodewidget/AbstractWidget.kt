@@ -57,8 +57,28 @@ abstract class AbstractWidget : IApplyAttrResourceId {
 
 
     @CallSuper
+    open fun onInterceptPutCacheTypeValue(
+        view: View,
+        styleable: IntArray,
+        indexInStyleable: Int,
+        typedValue: TypedValue,
+        cachedTypedValueArray: CachedTypedValueArray,
+    ): Boolean {
+        if (typedValue.resourceId != 0) {
+
+            val isHasNight =
+                ResourceNightModeChecker.hasNightModeResource(view.context, typedValue.resourceId)
+            if(!isHasNight){
+                return true
+            }
+        }
+        return false
+    }
+
+    @CallSuper
     override fun onApplyCustom(v: View, typedArrayMap: Map<IntArray, CachedTypedValueArray>) {
     }
+
 
     override fun assemble(view: View, attributeSet: AttributeSet): Boolean {
 
@@ -80,7 +100,7 @@ abstract class AbstractWidget : IApplyAttrResourceId {
             val attrName: String = attributeSet.getAttributeName(i)
             if (IGNORE_ATTR_NAME == attrName) {
                 ignoreValue = attributeSet.getAttributeValue(i)
-                if(ignoreValue.isEmpty()){
+                if (ignoreValue.isEmpty()) {
                     return false
                 }
             } else {
@@ -117,7 +137,8 @@ abstract class AbstractWidget : IApplyAttrResourceId {
             for (styleable in mStyleableKeySet) {
                 val typedArray = view.context.obtainStyledAttributes(attributeSet, styleable)
                 val indexCount = typedArray.indexCount
-                val cachedTypeArray = CachedTypedValueArray(view.resources, WeakReference(view.context))
+                val cachedTypeArray =
+                    CachedTypedValueArray(view.resources, WeakReference(view.context))
                 if (indexCount > 0) {
                     for (i in 0 until indexCount) {
                         val indexInStyleable = typedArray.getIndex(i)
@@ -132,16 +153,17 @@ abstract class AbstractWidget : IApplyAttrResourceId {
                                 typedValue
                             )
                         ) {
-                            HideLog.i(
-                                "assemble",
-                                " attrName "  + " resourceId = " + Integer.toHexString(typedValue.resourceId) + " path = "+ typedValue.string + " resourceName = " +  view.context.resources.getResourceName(typedValue.resourceId)
-                            )
-//                            HideLog.i(
-//                                "assemble",
-//                                "view  = " + view.toString() + " attrName " + view.context.resources.getResourceName(
-//                                    styleable[indexInStyleable]
-//                                ) + " resourceId = " + Integer.toHexString(typedValue.resourceId) + " resourceName = " +  view.context.resources.getResourceName(typedValue.resourceId)
-//                            )
+                            if (HideLog.isDebuggable()) {
+                                HideLog.i(
+                                    "assemble",
+                                    " path = " + typedValue.string + " attrName " + view.context.resources.getResourceName(
+                                        styleable[indexInStyleable]
+                                    ) + " resourceId = " + Integer.toHexString(typedValue.resourceId) + " resourceName = " + view.context.resources.getResourceName(
+                                        typedValue.resourceId
+                                    )
+                                )
+                            }
+
                             if (attrValueMap.isNotEmpty()) {
                                 val attrName =
                                     view.context.resources.getResourceName(styleable[indexInStyleable])
@@ -151,18 +173,10 @@ abstract class AbstractWidget : IApplyAttrResourceId {
                                     typedValue.resourceId = attrValueMap[attrName] ?: 0
                                 }
                             }
-                            if(typedValue.resourceId != 0){
-
-                                val isHasNight = ResourceNightModeChecker.hasNightModeResource(view.context, typedValue.resourceId)
-                                HideLog.i(
-                                    "assemble",
-                                    " attrName " +  view.context.resources.getResourceName(styleable[indexInStyleable])  + " isHasNight = " + isHasNight + " resourceName = " +  view.context.resources.getResourceName(typedValue.resourceId)
-                                )
-
+                            if(!onInterceptPutCacheTypeValue(view,styleable,indexInStyleable,typedValue,cachedTypeArray)){
+                                cachedTypeArray.putTypeValue(indexInStyleable, typedValue)
                             }
 
-
-                            cachedTypeArray.putTypeValue(indexInStyleable, typedValue)
                         }
                         cachedTypeArray.putIndexAttr(i, indexInStyleable)
                     }
@@ -187,7 +201,8 @@ abstract class AbstractWidget : IApplyAttrResourceId {
             for (styleable in mCustomStyleableKeySet) {
                 val typedArray = view.context.obtainStyledAttributes(attributeSet, styleable)
                 val indexCount = typedArray.indexCount
-                val cachedTypeArray = CachedTypedValueArray(view.resources, WeakReference(view.context))
+                val cachedTypeArray =
+                    CachedTypedValueArray(view.resources, WeakReference(view.context))
                 if (indexCount > 0) {
                     for (i in 0 until indexCount) {
                         val indexInStyleable = typedArray.getIndex(i)
@@ -220,10 +235,11 @@ abstract class AbstractWidget : IApplyAttrResourceId {
         indexInStyleable: Int,
         typedValue: TypedValue
     ): Boolean {
+
         return false
     }
 
-    private fun isLegalType(typedValue: TypedValue): Boolean {
+    fun isLegalType(typedValue: TypedValue): Boolean {
         return typedValue.type != TypedValue.TYPE_NULL && typedValue.resourceId != 0
     }
 

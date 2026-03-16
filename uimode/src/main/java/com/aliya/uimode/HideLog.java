@@ -20,7 +20,7 @@ final public class HideLog {
     /**
      * @see ./build.gradle 属性android.buildTypes.release/debug#debuggable true/false 来决定
      */
-    private static boolean debuggable = true;
+    private static boolean debuggable = false;
 
     public static final String TAG = "UiMode";
 

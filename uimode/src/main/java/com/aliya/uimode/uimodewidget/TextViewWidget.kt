@@ -196,4 +196,47 @@ open class TextViewWidget : AbstractWidget() {
         return false
     }
 
+    override fun onInterceptPutCacheTypeValue(
+        view: View,
+        styleable: IntArray,
+        indexInStyleable: Int,
+        typedValue: TypedValue,
+        cachedTypedValueArray: CachedTypedValueArray
+    ): Boolean {
+        if(Arrays.equals(styleable, R.styleable.TextViewHelper) && indexInStyleable == R.styleable.TextViewHelper_android_textAppearance ){
+            val styleRes = TypedValueUtils.getStyle(view, typedValue, this)
+            if(styleRes != 0){
+                styleable.forEachIndexed { index, attrResId ->
+                    val cachedTypedValue = cachedTypedValueArray.peekValue( index)
+                    if(cachedTypedValue == null){
+                        val typedArray = view.context.obtainStyledAttributes(
+                            styleRes, intArrayOf(
+                                attrResId
+                            )
+                        )
+                        if (typedArray.indexCount > 0) {
+                            val typedValue = TypedValue()
+                            if (typedArray.getValue(0, typedValue) && isLegalType(typedValue)) {
+                                cachedTypedValueArray.putTypeValue(index, typedValue)
+                            }
+
+                        }
+                        cachedTypedValueArray.putIndexAttr(index, index)
+                        typedArray.recycle()
+                    }
+
+                }
+
+            }
+            return true
+        }
+        return super.onInterceptPutCacheTypeValue(
+            view,
+            styleable,
+            indexInStyleable,
+            typedValue,
+            cachedTypedValueArray
+        )
+    }
+
 }
