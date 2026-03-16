@@ -12,6 +12,7 @@ import androidx.annotation.CallSuper
 import androidx.annotation.StyleRes
 import com.aliya.uimode.HideLog
 import com.aliya.uimode.R
+import com.aliya.uimode.core.ResourceNightModeChecker
 import com.aliya.uimode.core.UiModeChangeListener
 import com.aliya.uimode.core.ViewStore
 import com.aliya.uimode.utils.AppResourceUtils
@@ -150,6 +151,16 @@ abstract class AbstractWidget : IApplyAttrResourceId {
                                     typedValue.resourceId = attrValueMap[attrName] ?: 0
                                 }
                             }
+                            if(typedValue.resourceId != 0){
+
+                                val isHasNight = ResourceNightModeChecker.hasNightModeResource(view.context, typedValue.resourceId)
+                                HideLog.i(
+                                    "assemble",
+                                    " attrName " +  view.context.resources.getResourceName(styleable[indexInStyleable])  + " isHasNight = " + isHasNight + " resourceName = " +  view.context.resources.getResourceName(typedValue.resourceId)
+                                )
+
+                            }
+
 
                             cachedTypeArray.putTypeValue(indexInStyleable, typedValue)
                         }

@@ -59,7 +59,7 @@
 
     <TextView
         android:id="@+id/tv_simple2"
-        style="@style/textyellowstyle"
+        style="@style/text_yellow_style"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
