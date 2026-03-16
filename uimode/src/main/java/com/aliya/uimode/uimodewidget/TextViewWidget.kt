@@ -10,7 +10,8 @@ import android.widget.TextView
 import androidx.core.widget.TextViewCompat
 import com.aliya.uimode.R
 import com.aliya.uimode.core.CachedTypedValueArray
-import java.util.*
+import com.aliya.uimode.core.ResourceNightModeChecker
+import java.util.Arrays
 
 open class TextViewWidget : AbstractWidget() {
 
@@ -33,8 +34,9 @@ open class TextViewWidget : AbstractWidget() {
         val textView = v as TextView
         if (Arrays.equals(styleable, R.styleable.TextViewHelper)) {
             val indexCount = typedArray.length()
-            if(indexCount > 0){
-                val typedValue = typedArray.peekValue(R.styleable.TextViewHelper_android_textAppearance )
+            if (indexCount > 0) {
+                val typedValue =
+                    typedArray.peekValue(R.styleable.TextViewHelper_android_textAppearance)
                 if (typedValue != null) {
                     val style = TypedValueUtils.getStyle(v, typedValue, this)
                     if (style != 0) {
@@ -46,10 +48,10 @@ open class TextViewWidget : AbstractWidget() {
             }
 
 
-            var drawableLeft:Drawable? = null
-            var drawableTop:Drawable? = null
-            var drawableRight:Drawable? = null
-            var drawableBottom:Drawable? = null
+            var drawableLeft: Drawable? = null
+            var drawableTop: Drawable? = null
+            var drawableRight: Drawable? = null
+            var drawableBottom: Drawable? = null
             var tintColorStateList: ColorStateList? = null
             for (i in 0 until indexCount) {
                 val indeInAttrArray = typedArray.getIndex(i)
@@ -129,6 +131,7 @@ open class TextViewWidget : AbstractWidget() {
                                 this
                             )
                         }
+
                         R.styleable.TextViewHelper_android_drawableTop, R.styleable.TextViewHelper_drawableTopCompat -> {
                             drawableTop = TypedValueUtils.getDrawable(
                                 v,
@@ -136,6 +139,7 @@ open class TextViewWidget : AbstractWidget() {
                                 this
                             )
                         }
+
                         R.styleable.TextViewHelper_android_drawableRight, R.styleable.TextViewHelper_drawableRightCompat, R.styleable.TextViewHelper_android_drawableEnd -> {
                             drawableRight = TypedValueUtils.getDrawable(
                                 v,
@@ -168,24 +172,24 @@ open class TextViewWidget : AbstractWidget() {
 
 
             if (drawableLeft != null || drawableTop != null || drawableRight != null || drawableBottom != null)
-                if(drawableLeft == null){
+                if (drawableLeft == null) {
                     drawableLeft = textView.compoundDrawablesRelative[0]
                 }
-                if(drawableTop == null){
-                    drawableTop = textView.compoundDrawablesRelative[1]
-                }
-                if(drawableRight == null){
-                    drawableRight = textView.compoundDrawablesRelative[2]
-                }
-                if(drawableBottom == null){
-                    drawableBottom = textView.compoundDrawablesRelative[3]
-                }
-                textView.setCompoundDrawablesRelativeWithIntrinsicBounds(
-                    drawableLeft,
-                    drawableTop,
-                    drawableRight,
-                    drawableBottom
-                )
+            if (drawableTop == null) {
+                drawableTop = textView.compoundDrawablesRelative[1]
+            }
+            if (drawableRight == null) {
+                drawableRight = textView.compoundDrawablesRelative[2]
+            }
+            if (drawableBottom == null) {
+                drawableBottom = textView.compoundDrawablesRelative[3]
+            }
+            textView.setCompoundDrawablesRelativeWithIntrinsicBounds(
+                drawableLeft,
+                drawableTop,
+                drawableRight,
+                drawableBottom
+            )
 
             if (tintColorStateList != null) {
                 TextViewCompat.setCompoundDrawableTintList(textView, tintColorStateList)
@@ -200,29 +204,43 @@ open class TextViewWidget : AbstractWidget() {
         view: View,
         styleable: IntArray,
         indexInStyleable: Int,
-        typedValue: TypedValue,
+        rawTypedValue: TypedValue,
+        rawTypedArray: TypedArray,
         cachedTypedValueArray: CachedTypedValueArray
     ): Boolean {
-        if(Arrays.equals(styleable, R.styleable.TextViewHelper) && indexInStyleable == R.styleable.TextViewHelper_android_textAppearance ){
-            val styleRes = TypedValueUtils.getStyle(view, typedValue, this)
-            if(styleRes != 0){
+        if (Arrays.equals(
+                styleable,
+                R.styleable.TextViewHelper
+            ) && indexInStyleable == R.styleable.TextViewHelper_android_textAppearance
+        ) {
+            val styleRes = TypedValueUtils.getStyle(view, rawTypedValue, this)
+            if (styleRes != 0) {
                 styleable.forEachIndexed { index, attrResId ->
-                    val cachedTypedValue = cachedTypedValueArray.peekValue( index)
-                    if(cachedTypedValue == null){
-                        val typedArray = view.context.obtainStyledAttributes(
-                            styleRes, intArrayOf(
-                                attrResId
+                    val cachedTypedValue = cachedTypedValueArray.peekValue(index)
+                    if (cachedTypedValue == null) {
+                        val styleTypedValue = TypedValue()
+                        rawTypedArray.getValue(index, styleTypedValue)
+                        if (styleTypedValue.type == TypedValue.TYPE_NULL) {
+                            val styleTypedArray = view.context.obtainStyledAttributes(
+                                styleRes, intArrayOf(
+                                    attrResId
+                                )
                             )
-                        )
-                        if (typedArray.indexCount > 0) {
-                            val typedValue = TypedValue()
-                            if (typedArray.getValue(0, typedValue) && isLegalType(typedValue)) {
-                                cachedTypedValueArray.putTypeValue(index, typedValue)
+                            if (styleTypedArray.indexCount > 0) {
+                                if (styleTypedArray.getValue(0, styleTypedValue) && isLegalType(
+                                        styleTypedValue
+                                    ) && ResourceNightModeChecker.hasNightModeResource(
+                                        view.context,
+                                        styleTypedValue.resourceId
+                                    )
+                                ) {
+                                    cachedTypedValueArray.putTypeValue(index, styleTypedValue)
+                                }
                             }
-
+                            cachedTypedValueArray.putIndexAttr(index, index)
+                            styleTypedArray.recycle()
                         }
-                        cachedTypedValueArray.putIndexAttr(index, index)
-                        typedArray.recycle()
+
                     }
 
                 }
@@ -234,7 +252,8 @@ open class TextViewWidget : AbstractWidget() {
             view,
             styleable,
             indexInStyleable,
-            typedValue,
+            rawTypedValue,
+            rawTypedArray,
             cachedTypedValueArray
         )
     }

@@ -13,89 +13,90 @@
         android:layout_height="wrap_content"
         android:background="@color/colorPrimary" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="25dp"
-            android:drawableTop="@mipmap/ic_home"
-            android:text="原图"
-            android:textColor="@color/text_dark_primary"
-            app:maskColor="@android:color/transparent" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="5dp"
+        android:drawableTop="@mipmap/ic_home"
+        android:text="原图"
+        android:textColor="@color/text_dark_primary"
+        app:maskColor="@android:color/transparent" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="25dp"
-            android:drawableTop="@mipmap/ic_home"
-            android:text="默认遮罩"
-            android:textColor="@color/text_dark_primary" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="5dp"
+        android:drawableTop="@mipmap/ic_home"
+        android:text="默认遮罩"
+        android:textColor="@color/text_dark_primary" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="25dp"
-            android:drawableTop="@mipmap/ic_home"
-            android:text="自定义"
-            android:textColor="@color/text_dark_primary"
-            app:maskColor="@color/_484848_7a7b7d" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="5dp"
+        android:drawableTop="@mipmap/ic_home"
+        android:text="自定义"
+        android:textColor="@color/text_dark_primary"
+        app:maskColor="@color/_484848_7a7b7d" />
 
-        <RadioButton
-            android:id="@+id/rb_top"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="25dp"
-            android:button="@null"
-            android:drawableLeft="@drawable/ic_drawable_top"
-            android:text="测试"
-            android:textColor="@color/text_dark_primary" />
+    <RadioButton
+        android:id="@+id/rb_top"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="5dp"
+        android:button="@null"
+        android:drawableLeft="@drawable/ic_drawable_top"
+        android:text="测试"
+        android:textColor="@color/text_dark_primary" />
 
-        <com.noober.background.view.BLTextView
-            android:id="@+id/tv_next"
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="25dp"
-            android:enabled="false"
-            android:gravity="center"
-            android:padding="5dp"
-            android:text="下一步"
-            android:textColor="@color/text_dark_primary"
-            app:bl_corners_radius="25dp"
-            app:bl_solid_color="@color/_ff4081_aa8080" />
-
-
-        <ImageView
-            android:id="@+id/iv_tint_test"
-            android:tag="iv_tint_test"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="25dp"
-            android:layout_marginEnd="8dp"
-            android:src="@drawable/community_ic_draft_box"
-            app:tint="@color/text_dark_primary" />
+    <com.noober.background.view.BLTextView
+        android:id="@+id/tv_next"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="5dp"
+        android:enabled="false"
+        android:gravity="center"
+        android:padding="5dp"
+        android:text="下一步"
+        android:textColor="@color/text_dark_primary"
+        app:bl_corners_radius="25dp"
+        app:bl_solid_color="@color/_ff4081_aa8080" />
 
 
-        <View
-            android:id="@+id/view_background_tint_test"
-            android:tag="view_background_tint_test"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="25dp"
-            android:layout_marginEnd="8dp"
-            android:background="@mipmap/ic_home"
-            app:backgroundTint="@color/text_dark_primary" />
+    <ImageView
+        android:id="@+id/iv_tint_test"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="8dp"
+        android:src="@drawable/community_ic_draft_box"
+        android:tag="iv_tint_test"
+        app:tint="@color/text_dark_primary" />
+
+
+    <View
+        android:id="@+id/view_background_tint_test"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="8dp"
+        android:background="@mipmap/ic_home"
+        android:tag="view_background_tint_test"
+        app:backgroundTint="@color/text_dark_primary" />
+
     <View
         android:id="@+id/view_background_color_test"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="25dp"
+        android:layout_marginTop="5dp"
         android:layout_marginEnd="8dp"
         android:background="#E7E7E7"
         android:tag="view_background_color_test" />
@@ -105,7 +106,7 @@
         android:layout_width="wrap_content"
         android:layout_height="40dp"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="25dp"
+        android:layout_marginTop="5dp"
         android:layout_marginEnd="8dp"
         android:gravity="center"
         android:paddingHorizontal="6dp"
@@ -119,37 +120,36 @@
         android:layout_width="wrap_content"
         android:layout_height="40dp"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="25dp"
+        android:layout_marginTop="5dp"
         android:layout_marginEnd="8dp"
         android:gravity="center"
         android:paddingHorizontal="6dp"
         android:tag="tv_style_test"
-        android:text="color是style颜色值"
-       />
+        android:text="color是style颜色值" />
 
     <TextView
         android:id="@+id/tv_appearance_test"
         android:layout_width="wrap_content"
         android:layout_height="40dp"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="25dp"
+        android:layout_marginTop="5dp"
         android:layout_marginEnd="8dp"
         android:gravity="center"
         android:paddingHorizontal="6dp"
         android:tag="tv_appearance_test"
         android:text="color是appearance颜色值"
         android:textAppearance="@style/TextViewYellowAppearance" />
+
     <TextView
         android:id="@+id/tv_color_state_test"
         android:layout_width="wrap_content"
         android:layout_height="40dp"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="25dp"
+        android:layout_marginTop="5dp"
         android:layout_marginEnd="8dp"
         android:gravity="center"
         android:paddingHorizontal="6dp"
-        android:textColor="@color/tc_tab"
         android:tag="tv_color_state_test"
         android:text="color是colorState颜色值"
-        />
+        android:textColor="@color/tc_tab" />
 </LinearLayout>

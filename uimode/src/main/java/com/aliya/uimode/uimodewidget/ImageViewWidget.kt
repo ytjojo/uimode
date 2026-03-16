@@ -7,7 +7,7 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.widget.ImageViewCompat
 import com.aliya.uimode.R
 import com.aliya.uimode.core.CachedTypedValueArray
-import java.util.*
+import java.util.Arrays
 
 open class ImageViewWidget : AbstractWidget() {
 

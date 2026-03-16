@@ -1,7 +1,6 @@
 package com.aliya.uimode.uimodewidget
 
 import android.content.res.ColorStateList
-import android.content.res.TypedArray
 import android.graphics.PorterDuff
 import android.os.Build
 import android.util.AttributeSet
@@ -12,7 +11,7 @@ import androidx.annotation.CallSuper
 import androidx.core.view.ViewCompat
 import com.aliya.uimode.R
 import com.aliya.uimode.core.CachedTypedValueArray
-import java.util.*
+import java.util.Arrays
 
 open class ViewWidget : AbstractWidget() {
 

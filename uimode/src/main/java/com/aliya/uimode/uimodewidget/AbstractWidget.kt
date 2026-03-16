@@ -62,6 +62,7 @@ abstract class AbstractWidget : IApplyAttrResourceId {
         styleable: IntArray,
         indexInStyleable: Int,
         typedValue: TypedValue,
+        typedArray: TypedArray,
         cachedTypedValueArray: CachedTypedValueArray,
     ): Boolean {
         if (typedValue.resourceId != 0) {
@@ -173,7 +174,7 @@ abstract class AbstractWidget : IApplyAttrResourceId {
                                     typedValue.resourceId = attrValueMap[attrName] ?: 0
                                 }
                             }
-                            if(!onInterceptPutCacheTypeValue(view,styleable,indexInStyleable,typedValue,cachedTypeArray)){
+                            if(!onInterceptPutCacheTypeValue(view,styleable,indexInStyleable,typedValue,typedArray,cachedTypeArray)){
                                 cachedTypeArray.putTypeValue(indexInStyleable, typedValue)
                             }
 
