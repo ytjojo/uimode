@@ -44,7 +44,7 @@ public class BaseActivity extends AppCompatActivity implements UiModeChangeListe
 //            UiModeManager.applyUiModeViews(this);
             nightMode = newNightMode;
         }
-        Toast.makeText(this,"系统uiMode = " + UiModeManager.INSTANCE.getSystemUiMode() + "当前uiMode = " + AppResourceUtils.calculateNightMode(this),Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this,"系统uiMode = " + UiModeManager.INSTANCE.getSystemUiMode() + "当前uiMode = " + AppResourceUtils.calculateNightMode(this),Toast.LENGTH_SHORT).show();
     }
 
     @Override
