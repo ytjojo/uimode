@@ -27,28 +27,36 @@ res
 
 ```
 dependencies {
-    compile 'com.aliya:android-uimode:3.0.0'
-    compile 'androidx.appcompat:appcompat:x.x.x'
+    implementation 'com.wogoo.android:uimode:1.0.5'
+    implementation 'androidx.appcompat:appcompat:x.x.x'
 }
 ```
 
-### 二、代码配置，具体用法参考示例 [ui-mode-2.x-simple](ui-mode-2.x-sample)
-* 初始化 Application#onCreate(); 参考示例代码 [UiMode.init(context)](ui-mode-2.x-sample/src/main/java/com/aliya/uimode/sample/AppUiMode.java)
+### 二、代码配置，具体用法参考示例 [app](app)
+* 初始化 Application#onCreate(); 参考示例代码 [AppUiMode.init(context)]([AppUiMode.java](app/src/main/java/com/aliya/uimode/sample/AppUiMode.java))
 
 ```java
-/*
- * public static void init(Context context) {
- *     sContext = context.getApplicationContext();
- *     UiModeManager.init(sContext, null);
- *     UiModeManager.setDefaultUiMode(_get().uiMode);
- * }
- */
+  UiModeManager.init(sContext, new LayoutInflater.Factory2() {
+    @Override
+    public View onCreateView(View parent, String name, Context context, AttributeSet attrs) {
+        // 此处可自定义拦截创建View
+        return null;
+    }
+
+    @Override
+    public View onCreateView(String name, Context context, AttributeSet attrs) {
+        return onCreateView(null, name, context, attrs);
+    }
+});
+        UiModeManager.addFactory2(new BackgroundFactory());
+        UiModeManager.setDefaultUiMode(_get().uiMode);
 ```
 
 * BaseActivity#onCreate(Bundle);
 ```
 protected void onCreate(Bundle savedInstanceState) {
-    UiModeManager.setInflaterFactor(getLayoutInflater());
+   // LayoutInflaterCompat.setFactory2(getLayoutInflater(), UiModeManager.INSTANCE.obtainInflaterFactory());
+    UiModeManager.INSTANCE.setFactory2(getLayoutInflater());
     super.onCreate(savedInstanceState);
 }
 ```
@@ -57,10 +65,58 @@ protected void onCreate(Bundle savedInstanceState) {
 public class BaseActivity extends AppCompatActivity {
 }
 ```
-* 拓展类型
+* 定义拓展类型
 ```
-UiModeManager.addSupportUiApply(String, UiApply);
+class BackgroundViewWidget : ViewWidget() {
+
+
+    /**
+     * 自定义属性
+     * background
+     * background_button_drawable
+     * background_multi_selector
+     * background_multi_selector_text
+     * background_press
+     * background_selector
+     * bl_anim
+     * bl_other
+     * bl_text
+     * text_selector
+     *
+     */
+    override fun onRegisterStyleable() {
+        super.onRegisterStyleable()
+
+        registerCustomAttrArray(com.noober.background.R.styleable.background);
+        registerCustomAttrArray(com.noober.background.R.styleable.background_press);
+        registerCustomAttrArray(com.noober.background.R.styleable.background_selector);
+        registerCustomAttrArray(com.noober.background.R.styleable.text_selector);
+        registerCustomAttrArray(com.noober.background.R.styleable.background_button_drawable);
+        registerCustomAttrArray(com.noober.background.R.styleable.bl_other);
+        registerCustomAttrArray(com.noober.background.R.styleable.bl_anim);
+        registerCustomAttrArray(com.noober.background.R.styleable.background_multi_selector);
+        registerCustomAttrArray(com.noober.background.R.styleable.background_multi_selector_text);
+        registerCustomAttrArray(com.noober.background.R.styleable.bl_text);
+    }
+
+    override fun onApplyCustom(v: View, typedArrayMap: Map<IntArray, CachedTypedValueArray>) {
+        super.onApplyCustom(v, typedArrayMap)
+        BackgroundTypedArrayDelegate.setViewBackground(
+            v.context,
+            typedArrayMap as MutableMap<IntArray, CachedTypedValueArray>,
+            v
+        )
+
+    }
+}
 ```
+
+* 注册类型
+```java
+  WidgetRegister.put(View::class.java,BackgroundViewWidget())
+
+```
+
 * AndroidManifest.xml 配置 configChanges="uiMode", 不然会调用Activity#recreate()
 ```
 <activity
@@ -223,6 +279,35 @@ app:maskColor="@android:color/transparent"
     android:layout_height="wrap_content"
     app:maskUnion="true" />
 ```
+
+### 六、colorFilter
+
+支持对所有View的background foreground
+TextView 所有drawable leftDrawable,topDrawable,rightDrawable,bottomDrawable
+ImageView
+设置colorFilter
+
+
+
+```xml
+<View
+    android:layout_width="30dp"
+    android:layout_height="30dp"
+    android:background="@drawable/ic_nav_bar_back_dark"
+    app:view_colorFilter="@color/_dddddd_343434"
+    app:view_colorFilterMode="src_in"
+/>
+
+
+<TextView
+android:layout_width="30dp"
+android:layout_height="30dp"
+android:leftDrawable="@drawable/ic_nav_bar_back_dark"
+app:view_colorFilter="@color/_dddddd_343434"
+app:view_colorFilterMode="src_in"
+/>
+```
+
 
 ### 七、自定义View日夜模式切换的实现
 

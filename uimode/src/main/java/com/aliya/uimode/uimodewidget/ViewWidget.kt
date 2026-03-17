@@ -7,6 +7,7 @@ import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.View
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.annotation.CallSuper
 import androidx.core.view.ViewCompat
 import com.aliya.uimode.R
@@ -75,8 +76,16 @@ open class ViewWidget : AbstractWidget() {
             }
             colorFilterColor?.let { color ->
                 val mode = colorFilterMode ?: PorterDuff.Mode.SRC_IN
-                if(v is ImageView){
+                if(v is ImageView) {
                     v.setColorFilter(color, mode)
+                }else if(v is TextView){
+                    v.compoundDrawables.forEach {
+                        if(it != null) {
+                            it.setColorFilter(color, mode)
+                        }
+                    }
+                    v.background?.setColorFilter(color, mode)
+                    v.foreground?.setColorFilter(color, mode)
                 }else {
                     v.background?.setColorFilter(color, mode)
                     v.foreground?.setColorFilter(color, mode)

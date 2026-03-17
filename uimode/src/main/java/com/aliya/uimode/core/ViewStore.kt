@@ -3,10 +3,12 @@ package com.aliya.uimode.core
 import android.app.Activity
 import android.app.Application
 import android.content.Context
+import android.os.SystemClock
 import android.view.View
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
+import com.aliya.uimode.HideLog
 import com.aliya.uimode.R
 import com.aliya.uimode.utils.AppResourceUtils
 import com.aliya.uimode.utils.AppUtil
@@ -15,7 +17,7 @@ import java.lang.ref.WeakReference
 
 object ViewStore {
 
-
+    private const val TAG = "ViewStore"
     private val mContextViewMap: MutableMap<Context, MutableSet<WeakReference<View>>> = HashMap()
     private val mActivityViewMap: MutableMap<Context, MutableSet<WeakReference<View>>> = HashMap()
     private val referenceQueue = ReferenceQueue<View>()
@@ -56,13 +58,19 @@ object ViewStore {
      * @param policy apply 策略
      */
     fun dispatchApplyUiMode() {
+        val startTime = SystemClock.elapsedRealtime()
         // 1、先执行Activity相关的View
         for ((key, value) in mActivityViewMap) {
             if (AppResourceUtils.isRecreateOnUiModeChange(key)) {
                 // Activity#recreate()会调用，无需动态替换
                 continue
             }
+            val activityStartTime = SystemClock.elapsedRealtime()
             onApplyUiMode(value)
+            val costTime = SystemClock.elapsedRealtime() - activityStartTime
+            if(HideLog.isDebuggable() && costTime> 5 ){
+                HideLog.d(TAG, "dispatchApplyUiMode: " + key.javaClass.simpleName + " costTime > 5 ms: " + costTime)
+            }
         }
 
         // 2、在执行ApplicationContext相关的View
@@ -70,6 +78,9 @@ object ViewStore {
             onApplyUiMode(value)
         }
         ViewStore.dispatchUiModeChangeListener()
+        if(HideLog.isDebuggable() ){
+            HideLog.d(TAG, "dispatchApplyUiMode:  costTime: " + (SystemClock.elapsedRealtime()-startTime))
+        }
     }
 
     fun applyUiMode(activity: Activity) {

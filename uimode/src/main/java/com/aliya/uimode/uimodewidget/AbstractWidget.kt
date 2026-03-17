@@ -241,7 +241,10 @@ abstract class AbstractWidget : IApplyAttrResourceId {
     }
 
     fun isLegalType(typedValue: TypedValue): Boolean {
-        return typedValue.type != TypedValue.TYPE_NULL && typedValue.resourceId != 0
+        return typedValue.type != TypedValue.TYPE_NULL && !(isColorIntType(typedValue))
+    }
+    fun isColorIntType(typedValue: TypedValue): Boolean {
+        return typedValue.type >= TypedValue.TYPE_FIRST_COLOR_INT && typedValue.type <= TypedValue.TYPE_LAST_COLOR_INT
     }
 
     override fun applyStyle(view: View, @StyleRes styleRes: Int) {

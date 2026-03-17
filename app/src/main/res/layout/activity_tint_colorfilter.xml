@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_color"
+    android:orientation="vertical"
+    tools:context=".ImageViewSimpleActivity">
+
+    <com.aliya.uimode.sample.view.TopBar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:src="@mipmap/ic_home"
+                app:view_colorFilter="@color/_dddddd_343434"
+                app:view_colorFilterMode="src_in" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginTop="10dp"
+                android:src="@mipmap/ic_star_pressed"
+                app:tint="@color/_ff4081_aa8080" />
+
+            <com.noober.background.view.BLTextView
+                android:layout_width="wrap_content"
+                android:layout_height="24dp"
+                android:layout_marginTop="10dp"
+                android:drawableLeft="@mipmap/ic_home"
+                android:gravity="center"
+                android:paddingHorizontal="5dp"
+                android:text="账号"
+                android:textColor="@color/text_dark_primary"
+                android:textSize="14sp"
+                app:bl_corners_radius="10dp"
+                app:bl_stroke_color="@color/_ff4081_aa8080"
+                app:bl_stroke_width="2dp"
+                app:view_colorFilter="@color/_dddddd_343434"
+                app:view_colorFilterMode="src_in" />
+
+            <com.noober.background.view.BLTextView
+                android:layout_width="wrap_content"
+                android:layout_height="24dp"
+                android:layout_marginTop="10dp"
+                android:gravity="center"
+                android:text="账号"
+                android:drawablePadding="6dp"
+                android:drawableLeft="@mipmap/ic_home"
+                android:textColor="@color/text_dark_primary"
+                app:drawableTint="@color/text_dark_primary"
+                android:textSize="14sp"
+                app:bl_corners_radius="10dp"
+                app:bl_solid_color="@color/_ff4081_aa8080" />
+
+
+
+
+            <ImageView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="10dp"
+                android:src="@drawable/community_ic_draft_box"
+                app:tint="@color/text_dark_primary" />
+
+
+            <View
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="10dp"
+                android:background="@mipmap/ic_home"
+                app:backgroundTint="@color/text_dark_primary" />
+
+
+
+
+
+        </LinearLayout>
+
+
+    </ScrollView>
+</LinearLayout>
+

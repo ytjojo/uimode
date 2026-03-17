@@ -142,4 +142,14 @@
 
     </declare-styleable>
 
+    <declare-styleable name="DividerHelper">
+        <attr name="android:divider" />
+    </declare-styleable>
+
+    <declare-styleable name="ButtonHelper">
+        <attr name="android:buttonTint" />
+        <attr name="android:buttonTintMode" />
+        <attr name="android:button" />
+    </declare-styleable>
+
 </resources>
