@@ -194,6 +194,19 @@
         android:textSize="16sp"
         app:maskColor="@android:color/transparent" />
 
+    <TextView
+        android:id="@+id/btn_go_tint_colorFilter_test"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:background="?android:selectableItemBackground"
+        android:drawableRight="@drawable/ic_arrow_right"
+        android:gravity="left|center_vertical"
+        android:paddingLeft="25dp"
+        android:text="tint和colorFilter示例页"
+        android:textColor="@color/text_color"
+        android:textSize="16sp"
+        app:maskColor="@android:color/transparent" />
+
     <include layout="@layout/layout_divider_line" />
 
 </LinearLayout>

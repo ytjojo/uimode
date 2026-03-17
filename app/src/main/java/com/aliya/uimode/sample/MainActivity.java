@@ -32,6 +32,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         findViewById(R.id.btn_go_local_set).setOnClickListener(this);
         findViewById(R.id.btn_go_style_test).setOnClickListener(this);
         findViewById(R.id.btn_go_backlib_test).setOnClickListener(this);
+        findViewById(R.id.btn_go_tint_colorFilter_test).setOnClickListener(this);
         ((TopBar) findViewById(R.id.top_bar)).setTitle("主界面");
 
     }
@@ -39,31 +40,33 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.btn_go_simple) {
-                startActivity(new Intent(this, SimpleActivity.class));
+            startActivity(new Intent(this, SimpleActivity.class));
         } else if (v.getId() == R.id.btn_go_theme_simple) {
-                startActivity(new Intent(this, ThemeSimpleActivity.class));
+            startActivity(new Intent(this, ThemeSimpleActivity.class));
         } else if (v.getId() == R.id.btn_go_image_view_simple) {
-                startActivity(new Intent(this, ImageViewSimpleActivity.class));
+            startActivity(new Intent(this, ImageViewSimpleActivity.class));
 
         } else if (v.getId() == R.id.btn_go_list_view_simple) {
-                startActivity(new Intent(this, ListViewSimpleActivity.class));
+            startActivity(new Intent(this, ListViewSimpleActivity.class));
         } else if (v.getId() == R.id.btn_go_recycler_view_simple) {
-                startActivity(new Intent(this, RecyclerSimpleActivity.class));
+            startActivity(new Intent(this, RecyclerSimpleActivity.class));
         } else if (v.getId() == R.id.btn_go_web_view_simple) {
-                startActivity(new Intent(this, WebViewSimpleActivity.class));
+            startActivity(new Intent(this, WebViewSimpleActivity.class));
         } else if (v.getId() == R.id.btn_go_text_view_simple) {
-                startActivity(new Intent(this, TextViewSimpleActivity.class));
+            startActivity(new Intent(this, TextViewSimpleActivity.class));
         } else if (v.getId() == R.id.btn_go_bug_simple) {
-                startActivity(new Intent(this, BugSimpleActivity.class));
+            startActivity(new Intent(this, BugSimpleActivity.class));
         } else if (v.getId() == R.id.btn_go_simple_test) {
-                startActivity(new Intent(this, SimpleTestActivity.class));
+            startActivity(new Intent(this, SimpleTestActivity.class));
         } else if (v.getId() == R.id.btn_go_local_set) {
-                startActivity(new Intent(this, LocalModeActivity.class));
+            startActivity(new Intent(this, LocalModeActivity.class));
 
         } else if (v.getId() == R.id.btn_go_style_test) {
-                startActivity(new Intent(this, StyleTestActivity.class));
+            startActivity(new Intent(this, StyleTestActivity.class));
         } else if (v.getId() == R.id.btn_go_backlib_test) {
-                startActivity(new Intent(this, NooberBackgroundActivity.class));
+            startActivity(new Intent(this, NooberBackgroundActivity.class));
+        } else if (v.getId() == R.id.btn_go_tint_colorFilter_test) {
+            startActivity(new Intent(this, TintColorFilterActivity.class));
         }
     }
 
