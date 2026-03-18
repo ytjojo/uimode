@@ -7,6 +7,7 @@ import android.view.View
 import androidx.annotation.StyleRes
 import com.aliya.uimode.R
 import com.aliya.uimode.UiModeManager
+import com.aliya.uimode.debug.WidgetDebugTool
 import com.aliya.uimode.uimodewidget.AbstractWidget
 import com.aliya.uimode.uimodewidget.TypedValueUtils
 import com.aliya.uimode.utils.AppUtil
@@ -63,6 +64,9 @@ object UiModeDelegate {
 
             list.forEach {
                 typeArrayMap.forEach { entry ->
+                    if (WidgetDebugTool.isDebugEnabled) {
+                        WidgetDebugTool.onApplyDebug(v, entry.key, entry.value,it)
+                    }
                     it.onApply(v, entry.key, entry.value)
                 }
             }

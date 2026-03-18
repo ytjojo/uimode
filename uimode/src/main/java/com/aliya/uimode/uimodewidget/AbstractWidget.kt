@@ -15,6 +15,7 @@ import com.aliya.uimode.R
 import com.aliya.uimode.core.ResourceNightModeChecker
 import com.aliya.uimode.core.UiModeChangeListener
 import com.aliya.uimode.core.ViewStore
+import com.aliya.uimode.debug.WidgetDebugTool
 import com.aliya.uimode.utils.AppResourceUtils
 import com.aliya.uimode.utils.AppUtil
 import java.lang.ref.WeakReference
@@ -82,6 +83,9 @@ abstract class AbstractWidget : IApplyAttrResourceId {
 
 
     override fun assemble(view: View, attributeSet: AttributeSet): Boolean {
+        if (WidgetDebugTool.isDebugEnabled) {
+            WidgetDebugTool.onAssembleDebug(view, attributeSet, this)
+        }
 
         var ignoreValue = ""
         val ignoreAttrNames = HashSet<String>()
@@ -155,14 +159,22 @@ abstract class AbstractWidget : IApplyAttrResourceId {
                             )
                         ) {
                             if (HideLog.isDebuggable()) {
-                                HideLog.i(
-                                    "assemble",
-                                    " path = " + typedValue.string + " attrName " + view.context.resources.getResourceName(
-                                        styleable[indexInStyleable]
-                                    ) + " resourceId = " + Integer.toHexString(typedValue.resourceId) + " resourceName = " + view.context.resources.getResourceName(
-                                        typedValue.resourceId
+                                if(typedValue.resourceId == 0){
+                                    HideLog.i(
+                                        "assemble",
+                                        " typedValue = " + typedValue.toString()
                                     )
-                                )
+                                }else{
+                                    HideLog.i(
+                                        "assemble",
+                                        " path = " + typedValue.string + " attrName " + view.context.resources.getResourceName(
+                                            styleable[indexInStyleable]
+                                        ) + " typedValue = ${typedValue.toString()} resourceId = " + Integer.toHexString(typedValue.resourceId) + " resourceName = " + view.context.resources.getResourceName(
+                                            typedValue.resourceId
+                                        )
+                                    )
+                                }
+
                             }
 
                             if (attrValueMap.isNotEmpty()) {
@@ -183,6 +195,7 @@ abstract class AbstractWidget : IApplyAttrResourceId {
                     }
                     if (!cachedTypeArray.isEmpty()) {
                         cachedTypeArrayMap.put(styleable, cachedTypeArray)
+                        applyTypedValueWhenOnAssemble(view, styleable, cachedTypeArray)
                     }
                 }
                 typedArray.recycle()
@@ -236,15 +249,41 @@ abstract class AbstractWidget : IApplyAttrResourceId {
         indexInStyleable: Int,
         typedValue: TypedValue
     ): Boolean {
-
         return false
     }
 
-    fun isLegalType(typedValue: TypedValue): Boolean {
-        return typedValue.type != TypedValue.TYPE_NULL && !(isColorIntType(typedValue))
+
+    /**
+     * 默认情况下不执行onApply更改样式
+     */
+    open fun onInterceptApplyWhenOnAssemble(
+        view: View, styleable: IntArray, typedArray: CachedTypedValueArray
+    ): Boolean {
+        return true
     }
-    fun isColorIntType(typedValue: TypedValue): Boolean {
-        return typedValue.type >= TypedValue.TYPE_FIRST_COLOR_INT && typedValue.type <= TypedValue.TYPE_LAST_COLOR_INT
+
+
+    /**
+     * 生成缓存样式后判断是否要应用样式
+     */
+    open fun applyTypedValueWhenOnAssemble(
+        view: View ,styleable: IntArray, typedArray: CachedTypedValueArray
+    ): Boolean {
+
+        if(!onInterceptApplyWhenOnAssemble(view,styleable,typedArray)){
+           return this.onApply(view, styleable, typedArray)
+        }
+        return false
+    }
+
+
+
+
+    fun isLegalType(typedValue: TypedValue): Boolean {
+        return typedValue.type != TypedValue.TYPE_NULL && !isHexColorResourceType(typedValue)
+    }
+    fun isHexColorResourceType(typedValue: TypedValue): Boolean {
+        return typedValue.resourceId == 0 && typedValue.type >= TypedValue.TYPE_FIRST_COLOR_INT && typedValue.type <= TypedValue.TYPE_LAST_COLOR_INT
     }
 
     override fun applyStyle(view: View, @StyleRes styleRes: Int) {

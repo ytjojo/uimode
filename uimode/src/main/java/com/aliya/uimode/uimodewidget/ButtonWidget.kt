@@ -1,53 +1,58 @@
 package com.aliya.uimode.uimodewidget
 
-import android.content.res.TypedArray
 import android.view.View
+import android.widget.CompoundButton
 import android.widget.ImageView
-import androidx.appcompat.widget.AppCompatImageView
+import androidx.core.widget.CompoundButtonCompat
 import androidx.core.widget.ImageViewCompat
 import com.aliya.uimode.R
 import com.aliya.uimode.core.CachedTypedValueArray
 import java.util.Arrays
 
-open class ImageViewWidget : AbstractWidget() {
+class ButtonWidget : AbstractWidget() {
 
     override fun onRegisterStyleable() {
         super.onRegisterStyleable()
-        registerAttrArray(androidx.appcompat.R.styleable.AppCompatImageView)
+        registerAttrArray(R.styleable.ButtonHelper)
     }
 
 
-
     override fun onApply(v: View, styleable: IntArray, typedArray: CachedTypedValueArray): Boolean {
-        val imageView = v as ImageView
-        if (Arrays.equals(styleable,androidx.appcompat.R.styleable.AppCompatImageView)) {
+        val compoundButton = v as? CompoundButton ?: return false
+        if (Arrays.equals(styleable, R.styleable.ButtonHelper)) {
             val indexCount = typedArray.length()
             for (i in 0 until indexCount) {
                 val indexInStyleable = typedArray.getIndex(i)
                 val typedValue = typedArray.peekValue(indexInStyleable)
                 if (typedValue != null) {
                     when (indexInStyleable) {
-                        androidx.appcompat.R.styleable.AppCompatImageView_android_src,androidx.appcompat.R.styleable.AppCompatImageView_srcCompat -> {
-
+                        R.styleable.ButtonHelper_android_button -> {
                             TypedValueUtils.getDrawable(
                                 v,
                                 typedValue,
                                 this
                             )?.let {
-                                imageView.setImageDrawable(it)
+                                compoundButton.buttonDrawable = it
                             }
+
+
+
                         }
-                        androidx.appcompat.R.styleable.AppCompatImageView_tint -> {
-                           TypedValueUtils.getColorStateList(
+
+                        R.styleable.ButtonHelper_android_buttonTintMode -> {
+                        }
+
+                        R.styleable.ButtonHelper_android_buttonTint -> {
+                            TypedValueUtils.getColorStateList(
                                 v,
                                 typedValue,
                                 this
                             )?.let {
-                               ImageViewCompat.setImageTintList(
-                                   imageView,
-                                   it
-                               )
-                           }
+                                CompoundButtonCompat.setButtonTintList(
+                                    compoundButton,
+                                    it
+                                )
+                            }
 
                         }
 
@@ -58,8 +63,4 @@ open class ImageViewWidget : AbstractWidget() {
         }
         return false
     }
-
-
-
-
 }

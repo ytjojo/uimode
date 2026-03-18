@@ -15,17 +15,19 @@ class DrawableCompatUtil {
 
 
         @JvmStatic
-        fun getDrawable(context: Context, @DrawableRes id: Int): Drawable {
-            return AppCompatResources.getDrawable(context, id)!!
+        fun getDrawable(context: Context, @DrawableRes id: Int): Drawable? {
+            if (id == 0) return null
+            return AppCompatResources.getDrawable(context, id)
 
         }
 
         @JvmStatic
-        fun setDrawableMutate(imageView: ImageView, @DrawableRes id: Int): Drawable {
+        fun setDrawableMutate(imageView: ImageView, @DrawableRes id: Int): Drawable? {
             val drawable = getDrawable(
                 imageView.context,
                 id
-            )!!.mutate()
+            )?.mutate()
+            drawable?:return null
             imageView.setImageDrawable(
                 drawable
             )
@@ -34,11 +36,11 @@ class DrawableCompatUtil {
         }
 
         @JvmStatic
-        fun setDrawable(imageView: ImageView, @DrawableRes id: Int): Drawable {
+        fun setDrawable(imageView: ImageView, @DrawableRes id: Int): Drawable? {
             val drawable = getDrawable(
                 imageView.context,
                 id
-            )!!.mutate()
+            )?.mutate()
             imageView.setImageDrawable(
                 drawable
             )

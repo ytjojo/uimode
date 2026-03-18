@@ -22,6 +22,7 @@ import androidx.annotation.AttrRes;
 import androidx.annotation.ColorRes;
 import androidx.annotation.DrawableRes;
 import androidx.annotation.IdRes;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.content.ContextCompat;
@@ -39,10 +40,8 @@ import java.lang.reflect.Method;
 
 public class AppResourceUtils {
 
-    public static final boolean IS_JELLY_BEAN = Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN;
-    public static final boolean IS_KITKAT = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT;
-    public static final boolean IS_LOLLIPOP = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP;
-    public static final boolean IS_M = Build.VERSION.SDK_INT >= Build.VERSION_CODES.M;
+    public static final boolean IS_P = Build.VERSION.SDK_INT >= Build.VERSION_CODES.P;
+    public static final boolean IS_Q = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q;
 
     private static TypedValue sTypedValue;
 
@@ -123,6 +122,7 @@ public class AppResourceUtils {
      * @param attrResId attr资源id
      * @return ColorStateList
      */
+    @Nullable
     public static ColorStateList getColorStateListWithAttr(Context context, @AttrRes int attrResId) {
         if (context == null) {
             return null;
@@ -142,6 +142,7 @@ public class AppResourceUtils {
      * @param colorStateListResId 资源id
      * @return ColorStateList
      */
+    @Nullable
     public static ColorStateList getColorStateListWithResId(Context context, @ColorRes int colorStateListResId) {
         if (context == null) {
             return null;
@@ -157,17 +158,16 @@ public class AppResourceUtils {
      * @param attrResId attr资源id
      * @return Drawable
      */
+    @Nullable
     public static Drawable getDrawableWithAttr(Context context, @AttrRes int attrResId) {
         if (context == null) {
             return null;
         }
         TypedValue typedValue = getTypedValue();
         context.getTheme().resolveAttribute(attrResId, typedValue, true);
-        ;
         HideLog.d("getDrawable", "drawable type:" + typedValue.toString());
 
-        Drawable drawable = DrawableCompatUtil.getDrawable(context, typedValue.resourceId);
-        return drawable;
+        return  DrawableCompatUtil.getDrawable(context, typedValue.resourceId);
 
     }
 
@@ -179,6 +179,7 @@ public class AppResourceUtils {
      * @param drawableResId Drawable资源id
      * @return Drawable
      */
+    @Nullable
     public static Drawable getDrawableWithResId(Context context, @DrawableRes int drawableResId) {
         if (context == null) {
             return null;

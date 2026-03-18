@@ -2,7 +2,6 @@ package com.aliya.uimode.uimodewidget
 
 import android.content.res.ColorStateList
 import android.graphics.PorterDuff
-import android.os.Build
 import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.View
@@ -45,12 +44,12 @@ open class ViewWidget : AbstractWidget() {
                 if (typedValue != null) {
                     when (indexInAttrArray) {
                         R.styleable.UiModeView_android_foreground -> {
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                                v.foreground = TypedValueUtils.getDrawable(
-                                    v,
-                                    typedValue,
-                                    this
-                                )
+                            TypedValueUtils.getDrawable(
+                                v,
+                                typedValue,
+                                this
+                            )?.let {
+                                v.foreground = it
                             }
                         }
                         R.styleable.UiModeView_view_invalidate -> {
@@ -79,13 +78,27 @@ open class ViewWidget : AbstractWidget() {
                 if(v is ImageView) {
                     v.setColorFilter(color, mode)
                 }else if(v is TextView){
-                    v.compoundDrawables.forEach {
+                    var isHasCompoundDrawable = false
+                    v.getCompoundDrawablesRelative().forEach {
                         if(it != null) {
+                            isHasCompoundDrawable = true
                             it.setColorFilter(color, mode)
                         }
                     }
-                    v.background?.setColorFilter(color, mode)
-                    v.foreground?.setColorFilter(color, mode)
+
+                    if(!isHasCompoundDrawable){
+                        v.compoundDrawables.forEach {
+                            if(it != null) {
+                                isHasCompoundDrawable = true
+                                it.setColorFilter(color, mode)
+                            }
+                        }
+                    }
+                    if(!isHasCompoundDrawable){
+                        v.background?.setColorFilter(color, mode)
+                        v.foreground?.setColorFilter(color, mode)
+                    }
+
                 }else {
                     v.background?.setColorFilter(color, mode)
                     v.foreground?.setColorFilter(color, mode)
@@ -103,6 +116,7 @@ open class ViewWidget : AbstractWidget() {
                 if (typedValue != null) {
                     when (attr) {
                         androidx.appcompat.R.styleable.ViewBackgroundHelper_android_background -> {
+
                             background = TypedValueUtils.getDrawable(
                                 v,
                                 typedValue,
@@ -121,7 +135,7 @@ open class ViewWidget : AbstractWidget() {
                     }
                 }
             }
-            if (background != v.background) {
+            if (background != null && background != v.background) {
                 v.background = background
             }
             colorStateList?.let {
@@ -132,6 +146,17 @@ open class ViewWidget : AbstractWidget() {
 
         }
         return false
+    }
+
+    override fun onInterceptApplyWhenOnAssemble(
+        view: View,
+        styleable: IntArray,
+        typedArray: CachedTypedValueArray
+    ): Boolean {
+        if(Arrays.equals(styleable, R.styleable.UiModeView)){
+            return false
+        }
+        return super.onInterceptApplyWhenOnAssemble(view, styleable, typedArray)
     }
 
 

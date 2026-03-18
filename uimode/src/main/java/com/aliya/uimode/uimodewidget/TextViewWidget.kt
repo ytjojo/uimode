@@ -65,58 +65,52 @@ open class TextViewWidget : AbstractWidget() {
                         }
 
                         R.styleable.TextViewHelper_android_textColor -> {
-                            val colorStateList = TypedValueUtils.getColorStateList(
+                           TypedValueUtils.getColorStateList(
                                 v,
                                 typedValue,
                                 this
-                            )
-
-                            colorStateList?.let {
-                                textView.setTextColor(it)
-                            }
+                            )?.let {
+                               textView.setTextColor(it)
+                           }
 
                         }
 
                         R.styleable.TextViewHelper_android_textColorHighlight -> {
-                            val colorStateList = TypedValueUtils.getColorStateList(
+                            TypedValueUtils.getColorStateList(
                                 v,
                                 typedValue,
                                 this
-                            )
-                            colorStateList?.let {
+                            )?.let {
                                 textView.highlightColor = it.defaultColor
                             }
                         }
 
                         R.styleable.TextViewHelper_android_textColorHint -> {
-                            val colorStateList = TypedValueUtils.getColorStateList(
+                           TypedValueUtils.getColorStateList(
                                 v,
                                 typedValue,
                                 this
-                            )
-                            colorStateList?.let {
-                                textView.setHintTextColor(it)
-                            }
+                            )?.let {
+                               textView.setHintTextColor(it)
+                           }
                         }
 
                         R.styleable.TextViewHelper_android_textColorLink -> {
-                            val colorStateList = TypedValueUtils.getColorStateList(
+                            TypedValueUtils.getColorStateList(
                                 v,
                                 typedValue,
                                 this
-                            )
-                            colorStateList?.let {
+                            )?.let {
                                 textView.setLinkTextColor(it)
                             }
                         }
 
                         R.styleable.TextViewHelper_android_textCursorDrawable -> {
-                            val drawable = TypedValueUtils.getDrawable(
+                            TypedValueUtils.getDrawable(
                                 v,
                                 typedValue,
                                 this
-                            )
-                            drawable?.let {
+                            )?.let {
                                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                                     textView.setTextCursorDrawable(it)
                                 }
@@ -125,7 +119,7 @@ open class TextViewWidget : AbstractWidget() {
 
 
                         R.styleable.TextViewHelper_android_drawableLeft, R.styleable.TextViewHelper_drawableLeftCompat, R.styleable.TextViewHelper_android_drawableStart -> {
-                            drawableLeft = TypedValueUtils.getDrawable(
+                            drawableLeft = drawableLeft?: TypedValueUtils.getDrawable(
                                 v,
                                 typedValue,
                                 this
@@ -133,7 +127,7 @@ open class TextViewWidget : AbstractWidget() {
                         }
 
                         R.styleable.TextViewHelper_android_drawableTop, R.styleable.TextViewHelper_drawableTopCompat -> {
-                            drawableTop = TypedValueUtils.getDrawable(
+                            drawableTop = drawableTop?:TypedValueUtils.getDrawable(
                                 v,
                                 typedValue,
                                 this
@@ -141,7 +135,7 @@ open class TextViewWidget : AbstractWidget() {
                         }
 
                         R.styleable.TextViewHelper_android_drawableRight, R.styleable.TextViewHelper_drawableRightCompat, R.styleable.TextViewHelper_android_drawableEnd -> {
-                            drawableRight = TypedValueUtils.getDrawable(
+                            drawableRight = drawableRight?:TypedValueUtils.getDrawable(
                                 v,
                                 typedValue,
                                 this
@@ -149,7 +143,7 @@ open class TextViewWidget : AbstractWidget() {
                         }
 
                         R.styleable.TextViewHelper_android_drawableBottom, R.styleable.TextViewHelper_drawableBottomCompat -> {
-                            drawableBottom = TypedValueUtils.getDrawable(
+                            drawableBottom = drawableBottom?:TypedValueUtils.getDrawable(
                                 v,
                                 typedValue,
                                 this
@@ -171,25 +165,27 @@ open class TextViewWidget : AbstractWidget() {
             }
 
 
-            if (drawableLeft != null || drawableTop != null || drawableRight != null || drawableBottom != null)
-                if (drawableLeft == null) {
-                    drawableLeft = textView.compoundDrawablesRelative[0]
-                }
+            if (drawableLeft == null) {
+                drawableLeft = textView.compoundDrawablesRelative[0]?:textView.compoundDrawables[0]
+            }
             if (drawableTop == null) {
-                drawableTop = textView.compoundDrawablesRelative[1]
+                drawableTop = textView.compoundDrawablesRelative[1]?:textView.compoundDrawables[1]
             }
             if (drawableRight == null) {
-                drawableRight = textView.compoundDrawablesRelative[2]
+                drawableRight = textView.compoundDrawablesRelative[2]?:textView.compoundDrawables[2]
             }
             if (drawableBottom == null) {
-                drawableBottom = textView.compoundDrawablesRelative[3]
+                drawableBottom = textView.compoundDrawablesRelative[3]?:textView.compoundDrawables[3]
             }
-            textView.setCompoundDrawablesRelativeWithIntrinsicBounds(
-                drawableLeft,
-                drawableTop,
-                drawableRight,
-                drawableBottom
-            )
+            if(drawableLeft != null || drawableTop != null || drawableRight != null || drawableBottom != null){
+                textView.setCompoundDrawablesRelativeWithIntrinsicBounds(
+                    drawableLeft,
+                    drawableTop,
+                    drawableRight,
+                    drawableBottom
+                )
+
+            }
 
             if (tintColorStateList != null) {
                 TextViewCompat.setCompoundDrawableTintList(textView, tintColorStateList)

@@ -93,9 +93,10 @@ object WidgetRegister {
         mCacheTypeRegister.put(ImageView::class.java, ImageViewWidget())
         mCacheTypeRegister.put(ProgressBar::class.java, ProgressBarWidget())
         mCacheTypeRegister.put(SeekBar::class.java, SeekbarWidget())
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            mCacheTypeRegister.put(Toolbar::class.java, ToolbarWidget())
-        }
+        mCacheTypeRegister.put(Toolbar::class.java, ToolbarWidget())
+        mCacheTypeRegister.put(CompoundButton::class.java, ButtonWidget())
+        mCacheTypeRegister.put(ListView::class.java, DividerWidget())
+        mCacheTypeRegister.put(LinearLayout::class.java, DividerWidget())
         mCacheTypeRegister.values.forEach {
             it.onRegisterStyleable()
 

@@ -18,7 +18,7 @@ final public class HideLog {
      */
     private static boolean isDebug = true;
     /**
-     * @see ./build.gradle 属性android.buildTypes.release/debug#debuggable true/false 来决定
+     *  ./build.gradle 属性android.buildTypes.release/debug#debuggable true/false 来决定
      */
     private static boolean debuggable = false;
 
@@ -90,6 +90,11 @@ final public class HideLog {
     public static void v(String tag, String msg) {
         if (isDebug && debuggable && msg != null)
             Log.v(tag, msg);
+    }
+
+    public static void w(String tag, String msg) {
+        if (isDebug && debuggable && msg != null)
+            Log.w(tag, msg);
     }
 
     public static void e(String tag, String msg, Throwable tr) {
