@@ -2,9 +2,16 @@ package com.aliya.uimode.utils;
 
 import android.content.Context;
 import androidx.collection.ArrayMap;
+
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.InflateException;
 import android.view.View;
+import android.widget.TextView;
+
+import com.aliya.uimode.R;
+import com.aliya.uimode.widget.MaskDrawable;
+import com.aliya.uimode.widget.MaskHelper;
 
 import java.lang.reflect.Constructor;
 import java.util.Map;
@@ -58,6 +65,26 @@ public class ViewInflater {
             // Don't retain references on context.
             mConstructorArgs[0] = null;
             mConstructorArgs[1] = null;
+        }
+    }
+
+
+    public static void applyTextViewMaskDrawable(Context context, View view, AttributeSet attrs){
+        if (view instanceof TextView) {
+            MaskHelper maskHelper = new MaskHelper(context, attrs);
+            view.setTag(R.id.tag_ui_mode_mask_drawable, maskHelper);
+            Drawable[] drawables = ((TextView) view).getCompoundDrawables();
+            boolean ifTrue = false;
+            for (int i = 0; i < drawables.length; i++) {
+                if (drawables[i] != null) {
+                    drawables[i] = new MaskDrawable(drawables[i], maskHelper);
+                    ifTrue = true;
+                }
+            }
+            if (ifTrue) {
+                ((TextView) view).setCompoundDrawablesWithIntrinsicBounds(
+                        drawables[0], drawables[1], drawables[2], drawables[3]);
+            }
         }
     }
 

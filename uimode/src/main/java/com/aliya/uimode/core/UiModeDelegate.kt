@@ -5,6 +5,7 @@ import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.View
 import androidx.annotation.StyleRes
+import com.aliya.uimode.HideLog
 import com.aliya.uimode.R
 import com.aliya.uimode.UiModeManager
 import com.aliya.uimode.debug.WidgetDebugTool
@@ -13,6 +14,7 @@ import com.aliya.uimode.uimodewidget.TypedValueUtils
 import com.aliya.uimode.utils.AppUtil
 
 object UiModeDelegate {
+    const val TAG = "UiModeDelegate"
 
     fun onViewCreated(v: View, attrs: AttributeSet) {
         val activity = AppUtil.findActivity(v.context)
@@ -42,7 +44,7 @@ object UiModeDelegate {
     fun onUiModeChanged(v: View) {
         val tagThemeTypedValue = v.getTag(R.id.tag_ui_mode_theme_typed_value) as? TypedValue?
         tagThemeTypedValue?.let {
-            val theme = TypedValueUtils.getStyle(v, it, WidgetRegister.get(View::class.java)!!)
+            val theme = TypedValueUtils.getStyle(v, it)
             if (theme != 0) {
                 v.getContext().getTheme()?.applyStyle(theme, true)
             }
@@ -67,6 +69,13 @@ object UiModeDelegate {
                     if (WidgetDebugTool.isDebugEnabled) {
                         WidgetDebugTool.onApplyDebug(v, entry.key, entry.value,it)
                     }
+                    if (HideLog.isDebuggable()) {
+                        val idResName = if(v.id == View.NO_ID) "" else v.resources.getResourceName(v.id)
+                        HideLog.i(
+                            TAG,
+                            " onApply view class: ${v::class.java.canonicalName} id = ${idResName} widget class : ${it::class.java.canonicalName} "
+                        )
+                    }
                     it.onApply(v, entry.key, entry.value)
                 }
             }
@@ -78,6 +87,18 @@ object UiModeDelegate {
         if (tagCustom != null && tagCustom is Map<*, *>) {
             val typedArrayMap = tagCustom as Map<IntArray, CachedTypedValueArray>
             list.forEach {
+                if (WidgetDebugTool.isDebugEnabled) {
+                    typedArrayMap.forEach { entry ->
+                        WidgetDebugTool.onApplyDebug(v, entry.key, entry.value,it)
+                    }
+                }
+                if (HideLog.isDebuggable()) {
+                    val idResName = if(v.id == View.NO_ID) "" else v.resources.getResourceName(v.id)
+                    HideLog.i(
+                        TAG,
+                        " onApply view class: ${v::class.java.canonicalName} id = ${idResName} widget class : ${it::class.java.canonicalName} "
+                    )
+                }
                 it.onApplyCustom(v, typedArrayMap)
             }
         }

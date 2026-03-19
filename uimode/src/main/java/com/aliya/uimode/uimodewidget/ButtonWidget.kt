@@ -30,7 +30,6 @@ class ButtonWidget : AbstractWidget() {
                             TypedValueUtils.getDrawable(
                                 v,
                                 typedValue,
-                                this
                             )?.let {
                                 compoundButton.buttonDrawable = it
                             }
@@ -46,7 +45,6 @@ class ButtonWidget : AbstractWidget() {
                             TypedValueUtils.getColorStateList(
                                 v,
                                 typedValue,
-                                this
                             )?.let {
                                 CompoundButtonCompat.setButtonTintList(
                                     compoundButton,

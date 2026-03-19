@@ -4,10 +4,8 @@ import android.app.Activity
 import android.app.Application
 import android.app.Application.ActivityLifecycleCallbacks
 import android.content.Context
-import com.aliya.uimode.core.CachedTypedValueArray
 import android.content.res.Configuration
 import android.content.res.Resources
-import android.content.res.TypedArray
 import android.os.Build
 import android.os.Bundle
 import android.util.TypedValue
@@ -25,6 +23,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.app.AppCompatDelegate.NightMode
 import androidx.core.view.LayoutInflaterCompat
+import com.aliya.uimode.core.CachedTypedValueArray
 import com.aliya.uimode.core.FactoryMerger
 import com.aliya.uimode.core.UiModeChangeListener
 import com.aliya.uimode.core.UiModeDelegate
@@ -241,8 +240,36 @@ object UiModeManager {
                 LayoutInflaterHelper.setFactorySetFalse(inflater)
                 val factoryMerger = obtainInflaterFactory()
                 addFactory2(inflater.factory2)
-                LayoutInflaterCompat.setFactory2(inflater, factoryMerger)
+                try {
+                    LayoutInflaterCompat.setFactory2(inflater, factoryMerger)
+                }catch (e: Exception){
+                    forceSetFactory2(inflater, factoryMerger)
+                }
+
+
             }
+        }
+    }
+
+
+    private fun forceSetFactory2(inflater: LayoutInflater,factory: Factory2) {
+        val compatClass: Class<LayoutInflaterCompat> = LayoutInflaterCompat::class.java
+        val inflaterClass: Class<LayoutInflater> = LayoutInflater::class.java
+        try {
+            val sCheckedField = compatClass.getDeclaredField("sCheckedField")
+            sCheckedField.setAccessible(true)
+            sCheckedField.setBoolean(compatClass, false)
+
+            val mFactory2 = inflaterClass.getDeclaredField("mFactory2")
+            mFactory2.setAccessible(true)
+            mFactory2.set(inflater, factory)
+//            val mFactory = inflaterClass.getDeclaredField("mFactory")
+//            mFactory.setAccessible(true)
+//            mFactory.set(inflater, factory)
+        } catch (e: IllegalAccessException) {
+            e.printStackTrace()
+        } catch (e: NoSuchFieldException) {
+            e.printStackTrace()
         }
     }
     @JvmStatic

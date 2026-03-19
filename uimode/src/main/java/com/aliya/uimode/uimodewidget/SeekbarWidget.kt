@@ -25,7 +25,6 @@ open class SeekbarWidget : AbstractWidget() {
                             TypedValueUtils.getDrawable(
                                 v,
                                 typedValue,
-                                this
                             )?.let {
                                 seekBar.thumb = it
                             }

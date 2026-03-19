@@ -47,7 +47,6 @@ open class ViewWidget : AbstractWidget() {
                             TypedValueUtils.getDrawable(
                                 v,
                                 typedValue,
-                                this
                             )?.let {
                                 v.foreground = it
                             }
@@ -57,13 +56,13 @@ open class ViewWidget : AbstractWidget() {
                         }
 
                         R.styleable.UiModeView_android_theme -> {
-                            val style = TypedValueUtils.getStyle(v, typedValue, this)
+                            val style = TypedValueUtils.getStyle(v, typedValue)
                             if (style != 0) {
                                 v.getContext().getTheme()?.applyStyle(style, true)
                             }
                         }
                         R.styleable.UiModeView_view_colorFilter -> {
-                            colorFilterColor = TypedValueUtils.getColor(v, typedValue, this)
+                            colorFilterColor = TypedValueUtils.getColor(v, typedValue)
                         }
 
                         R.styleable.UiModeView_view_colorFilterMode -> {
@@ -120,7 +119,6 @@ open class ViewWidget : AbstractWidget() {
                             background = TypedValueUtils.getDrawable(
                                 v,
                                 typedValue,
-                                this
                             )
                         }
                         androidx.appcompat.R.styleable.ViewBackgroundHelper_backgroundTint -> {
@@ -128,7 +126,6 @@ open class ViewWidget : AbstractWidget() {
                             colorStateList = TypedValueUtils.getColorStateList(
                                 v,
                                 typedValue,
-                                this
                             )
                         }
 

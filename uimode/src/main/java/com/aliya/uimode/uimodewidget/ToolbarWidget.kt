@@ -39,7 +39,6 @@ open class ToolbarWidget : ViewWidget() {
                             TypedValueUtils.getDrawable(
                                 v,
                                 typedValue,
-                                this
                             )?.let {
                                 toolbar.navigationIcon = it
                             }
@@ -50,7 +49,6 @@ open class ToolbarWidget : ViewWidget() {
                             TypedValueUtils.getDrawable(
                                 v,
                                 typedValue,
-                                this
                             )?.let {
                                 toolbar.logo = it
                             }
@@ -61,7 +59,6 @@ open class ToolbarWidget : ViewWidget() {
                             TypedValueUtils.getColorStateList(
                                 v,
                                 typedValue,
-                                this
                             )?.let {
                                 toolbar.setTitleTextColor(it)
                             }
@@ -72,7 +69,6 @@ open class ToolbarWidget : ViewWidget() {
                             TypedValueUtils.getColorStateList(
                                 v,
                                 typedValue,
-                                this
                             )?.let {
                                 toolbar.setSubtitleTextColor(it)
                             }
@@ -91,7 +87,7 @@ open class ToolbarWidget : ViewWidget() {
         if (toolBar == null) {
             return
         }
-        val logoDrawable = TypedValueUtils.getDrawable(toolBar, typedValue, this)
+        val logoDrawable = TypedValueUtils.getDrawable(toolBar, typedValue)
         toolBar.logo = logoDrawable
     }
 
@@ -99,7 +95,7 @@ open class ToolbarWidget : ViewWidget() {
         if (toolBar == null) {
             return
         }
-        val iconDrawable: Drawable? = TypedValueUtils.getDrawable(toolBar, typedValue, this)
+        val iconDrawable: Drawable? = TypedValueUtils.getDrawable(toolBar, typedValue)
         toolBar.navigationIcon = iconDrawable
     }
 
@@ -107,7 +103,7 @@ open class ToolbarWidget : ViewWidget() {
         if (toolBar == null) {
             return
         }
-        val color = TypedValueUtils.getColorStateList(toolBar, typedValue, this)
+        val color = TypedValueUtils.getColorStateList(toolBar, typedValue)
         color?.apply {
             toolBar.setTitleTextColor(color)
         }
@@ -118,7 +114,7 @@ open class ToolbarWidget : ViewWidget() {
         if (toolBar == null) {
             return
         }
-        val color = TypedValueUtils.getColorStateList(toolBar, typedValue, this)
+        val color = TypedValueUtils.getColorStateList(toolBar, typedValue)
         color?.apply {
             toolBar.setSubtitleTextColor(color)
         }

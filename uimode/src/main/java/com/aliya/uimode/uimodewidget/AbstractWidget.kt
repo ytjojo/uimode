@@ -12,7 +12,6 @@ import androidx.annotation.CallSuper
 import androidx.annotation.StyleRes
 import com.aliya.uimode.HideLog
 import com.aliya.uimode.R
-import com.aliya.uimode.core.ResourceNightModeChecker
 import com.aliya.uimode.core.UiModeChangeListener
 import com.aliya.uimode.core.ViewStore
 import com.aliya.uimode.debug.WidgetDebugTool
@@ -66,14 +65,7 @@ abstract class AbstractWidget : IApplyAttrResourceId {
         typedArray: TypedArray,
         cachedTypedValueArray: CachedTypedValueArray,
     ): Boolean {
-        if (typedValue.resourceId != 0) {
 
-            val isHasNight =
-                ResourceNightModeChecker.hasNightModeResource(view.context, typedValue.resourceId)
-            if(!isHasNight){
-                return true
-            }
-        }
         return false
     }
 
@@ -159,17 +151,18 @@ abstract class AbstractWidget : IApplyAttrResourceId {
                             )
                         ) {
                             if (HideLog.isDebuggable()) {
+                                val idResName = if(view.id == View.NO_ID) "" else view.resources.getResourceName(view.id)
                                 if(typedValue.resourceId == 0){
                                     HideLog.i(
                                         "assemble",
-                                        " typedValue = " + typedValue.toString()
+                                        "class: ${view::class.java.canonicalName} id : ${idResName} typedValue : " + typedValue.toString()
                                     )
                                 }else{
                                     HideLog.i(
                                         "assemble",
-                                        " path = " + typedValue.string + " attrName " + view.context.resources.getResourceName(
+                                        "class : ${view::class.java.canonicalName} id = ${idResName}  path : " + typedValue.string + " attrName : " + view.context.resources.getResourceName(
                                             styleable[indexInStyleable]
-                                        ) + " typedValue = ${typedValue.toString()} resourceId = " + Integer.toHexString(typedValue.resourceId) + " resourceName = " + view.context.resources.getResourceName(
+                                        ) + " typedValue : ${typedValue.toString()}" + " resourceName = " + view.context.resources.getResourceName(
                                             typedValue.resourceId
                                         )
                                     )
@@ -224,6 +217,27 @@ abstract class AbstractWidget : IApplyAttrResourceId {
                         if (typedArray.getValue(indexInStyleable, typedValue)) {
                             cachedTypeArray.putTypeValue(indexInStyleable, typedValue)
                         }
+
+                        if (HideLog.isDebuggable()) {
+                            val idResName = if(view.id == View.NO_ID) "" else view.resources.getResourceName(view.id)
+                            if(typedValue.resourceId == 0){
+                                HideLog.i(
+                                    "assemble",
+                                    "class: ${view::class.java.canonicalName} id : ${idResName} typedValue : " + typedValue.toString()
+                                )
+                            }else{
+                                HideLog.i(
+                                    "assemble",
+                                    "class : ${view::class.java.canonicalName} id = ${idResName}  path : " + typedValue.string + " attrName : " + view.context.resources.getResourceName(
+                                        styleable[indexInStyleable]
+                                    ) + " typedValue : ${typedValue.toString()}" + " resourceName = " + view.context.resources.getResourceName(
+                                        typedValue.resourceId
+                                    )
+                                )
+                            }
+
+                        }
+
                         cachedTypeArray.putIndexAttr(i, indexInStyleable)
                     }
                     if (!cachedTypeArray.isEmpty()) {

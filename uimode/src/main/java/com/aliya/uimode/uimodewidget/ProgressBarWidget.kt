@@ -28,7 +28,6 @@ open class ProgressBarWidget: AbstractWidget() {
                             TypedValueUtils.getDrawable(
                                 v,
                                 typedValue,
-                                this
                             )?.let {
                                 progressBar.progressDrawable = it
                             }

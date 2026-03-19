@@ -38,15 +38,6 @@ public class BackgroundTypedArrayDelegate {
     private static CachedTypedValueArray getTypedArray(View v, int[] styleableAttrs, Map<int[], CachedTypedValueArray> typedArrayMap) {
         CachedTypedValueArray typedArray = typedArrayMap.get(styleableAttrs);
         if (typedArray != null) {
-            int count = typedArray.getIndexCount();
-            for (int i = 0; i < count; i++) {
-                int index = typedArray.getIndex(i);
-                TypedValue typedValue = typedArray.peekValue(index);
-                if(typedValue != null && typedValue.type != TypedValue.TYPE_NULL && typedValue.resourceId != 0){
-                    typedValue.data = v.getResources().getColor(typedValue.resourceId);
-                }
-            }
-
             return typedArray;
         } else {
             return CachedTypedValueArrayPool.INSTANCE.getDefault();

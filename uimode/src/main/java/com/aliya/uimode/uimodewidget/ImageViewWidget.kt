@@ -32,7 +32,6 @@ open class ImageViewWidget : AbstractWidget() {
                             TypedValueUtils.getDrawable(
                                 v,
                                 typedValue,
-                                this
                             )?.let {
                                 imageView.setImageDrawable(it)
                             }
@@ -41,7 +40,6 @@ open class ImageViewWidget : AbstractWidget() {
                            TypedValueUtils.getColorStateList(
                                 v,
                                 typedValue,
-                                this
                             )?.let {
                                ImageViewCompat.setImageTintList(
                                    imageView,

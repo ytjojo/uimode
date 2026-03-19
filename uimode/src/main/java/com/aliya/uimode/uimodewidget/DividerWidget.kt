@@ -35,7 +35,6 @@ class DividerWidget : ViewWidget() {
                                 TypedValueUtils.getDrawable(
                                     v,
                                     typedValue,
-                                    this
                                 )?.let {
                                     v.divider = it
                                 }
@@ -44,7 +43,6 @@ class DividerWidget : ViewWidget() {
                                 TypedValueUtils.getDrawable(
                                     v,
                                     typedValue,
-                                    this
                                 )?.let {
                                     v.dividerDrawable = it
                                 }

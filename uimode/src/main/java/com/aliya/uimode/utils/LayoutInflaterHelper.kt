@@ -1,5 +1,6 @@
 package com.aliya.uimode.utils
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import java.lang.reflect.Field
 
@@ -9,6 +10,7 @@ class LayoutInflaterHelper {
 
         const val FIELD_mFactorySet = "mFactorySet"
 
+        @SuppressLint("SoonBlockedPrivateApi")
         fun setFactorySetFalse(inflater: LayoutInflater){
 
             val inflaterClass: Class<LayoutInflater> = LayoutInflater::class.java

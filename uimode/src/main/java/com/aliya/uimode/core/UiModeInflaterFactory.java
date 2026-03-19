@@ -96,22 +96,6 @@ public class UiModeInflaterFactory implements LayoutInflater.Factory2 {
     }
 
     private View onInterceptView(Context context, AttributeSet attrs, View view) {
-        if (view instanceof TextView) {
-            MaskHelper maskHelper = new MaskHelper(context, attrs);
-            view.setTag(R.id.tag_ui_mode_mask_drawable, maskHelper);
-            Drawable[] drawables = ((TextView) view).getCompoundDrawables();
-            boolean ifTrue = false;
-            for (int i = 0; i < drawables.length; i++) {
-                if (drawables[i] != null) {
-                    drawables[i] = new MaskDrawable(drawables[i], maskHelper);
-                    ifTrue = true;
-                }
-            }
-            if (ifTrue) {
-                ((TextView) view).setCompoundDrawablesWithIntrinsicBounds(
-                        drawables[0], drawables[1], drawables[2], drawables[3]);
-            }
-        }
         return view;
     }
 

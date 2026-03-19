@@ -70,6 +70,11 @@ class CachedTypedValueArray(var resources: Resources, var contextRef: WeakRefere
         } else if (type >= TypedValue.TYPE_FIRST_INT
             && type <= TypedValue.TYPE_LAST_INT
         ) {
+            if (typedValue.resourceId != 0) {
+                val context = contextRef.get()
+                context ?: return typedValue.data
+                return ContextCompat.getColor(context, typedValue.resourceId)
+            }
             return typedValue.data
         } else if (type == TypedValue.TYPE_STRING) {
             if (type != TypedValue.TYPE_NULL) {
@@ -480,4 +485,16 @@ class CachedTypedValueArray(var resources: Resources, var contextRef: WeakRefere
     fun close() {
     }
 
+
+    @Override
+    override fun toString(): String {
+        val sb = StringBuilder()
+        for (i in 0 until typeValues.size()) {
+            val typedValue = typeValues.valueAt(i)
+            sb.append(" ")
+            sb.append(typedValue.toString())
+            sb.append(" ")
+        }
+        return sb.toString()
+    }
 }

@@ -68,8 +68,8 @@ object ViewStore {
             val activityStartTime = SystemClock.elapsedRealtime()
             onApplyUiMode(value)
             val costTime = SystemClock.elapsedRealtime() - activityStartTime
-            if(HideLog.isDebuggable() && costTime> 5 ){
-                HideLog.d(TAG, "dispatchApplyUiMode: " + key.javaClass.simpleName + " costTime > 5 ms: " + costTime)
+            if(HideLog.isDebuggable() ){
+                HideLog.d(TAG, "dispatchApplyUiMode: " + key.javaClass.simpleName + " costTime: ${costTime} ms: ")
             }
         }
 

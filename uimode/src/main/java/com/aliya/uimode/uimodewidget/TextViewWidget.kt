@@ -10,7 +10,6 @@ import android.widget.TextView
 import androidx.core.widget.TextViewCompat
 import com.aliya.uimode.R
 import com.aliya.uimode.core.CachedTypedValueArray
-import com.aliya.uimode.core.ResourceNightModeChecker
 import java.util.Arrays
 
 open class TextViewWidget : AbstractWidget() {
@@ -38,7 +37,7 @@ open class TextViewWidget : AbstractWidget() {
                 val typedValue =
                     typedArray.peekValue(R.styleable.TextViewHelper_android_textAppearance)
                 if (typedValue != null) {
-                    val style = TypedValueUtils.getStyle(v, typedValue, this)
+                    val style = TypedValueUtils.getStyle(v, typedValue)
                     if (style != 0) {
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                             v.setTextAppearance(style)
@@ -68,7 +67,6 @@ open class TextViewWidget : AbstractWidget() {
                            TypedValueUtils.getColorStateList(
                                 v,
                                 typedValue,
-                                this
                             )?.let {
                                textView.setTextColor(it)
                            }
@@ -79,7 +77,6 @@ open class TextViewWidget : AbstractWidget() {
                             TypedValueUtils.getColorStateList(
                                 v,
                                 typedValue,
-                                this
                             )?.let {
                                 textView.highlightColor = it.defaultColor
                             }
@@ -89,7 +86,6 @@ open class TextViewWidget : AbstractWidget() {
                            TypedValueUtils.getColorStateList(
                                 v,
                                 typedValue,
-                                this
                             )?.let {
                                textView.setHintTextColor(it)
                            }
@@ -99,7 +95,6 @@ open class TextViewWidget : AbstractWidget() {
                             TypedValueUtils.getColorStateList(
                                 v,
                                 typedValue,
-                                this
                             )?.let {
                                 textView.setLinkTextColor(it)
                             }
@@ -109,7 +104,6 @@ open class TextViewWidget : AbstractWidget() {
                             TypedValueUtils.getDrawable(
                                 v,
                                 typedValue,
-                                this
                             )?.let {
                                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                                     textView.setTextCursorDrawable(it)
@@ -122,7 +116,6 @@ open class TextViewWidget : AbstractWidget() {
                             drawableLeft = drawableLeft?: TypedValueUtils.getDrawable(
                                 v,
                                 typedValue,
-                                this
                             )
                         }
 
@@ -130,7 +123,6 @@ open class TextViewWidget : AbstractWidget() {
                             drawableTop = drawableTop?:TypedValueUtils.getDrawable(
                                 v,
                                 typedValue,
-                                this
                             )
                         }
 
@@ -138,7 +130,6 @@ open class TextViewWidget : AbstractWidget() {
                             drawableRight = drawableRight?:TypedValueUtils.getDrawable(
                                 v,
                                 typedValue,
-                                this
                             )
                         }
 
@@ -146,7 +137,6 @@ open class TextViewWidget : AbstractWidget() {
                             drawableBottom = drawableBottom?:TypedValueUtils.getDrawable(
                                 v,
                                 typedValue,
-                                this
                             )
                         }
 
@@ -155,7 +145,6 @@ open class TextViewWidget : AbstractWidget() {
                             tintColorStateList = TypedValueUtils.getColorStateList(
                                 v,
                                 typedValue,
-                                this
                             )
                         }
 
@@ -209,7 +198,7 @@ open class TextViewWidget : AbstractWidget() {
                 R.styleable.TextViewHelper
             ) && indexInStyleable == R.styleable.TextViewHelper_android_textAppearance
         ) {
-            val styleRes = TypedValueUtils.getStyle(view, rawTypedValue, this)
+            val styleRes = TypedValueUtils.getStyle(view, rawTypedValue)
             if (styleRes != 0) {
                 styleable.forEachIndexed { index, attrResId ->
                     val cachedTypedValue = cachedTypedValueArray.peekValue(index)
@@ -225,9 +214,6 @@ open class TextViewWidget : AbstractWidget() {
                             if (styleTypedArray.indexCount > 0) {
                                 if (styleTypedArray.getValue(0, styleTypedValue) && isLegalType(
                                         styleTypedValue
-                                    ) && ResourceNightModeChecker.hasNightModeResource(
-                                        view.context,
-                                        styleTypedValue.resourceId
                                     )
                                 ) {
                                     cachedTypedValueArray.putTypeValue(index, styleTypedValue)

@@ -1,6 +1,7 @@
 package com.aliya.uimode.uimodewidget
 
 import android.content.res.ColorStateList
+import android.content.res.Resources.Theme
 import android.graphics.PorterDuff
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
@@ -8,27 +9,64 @@ import android.util.TypedValue
 import android.view.View
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
+import com.aliya.uimode.utils.AppResourceUtils
 import com.aliya.uimode.utils.DrawableCompatUtil
 
 class TypedValueUtils {
     companion object {
 
+        /**
+         * 校验 Theme 是否为null
+         *
+         * @param v a view
+         * @return true : 不为null
+         */
+        fun validTheme(v: View): Boolean {
+            return getTheme(v) != null
+        }
+
+        /**
+         * 从 view 获取 theme
+         *
+         * @param v a view
+         * @return theme
+         */
+        fun getTheme(v: View): Theme? {
+            return v.context.theme
+        }
+
+        /**
+         * 检索主题中属性的值
+         *
+         * @param v           a view.
+         * @param resId       The resource identifier of the desired theme attribute.
+         * @return boolean Returns true if the attribute was found and <var>outValue</var>
+         * is valid, else false.
+         * @see android.content.res.Resources.Theme.resolveAttribute
+         */
+        fun resolveAttribute(v: View, resId: Int): TypedValue? {
+            val typedValue = AppResourceUtils.getTypedValue()
+            val success = v.context.theme?.resolveAttribute(resId, typedValue, true)
+            if (success == true) {
+                return typedValue
+            }
+            return null
+        }
 
         fun getDrawable(
             v: View,
             typedValue: TypedValue,
-            abstractWidget: AbstractWidget
         ): Drawable? {
             when (typedValue.type) {
                 TypedValue.TYPE_STRING -> {
                     return DrawableCompatUtil.getDrawable(v.context, typedValue.resourceId)
                 }
                 TypedValue.TYPE_ATTRIBUTE -> {
-                    if (abstractWidget.validTheme(v)) {
+                    if (validTheme(v)) {
                         val attrTypedValue =
-                            abstractWidget.resolveAttribute(v, typedValue.resourceId)
+                            resolveAttribute(v, typedValue.resourceId)
                         attrTypedValue?.apply {
-                            return getDrawable(v, this, abstractWidget)
+                            return getDrawable(v, this)
                         }
                     }
                 }
@@ -49,18 +87,17 @@ class TypedValueUtils {
         fun getColorStateList(
             v: View,
             typedValue: TypedValue,
-            abstractWidget: AbstractWidget
         ): ColorStateList? {
             when (typedValue.type) {
                 TypedValue.TYPE_STRING -> {
                     return AppCompatResources.getColorStateList(v.context,typedValue.resourceId)
                 }
                 TypedValue.TYPE_ATTRIBUTE -> {
-                    if (abstractWidget.validTheme(v)) {
+                    if (validTheme(v)) {
                         val attrTypedValue =
-                            abstractWidget.resolveAttribute(v, typedValue.resourceId)
+                            resolveAttribute(v, typedValue.resourceId)
                         attrTypedValue?.apply {
-                            return getColorStateList(v, this, abstractWidget)
+                            return getColorStateList(v, this)
                         }
                     }
                 }
@@ -81,7 +118,6 @@ class TypedValueUtils {
         fun getStyle(
             v: View,
             typedValue: TypedValue,
-            abstractWidget: AbstractWidget
         ): Int {
             when (typedValue.type) {
                 TypedValue.TYPE_REFERENCE -> {
@@ -90,9 +126,9 @@ class TypedValueUtils {
                 TypedValue.TYPE_ATTRIBUTE -> {
                     if (v.context.theme != null) {
                         val attrTypedValue =
-                            abstractWidget.resolveAttribute(v, typedValue.resourceId)
+                            resolveAttribute(v, typedValue.resourceId)
                         attrTypedValue?.apply {
-                            return getStyle(v, this, abstractWidget)
+                            return getStyle(v, this)
                         }
                     }
                 }
@@ -107,18 +143,17 @@ class TypedValueUtils {
         fun getColor(
             v: View,
             typedValue: TypedValue,
-            abstractWidget: AbstractWidget
         ): Int? {
             when (typedValue.type) {
                 TypedValue.TYPE_STRING -> {
                     return ContextCompat.getColor(v.context, typedValue.resourceId)
                 }
                 TypedValue.TYPE_ATTRIBUTE -> {
-                    if (abstractWidget.validTheme(v)) {
+                    if (validTheme(v)) {
                         val attrTypedValue =
-                            abstractWidget.resolveAttribute(v, typedValue.resourceId)
+                            resolveAttribute(v, typedValue.resourceId)
                         attrTypedValue?.apply {
-                            return getColor(v, this, abstractWidget)
+                            return getColor(v, this)
                         }
                     }
                 }
@@ -149,9 +184,9 @@ class TypedValueUtils {
                     return parsePorterDuffMode(modeName)
                 }
                 TypedValue.TYPE_ATTRIBUTE -> {
-                    if (abstractWidget.validTheme(v)) {
+                    if (validTheme(v)) {
                         val attrTypedValue =
-                            abstractWidget.resolveAttribute(v, typedValue.resourceId)
+                            resolveAttribute(v, typedValue.resourceId)
                         attrTypedValue?.apply {
                             return getPorterDuffMode(v, this, abstractWidget)
                         }
