@@ -52,18 +52,25 @@ public class MaskHelper {
     // 属性值
     private static final int DEFAULT_MASK_COLOR_ATTR_ID = R.attr.maskColor;
 
-
-    public MaskHelper(@NonNull Context context, @Nullable AttributeSet attrs) {
+    private  boolean isSupportViewMask;
+    private final boolean isGlobalSupportViewMask;
+    public MaskHelper(@NonNull Context context, @Nullable AttributeSet attrs, boolean isGlobalSupportViewMask) {
+        this.isGlobalSupportViewMask = isGlobalSupportViewMask;
         mContext = context;
         if (attrs != null) {
             TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.MaskImageView);
             maskUnion = a.getBoolean(R.styleable.MaskImageView_maskUnion, false);
             a.recycle();
 
+            TypedArray uimodeTypedArray = context.obtainStyledAttributes(attrs, R.styleable.UiMode);
+            isSupportViewMask = uimodeTypedArray.getBoolean(R.styleable.UiMode_view_useMaskColor, isGlobalSupportViewMask);
+            uimodeTypedArray.recycle();
+
             final int N = attrs.getAttributeCount();
             for (int i = 0; i < N; i++) {
                 String attrName = attrs.getAttributeName(i);
                 if (NAME_ATTR_MASK_COLOR.equals(attrName)) {
+                    isSupportViewMask = true;
                     String attrVal = attrs.getAttributeValue(i);
                     if (!TextUtils.isEmpty(attrVal) && attrVal.startsWith("?")) {
                         String subStr = attrVal.substring(1);
@@ -85,6 +92,8 @@ public class MaskHelper {
                     break;
                 }
             }
+        }else{
+            isSupportViewMask = isGlobalSupportViewMask;
         }
 
         resolveRealMaskColor();
@@ -111,6 +120,7 @@ public class MaskHelper {
         return mApplyMaskColor != Color.TRANSPARENT;
     }
 
+
     public void resolveRealMaskColor() {
         if (mMaskAttrId != ViewStore.NO_ID) {
             resolveColorAttribute(mMaskAttrId);
@@ -120,7 +130,7 @@ public class MaskHelper {
             mApplyMaskColor = mMaskColorHex; // 先赋值
             Resources.Theme theme = mContext.getTheme();
             if (theme != null &&
-                    theme.resolveAttribute(R.attr.iv_useMaskColor, sOutValue, true)) {
+                    theme.resolveAttribute(R.attr.view_useMaskColor, sOutValue, true)) {
                 if (sOutValue.type == TypedValue.TYPE_INT_BOOLEAN) {
                     if (sOutValue.data == 0) { // data为0:表示false.
                         // 当前theme配置属性 iv_useMaskColor = false
@@ -130,11 +140,15 @@ public class MaskHelper {
                     }
                 }
             }
-        } else {
+        } else if(isGlobalSupportViewMask) {
             resolveColorAttribute(DEFAULT_MASK_COLOR_ATTR_ID);
         }
 
         mPaint.setColor(mApplyMaskColor);
+    }
+
+    public boolean isSupportViewMask() {
+        return isSupportViewMask;
     }
 
     private void resolveColorAttribute(int attrId) {

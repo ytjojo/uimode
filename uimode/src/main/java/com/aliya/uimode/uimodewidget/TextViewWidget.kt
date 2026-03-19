@@ -153,21 +153,22 @@ open class TextViewWidget : AbstractWidget() {
                 }
             }
 
-
+            val compoundDrawablesRelative =  textView.compoundDrawablesRelative
+            val compoundDrawables = textView.compoundDrawables
             if (drawableLeft == null) {
-                drawableLeft = textView.compoundDrawablesRelative[0]?:textView.compoundDrawables[0]
+                drawableLeft =compoundDrawables[0]?:compoundDrawablesRelative[0]
             }
             if (drawableTop == null) {
-                drawableTop = textView.compoundDrawablesRelative[1]?:textView.compoundDrawables[1]
+                drawableTop = compoundDrawables[1]?:compoundDrawablesRelative[1]
             }
             if (drawableRight == null) {
-                drawableRight = textView.compoundDrawablesRelative[2]?:textView.compoundDrawables[2]
+                drawableRight = compoundDrawables[2]?:compoundDrawablesRelative[2]
             }
             if (drawableBottom == null) {
-                drawableBottom = textView.compoundDrawablesRelative[3]?:textView.compoundDrawables[3]
+                drawableBottom = compoundDrawables[3]?:compoundDrawablesRelative[3]
             }
             if(drawableLeft != null || drawableTop != null || drawableRight != null || drawableBottom != null){
-                textView.setCompoundDrawablesRelativeWithIntrinsicBounds(
+                textView.setCompoundDrawablesWithIntrinsicBounds(
                     drawableLeft,
                     drawableTop,
                     drawableRight,

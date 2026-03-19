@@ -5,6 +5,7 @@ import android.graphics.Canvas;
 import androidx.appcompat.widget.AppCompatImageView;
 import android.util.AttributeSet;
 
+import com.aliya.uimode.UiModeManager;
 import com.aliya.uimode.core.UiModeChangeListener;
 
 /**
@@ -40,7 +41,7 @@ public class MaskImageView extends AppCompatImageView implements UiModeChangeLis
 
     public MaskImageView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        mMaskHelper = new MaskHelper(context, attrs);
+        mMaskHelper = new MaskHelper(context, attrs, UiModeManager.INSTANCE.isSupportImageViewMask());
         mRatioHelper = new RatioHelper(context, attrs);
         mRoundHelper = new RoundHelper(context, attrs);
     }

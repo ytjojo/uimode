@@ -54,6 +54,18 @@ object UiModeManager {
     @NightMode
     var systemUiMode = AppCompatDelegate.MODE_NIGHT_NO
 
+    /**
+     * 是否全局支持ImageView夜间遮罩
+     * app内必须定义颜色maskColor
+     */
+    var isSupportImageViewMask = true
+    /**
+     * 是否全局支持TextView的Drawable夜间遮罩
+     * 与drawableTint互斥
+     * 与view_colorFilter互斥
+     */
+    var isSupportTextViewDrawableMask = false
+
     var appConfigurationUiMode = Configuration.UI_MODE_NIGHT_NO
 
     /**

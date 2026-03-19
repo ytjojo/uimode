@@ -2,7 +2,7 @@
 <resources>
 
     <declare-styleable name="UiMode">
-        <attr name="iv_useMaskColor" format="boolean" />
+        <attr name="view_useMaskColor" format="boolean" />
         <!--uiMode忽略的属性，多个属性时属性名之间用'|'分割-->
         />
     </declare-styleable>

@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.aliya.uimode.R;
+import com.aliya.uimode.UiModeManager;
 import com.aliya.uimode.widget.MaskDrawable;
 import com.aliya.uimode.widget.MaskHelper;
 
@@ -70,8 +71,11 @@ public class ViewInflater {
 
 
     public static void applyTextViewMaskDrawable(Context context, View view, AttributeSet attrs){
-        if (view instanceof TextView) {
-            MaskHelper maskHelper = new MaskHelper(context, attrs);
+        if (view instanceof TextView && UiModeManager.INSTANCE.isSupportTextViewDrawableMask()) {
+            MaskHelper maskHelper = new MaskHelper(context, attrs,UiModeManager.INSTANCE.isSupportTextViewDrawableMask());
+            if(!maskHelper.isSupportViewMask()){
+                return;
+            }
             view.setTag(R.id.tag_ui_mode_mask_drawable, maskHelper);
             Drawable[] drawables = ((TextView) view).getCompoundDrawables();
             boolean ifTrue = false;
@@ -86,6 +90,22 @@ public class ViewInflater {
                         drawables[0], drawables[1], drawables[2], drawables[3]);
             }
         }
+    }
+
+    public static Drawable wrapMaskDrawable(TextView v, Drawable drawable) {
+        if (drawable != null && v != null) {
+            if (!(drawable instanceof MaskDrawable)) {
+                Object tag = v.getTag(R.id.tag_ui_mode_mask_drawable);
+                if (tag instanceof MaskHelper) {
+                    drawable = new MaskDrawable(drawable, (MaskHelper) tag);
+                }
+            }
+        }
+        if (drawable instanceof MaskDrawable){
+            ((MaskDrawable) drawable).onUiModeChange();
+        }
+
+        return drawable;
     }
 
     /**
