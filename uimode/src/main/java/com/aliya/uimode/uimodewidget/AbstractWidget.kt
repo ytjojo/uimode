@@ -294,7 +294,7 @@ abstract class AbstractWidget : IApplyAttrResourceId {
 
 
     fun isLegalType(typedValue: TypedValue): Boolean {
-        return typedValue.type != TypedValue.TYPE_NULL && !isHexColorResourceType(typedValue)
+        return typedValue.type != TypedValue.TYPE_NULL
     }
     fun isHexColorResourceType(typedValue: TypedValue): Boolean {
         return typedValue.resourceId == 0 && typedValue.type >= TypedValue.TYPE_FIRST_COLOR_INT && typedValue.type <= TypedValue.TYPE_LAST_COLOR_INT
@@ -306,29 +306,31 @@ abstract class AbstractWidget : IApplyAttrResourceId {
             view.getTag(R.id.tag_ui_mode_type_array_map) as? HashMap<IntArray, CachedTypedValueArray>?
 
         mStyleableKeySet.forEach { styleable ->
-            val styleTypedArray = CachedTypedValueArray(view.resources, WeakReference(view.context))
-            val attrTypedArray = tagCachedTypeArrayMap?.get(styleable) as? CachedTypedValueArray?
+            val attrTypedArray =(tagCachedTypeArrayMap?.get(styleable) as? CachedTypedValueArray?)?: CachedTypedValueArray(view.resources, WeakReference(view.context))
             styleable.forEachIndexed { index, attrResId ->
-                val typedArray = view.context.obtainStyledAttributes(
-                    styleRes, intArrayOf(
-                        attrResId
+                if(attrTypedArray.peekValue(index) == null){
+                    val typedArray = view.context.obtainStyledAttributes(
+                        styleRes, intArrayOf(
+                            attrResId
+                        )
                     )
-                )
-                if (typedArray != null && typedArray.indexCount > 0) {
-                    val typedValue = TypedValue()
-                    if (typedArray.getValue(0, typedValue) && isLegalType(typedValue)) {
-                        styleTypedArray.putTypeValue(index, typedValue)
-                        attrTypedArray?.putTypeValue(index, typedValue)
-                    }
+                    if ( typedArray.indexCount > 0) {
+                        val typedValue = TypedValue()
+                        if (typedArray.getValue(0, typedValue) && isLegalType(typedValue)) {
+                            attrTypedArray?.putTypeValue(index, typedValue)
+                            attrTypedArray.putIndexAttr(attrTypedArray.getIndexCount(), index)
+                        }
 
-                }
-                styleTypedArray.putIndexAttr(index, index)
-                if (typedArray != null) {
+                    }
                     typedArray.recycle()
                 }
+
+
+
             }
-            if (!styleTypedArray.isEmpty()) {
-                onApply(view, styleable, styleTypedArray)
+            if (!attrTypedArray.isEmpty()) {
+                tagCachedTypeArrayMap?.put(styleable, attrTypedArray)
+                onApply(view, styleable, attrTypedArray)
             }
         }
 

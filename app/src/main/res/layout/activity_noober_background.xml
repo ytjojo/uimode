@@ -110,6 +110,14 @@
                 app:bl_corners_radius="10dp"
                 app:bl_solid_color="@color/text_dark_primary" />
 
+            <View
+                android:layout_width="50dp"
+                android:layout_height="20dp"
+                android:layout_marginTop="10dp"
+                android:gravity="center"
+                app:bl_corners_radius="10dp"
+                app:bl_solid_color="@color/text_dark_primary" />
+
 
             <View
                 android:id="@+id/view_background_tint_test"

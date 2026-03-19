@@ -4,6 +4,8 @@ import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import java.lang.reflect.Field
 
+
+@Deprecated("SoonBlockedPrivateApi")
 class LayoutInflaterHelper {
 
     companion object{

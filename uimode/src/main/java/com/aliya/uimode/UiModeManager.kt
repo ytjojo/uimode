@@ -59,6 +59,7 @@ object UiModeManager {
      * app内必须定义颜色maskColor
      */
     var isSupportImageViewMask = true
+
     /**
      * 是否全局支持TextView的Drawable夜间遮罩
      * 与drawableTint互斥
@@ -98,14 +99,14 @@ object UiModeManager {
     }
 
     private val defaultFactory by lazy {
-        FactoryMerger(ArrayList(),UiModeInflaterFactory(sFactory2))
+        FactoryMerger(ArrayList(), UiModeInflaterFactory(sFactory2))
     }
 
     private val lifecycleCallbacks: ActivityLifecycleCallbacks =
         object : ActivityLifecycleCallbacks {
             override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
                 AppStack.pushActivity(activity)
-                if(isEnableAutoInject){
+                if (isEnableAutoInject) {
                     setFactory2(activity.layoutInflater)
                 }
             }
@@ -122,7 +123,7 @@ object UiModeManager {
         }
 
 
-     var isEnableAutoInject: Boolean = false
+    var isEnableAutoInject: Boolean = false
 
 
     /**
@@ -133,7 +134,7 @@ object UiModeManager {
     @JvmStatic
     fun init(context: Context, factory2: Factory2?) {
         sAppContext = context.applicationContext
-        systemUiMode = getConfigurationUiMode( context.getResources().getConfiguration())
+        systemUiMode = getConfigurationUiMode(context.getResources().getConfiguration())
         HideLog.init(sAppContext)
         sFactory2 = factory2
         val appTheme = AppResourceUtils.getManifestApplicationTheme(sAppContext)
@@ -247,14 +248,13 @@ object UiModeManager {
 
         if (inflater.factory2 == null) {
             LayoutInflaterCompat.setFactory2(inflater, obtainInflaterFactory())
-        }else {
+        } else {
             if (inflater.factory2 !is FactoryMerger) {
-                LayoutInflaterHelper.setFactorySetFalse(inflater)
                 val factoryMerger = obtainInflaterFactory()
                 addFactory2(inflater.factory2)
                 try {
                     LayoutInflaterCompat.setFactory2(inflater, factoryMerger)
-                }catch (e: Exception){
+                } catch (e: Exception) {
                     forceSetFactory2(inflater, factoryMerger)
                 }
 
@@ -264,7 +264,7 @@ object UiModeManager {
     }
 
 
-    private fun forceSetFactory2(inflater: LayoutInflater,factory: Factory2) {
+    private fun forceSetFactory2(inflater: LayoutInflater, factory: Factory2) {
         val compatClass: Class<LayoutInflaterCompat> = LayoutInflaterCompat::class.java
         val inflaterClass: Class<LayoutInflater> = LayoutInflater::class.java
         try {
@@ -284,12 +284,11 @@ object UiModeManager {
             e.printStackTrace()
         }
     }
+
     @JvmStatic
     fun addFactory2(factory: LayoutInflater.Factory2) {
         obtainInflaterFactory().addBeforeFactory(factory)
     }
-
-
 
 
     /**
@@ -304,7 +303,7 @@ object UiModeManager {
     /**
      * 恢复指定当前Activity的夜间模式到默认
      */
-    fun recoveryToDefaultUiMode(activity: AppCompatActivity){
+    fun recoveryToDefaultUiMode(activity: AppCompatActivity) {
         activity.delegate.localNightMode = this.appUiMode
         setLocalNightMode(activity, AppCompatDelegate.MODE_NIGHT_UNSPECIFIED)
     }
@@ -329,14 +328,11 @@ object UiModeManager {
     }
 
 
-
-
-
     /**
      * 获取 Configuration 日夜间模式
      */
-    fun getConfigurationUiMode(config:Configuration): Int {
-        return  config.uiMode and Configuration.UI_MODE_NIGHT_MASK
+    fun getConfigurationUiMode(config: Configuration): Int {
+        return config.uiMode and Configuration.UI_MODE_NIGHT_MASK
     }
 
     /**
@@ -362,8 +358,8 @@ object UiModeManager {
     /**
      * 保存手动创建的View
      */
-    fun saveView(context: Context,v: View){
-        ViewStore.saveView(context,v)
+    fun saveView(context: Context, v: View) {
+        ViewStore.saveView(context, v)
     }
 
     /**
@@ -397,6 +393,10 @@ object UiModeManager {
             map[styleableRes] = cachedTypeArray
             cachedTypeArray.putIndexAttr(0, index)
             map[styleableRes] = cachedTypeArray
+        } else {
+            if (cachedTypeArray.peekValue(index) == null) {
+                cachedTypeArray.putIndexAttr(cachedTypeArray.getIndexCount(), index)
+            }
         }
         val typedValue = TypedValue()
         typedValue.type = TypedValue.TYPE_STRING
@@ -404,6 +404,115 @@ object UiModeManager {
         cachedTypeArray.putTypeValue(index, typedValue)
         saveView(v.context, v)
         onUiModeChanged(v)
+    }
+
+
+    /**
+     * 移除 View 的属性值
+     *
+     * androidx.appcompat.R.styleable.AppCompatImageView
+     * com.aliya.uimode.R.styleable.ProgressBarHelper
+     * com.aliya.uimode.R.styleable.SeekBarHelper
+     * com.aliya.uimode.R.styleable.TextViewHelper
+     * com.aliya.uimode.R.styleable.ToolbarHelper
+     * com.aliya.uimode.R.styleable.UiModeView
+     * androidx.appcompat.R.styleable.ViewBackgroundHelper
+     */
+    fun removeViewValue(
+        v: View,
+        styleableRes: IntArray,
+        @StyleableRes index: Int,
+    ) {
+        val tag = v.getTag(R.id.tag_ui_mode_type_array_map)
+        var map: HashMap<IntArray, CachedTypedValueArray?>? = null
+        if (tag != null) {
+            map = tag as HashMap<IntArray, CachedTypedValueArray?>
+
+            var cachedTypeArray = map[styleableRes] as? CachedTypedValueArray?
+            if (cachedTypeArray != null) {
+                if (cachedTypeArray.peekValue(index) != null) {
+                    cachedTypeArray.removeValue(index)
+                    if (cachedTypeArray.isEmpty()) {
+                        cachedTypeArray.recycle()
+                        map.remove(styleableRes)
+                    }
+                }
+            }
+        } else {
+        }
+
+    }
+
+
+    /**
+     *
+     * 禁用 View 日夜间切换,无法恢复
+     * 移除 View 的所有日夜间属性值
+     */
+    fun disableViewUimode(view: View){
+        removeViewAllValue( view)
+    }
+
+
+    /**
+     * 移除 View 的所有日夜间属性值
+     */
+    fun removeViewAllValue(
+        v: View,
+    ) {
+        val tag = v.getTag(R.id.tag_ui_mode_type_array_map)
+        var map: HashMap<IntArray, CachedTypedValueArray?>? = null
+        if (tag != null) {
+            map = tag as HashMap<IntArray, CachedTypedValueArray?>
+            map.forEach { (key, value) ->
+                value?.recycle()
+            }
+            map.clear()
+            v.setTag(R.id.tag_ui_mode_type_array_map, null)
+        }
+        ViewStore.removeView(v.context, v)
+
+    }
+
+
+    fun removeViewValueTextColor(view: TextView) {
+        removeViewValue(
+            view,
+            R.styleable.TextViewHelper,
+            R.styleable.TextViewHelper_android_textColor,
+        )
+    }
+
+    fun removeViewValueBackground(view: View) {
+        removeViewValue(
+            view,
+            androidx.appcompat.R.styleable.ViewBackgroundHelper,
+            androidx.appcompat.R.styleable.ViewBackgroundHelper_android_background,
+        )
+    }
+
+    fun removeViewValueBackgroundTint(view: View) {
+        removeViewValue(
+            view,
+            androidx.appcompat.R.styleable.ViewBackgroundHelper,
+            androidx.appcompat.R.styleable.ViewBackgroundHelper_backgroundTint,
+        )
+    }
+
+    fun removeViewValueImageSrc(view: ImageView) {
+        removeViewValue(
+            view,
+            androidx.appcompat.R.styleable.AppCompatImageView,
+            androidx.appcompat.R.styleable.AppCompatImageView_android_src,
+        )
+    }
+
+    fun removeViewValueImageTint(view: ImageView) {
+        removeViewValue(
+            view,
+            androidx.appcompat.R.styleable.AppCompatImageView,
+            androidx.appcompat.R.styleable.AppCompatImageView_tint,
+        )
     }
 
 
@@ -456,19 +565,19 @@ object UiModeManager {
     /**
      * 应用样式
      */
-    fun applyStyle(v: View,@StyleRes style:Int) {
-        UiModeDelegate.applyStyle(v,style)
+    fun applyStyle(v: View, @StyleRes style: Int) {
+        UiModeDelegate.applyStyle(v, style)
     }
 
 
     /**
-    *系统配置改变,在Application中调用
+     *系统配置改变,在Application中调用
      */
     fun onSystemConfigurationChanged() {
         /**
          * 有可能其他进程调用, 这里只处理本进程
          */
-        if(sAppContext == null){
+        if (sAppContext == null) {
             return
         }
         systemUiMode = getConfigurationUiMode(Resources.getSystem().configuration)
@@ -536,6 +645,7 @@ object UiModeManager {
                     sAppContext!!.getResources().getConfiguration()
                 appConfig.uiMode and Configuration.UI_MODE_NIGHT_MASK
             }
+
             else -> {
                 val appConfig: Configuration =
                     sAppContext!!.getResources().getConfiguration()

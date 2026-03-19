@@ -22,12 +22,13 @@ object ViewStore {
     private val mActivityViewMap: MutableMap<Context, MutableSet<WeakReference<View>>> = HashMap()
     private val referenceQueue = ReferenceQueue<View>()
 
-    private val uiModeChangeListenerMap= HashMap<LifecycleOwner, ArrayList<WeakReference<UiModeChangeListener>>>()
+    private val uiModeChangeListenerMap =
+        HashMap<LifecycleOwner, ArrayList<WeakReference<UiModeChangeListener>>>()
     const val NO_ID = 0 // 这里只能是0
 
     fun saveView(ctx: Context?, v: View?) {
         if (ctx == null || v == null) return
-        v.setTag(R.id.tag_ui_mode_is_save_store,true)
+        v.setTag(R.id.tag_ui_mode_is_save_store, true)
         // 寻找 context 装饰器对应的 activity 或 application
         if (ctx is Application) {
             putView2Map(ctx, v, mContextViewMap, referenceQueue)
@@ -37,6 +38,43 @@ object ViewStore {
                 putView2Map(activity, v, mActivityViewMap, null)
             }
         }
+    }
+    fun removeView(ctx: Context?, v: View?) {
+        if (ctx == null || v == null) return
+        v.setTag(R.id.tag_ui_mode_is_save_store, null)
+        // 寻找 context 装饰器对应的 activity 或 application
+        if (ctx is Application) {
+            mContextViewMap[ctx]?.let { set ->
+                removeItemIf(set) { refer ->
+                    refer.get() == v
+                }
+            }
+        } else {
+            val activity = AppUtil.findActivity(ctx)
+            if (activity != null) {
+                mActivityViewMap[activity]?.let { set ->
+                    removeItemIf<WeakReference<View>>(set) { refer ->
+                        refer.get() == v
+                    }
+                }
+            }
+        }
+    }
+
+
+    private fun <E> removeItemIf(
+        collection: MutableCollection<E>,
+        filter: (E) -> Boolean
+    ): Boolean {
+        var removed = false
+        val each: MutableIterator<E> = collection.iterator()
+        while (each.hasNext()) {
+            if (filter.invoke(each.next())) {
+                each.remove()
+                removed = true
+            }
+        }
+        return removed
     }
 
     private fun putView2Map(
@@ -68,8 +106,11 @@ object ViewStore {
             val activityStartTime = SystemClock.elapsedRealtime()
             onApplyUiMode(value)
             val costTime = SystemClock.elapsedRealtime() - activityStartTime
-            if(HideLog.isDebuggable() ){
-                HideLog.d(TAG, "dispatchApplyUiMode: " + key.javaClass.simpleName + " costTime: ${costTime} ms: ")
+            if (HideLog.isDebuggable()) {
+                HideLog.d(
+                    TAG,
+                    "dispatchApplyUiMode: " + key.javaClass.simpleName + " costTime: ${costTime} ms: "
+                )
             }
         }
 
@@ -78,14 +119,17 @@ object ViewStore {
             onApplyUiMode(value)
         }
         ViewStore.dispatchUiModeChangeListener()
-        if(HideLog.isDebuggable() ){
-            HideLog.d(TAG, "dispatchApplyUiMode:  costTime: " + (SystemClock.elapsedRealtime()-startTime))
+        if (HideLog.isDebuggable()) {
+            HideLog.d(
+                TAG,
+                "dispatchApplyUiMode:  costTime: " + (SystemClock.elapsedRealtime() - startTime)
+            )
         }
     }
 
     fun applyUiMode(activity: Activity) {
         if (!AppResourceUtils.isRecreateOnUiModeChange(activity)) { // 若Activity#recreate()会调用，无需动态替换
-            onApplyUiMode( mActivityViewMap[activity])
+            onApplyUiMode(mActivityViewMap[activity])
         }
     }
 
@@ -138,9 +182,12 @@ object ViewStore {
     }
 
 
-    fun registerUiModeChangeListener(lifecycleOwner: LifecycleOwner, listener: UiModeChangeListener) {
-        if(!lifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.CREATED)){
-             return
+    fun registerUiModeChangeListener(
+        lifecycleOwner: LifecycleOwner,
+        listener: UiModeChangeListener
+    ) {
+        if (!lifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.CREATED)) {
+            return
         }
         val list = uiModeChangeListenerMap[lifecycleOwner]
         if (list == null) {
@@ -158,6 +205,7 @@ object ViewStore {
                     Lifecycle.Event.ON_DESTROY -> {
                         uiModeChangeListenerMap.remove(lifecycleOwner)?.clear()
                     }
+
                     else -> {
 
                     }
@@ -168,11 +216,13 @@ object ViewStore {
     }
 
     fun dispatchUiModeChangeListener() {
-        for((_, value) in uiModeChangeListenerMap){
+        for ((_, value) in uiModeChangeListenerMap) {
             for (weakListener in value) {
                 weakListener.get()?.onUiModeChange()
             }
         }
     }
 
+
 }
+

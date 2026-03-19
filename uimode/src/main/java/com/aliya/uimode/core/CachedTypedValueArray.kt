@@ -476,6 +476,10 @@ class CachedTypedValueArray(var resources: Resources, var contextRef: WeakRefere
         return typeValues.get(index)
     }
 
+
+    fun removeValue(@StyleableRes index: Int){
+        typeValues.remove(index)
+    }
     fun recycle() {
         indexToAttr.clear()
         typeValues.clear()

@@ -29,22 +29,26 @@ open class TextViewWidget : AbstractWidget() {
         return false
     }
 
+
+    private fun applyTextAppearance(textView: TextView, typedArray: CachedTypedValueArray) {
+        val indexCount = typedArray.length()
+        if (indexCount > 0) {
+            val typedValue =
+                typedArray.peekValue(R.styleable.TextViewHelper_android_textAppearance)
+            if (typedValue != null) {
+                val style = TypedValueUtils.getStyle(textView, typedValue)
+                if (style != 0) {
+                    textView.setTextAppearance(style)
+                }
+            }
+        }
+
+    }
     override fun onApply(v: View, styleable: IntArray, typedArray: CachedTypedValueArray): Boolean {
         val textView = v as TextView
         if (Arrays.equals(styleable, R.styleable.TextViewHelper)) {
             val indexCount = typedArray.length()
-            if (indexCount > 0) {
-                val typedValue =
-                    typedArray.peekValue(R.styleable.TextViewHelper_android_textAppearance)
-                if (typedValue != null) {
-                    val style = TypedValueUtils.getStyle(v, typedValue)
-                    if (style != 0) {
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                            v.setTextAppearance(style)
-                        }
-                    }
-                }
-            }
+
 
 
             var drawableLeft: Drawable? = null
