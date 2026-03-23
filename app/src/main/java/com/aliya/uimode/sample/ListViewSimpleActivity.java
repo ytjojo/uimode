@@ -8,6 +8,8 @@ import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import androidx.core.content.ContextCompat;
+
 import com.aliya.uimode.sample.base.BaseActivity;
 
 /**
@@ -53,7 +55,10 @@ public class ListViewSimpleActivity extends BaseActivity {
                 convertView = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.layout_list_view_item, parent, false);
             }
-            ((TextView) convertView).setText(getItem(position).toString());
+
+            TextView tv =  ((TextView) convertView.findViewById(R.id.tv_title));
+            tv.setText("item " + position);
+            tv.setTextColor(ContextCompat.getColor(tv.getContext(),R.color.text_dark_primary));
             return convertView;
         }
     }

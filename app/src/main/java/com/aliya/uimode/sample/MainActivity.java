@@ -3,9 +3,11 @@ package com.aliya.uimode.sample;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.TextView;
 
 import com.aliya.uimode.sample.base.BaseActivity;
 import com.aliya.uimode.sample.view.TopBar;
+import com.aliya.viewtreedebug.ViewTreeDebugTool;
 
 /**
  * 主界面
@@ -14,6 +16,7 @@ import com.aliya.uimode.sample.view.TopBar;
  * @date 2018/2/1 下午3:06.
  */
 public class MainActivity extends BaseActivity implements View.OnClickListener {
+    private TextView mDebugToggleView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,8 +36,17 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         findViewById(R.id.btn_go_style_test).setOnClickListener(this);
         findViewById(R.id.btn_go_backlib_test).setOnClickListener(this);
         findViewById(R.id.btn_go_tint_colorFilter_test).setOnClickListener(this);
+        findViewById(R.id.btn_toggle_view_tree_debug).setOnClickListener(this);
+        mDebugToggleView = findViewById(R.id.btn_toggle_view_tree_debug);
+        bindDebugToggleText();
         ((TopBar) findViewById(R.id.top_bar)).setTitle("主界面");
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        bindDebugToggleText();
     }
 
     @Override
@@ -67,6 +79,24 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             startActivity(new Intent(this, NooberBackgroundActivity.class));
         } else if (v.getId() == R.id.btn_go_tint_colorFilter_test) {
             startActivity(new Intent(this, TintColorFilterActivity.class));
+        } else if (v.getId() == R.id.btn_toggle_view_tree_debug) {
+            if (ViewTreeDebugTool.isEnabled()) {
+                ViewTreeDebugTool.disable();
+            } else if (ViewTreeDebugTool.ensureOverlayPermission(this)) {
+                ViewTreeDebugTool.enable();
+            }
+            bindDebugToggleText();
+        }
+    }
+
+    private void bindDebugToggleText() {
+        if (mDebugToggleView == null) {
+            return;
+        }
+        if (ViewTreeDebugTool.isEnabled()) {
+            mDebugToggleView.setText("关闭 View 树调试工具");
+        } else {
+            mDebugToggleView.setText("开启 View 树调试工具");
         }
     }
 

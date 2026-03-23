@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatDelegate;
 
 import com.aliya.uimode.UiModeManager;
+import com.aliya.viewtreedebug.ViewTreeDebugTool;
 import com.noober.background.BLAutoInjectController;
 
 /**
@@ -33,6 +34,7 @@ public class App extends Application {
         Log.e("TAG", "App - defaultNightMode: " + AppCompatDelegate.getDefaultNightMode());
 
         AppUiMode.init(App.this);
+        ViewTreeDebugTool.init(this);
 
         registerUiModeObserver();
     }
