@@ -1,4 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+
+    <application>
+        <provider
+            android:name="com.aliya.viewtreedebug.ViewTreeDebugProvider"
+            android:authorities="${applicationId}.viewtree.debug.provider"
+            android:exported="false"
+            android:initOrder="1990" />
+    </application>
 </manifest>

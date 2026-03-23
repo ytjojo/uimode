@@ -2,7 +2,10 @@ package com.aliya.uimode.debug
 import android.util.AttributeSet
 import android.view.View
 import com.aliya.uimode.HideLog
+import com.aliya.uimode.R
 import com.aliya.uimode.core.CachedTypedValueArray
+import com.aliya.uimode.core.UiModeDelegate.TAG
+import com.aliya.uimode.core.WidgetRegister
 import com.aliya.uimode.uimodewidget.AbstractWidget
 import com.aliya.uimode.utils.AppUtil
 
@@ -137,6 +140,71 @@ object WidgetDebugTool {
         return true
     }
 
+
+    fun onAssembleInfo(
+        view: View,
+        attributeSet: AttributeSet,
+    ): String {
+        val stringBuilder: StringBuilder = StringBuilder()
+        val viewInfo = buildViewInfo(view, attributeSet)
+        val list = WidgetRegister.getListBySuperclass(view::class.java)
+        stringBuilder.append("\n ========== Assemble Start ==========")
+        stringBuilder.append( viewInfo)
+        list.forEach { widget ->
+            stringBuilder.append("\nWidget: ${widget.javaClass.simpleName}")
+        }
+        val info = stringBuilder.toString()
+        view.setTag(R.id.tag_ui_mode_assemble_info, info)
+        return info
+
+    }
+
+
+    fun onApplyInfo(
+        v: View,
+    ) {
+        val list: ArrayList<AbstractWidget> = WidgetRegister.getListBySuperclass(v::class.java)
+        val sb = StringBuilder()
+        val tag = v.getTag(R.id.tag_ui_mode_type_array_map)
+        val currentTime = java.text.SimpleDateFormat("HH:mm:ss", java.util.Locale.getDefault()).format(java.util.Date())
+        sb.append("====== Apply Start @ time: ${currentTime}  =======")
+        val isNight = v.resources.configuration.uiMode and android.content.res.Configuration.UI_MODE_NIGHT_MASK == android.content.res.Configuration.UI_MODE_NIGHT_YES
+        sb.appendLine("====  是否是夜间 : ${isNight}  =====")
+        if (tag != null && tag is Map<*, *>) {
+            val typeArrayMap = tag as Map<IntArray, CachedTypedValueArray>
+            list.forEach {
+                sb.appendLine("Widget: ${it.javaClass.simpleName}")
+                typeArrayMap.forEach { entry ->
+                    onApplyInfo(v, entry.key, entry.value,sb)
+
+                }
+            }
+        }
+        val tagCustom = v.getTag(R.id.tag_ui_mode_custom_type_array_map)
+        if (tagCustom != null && tagCustom is Map<*, *>) {
+            val typedArrayMap = tagCustom as Map<IntArray, CachedTypedValueArray>
+            list.forEach {
+                sb.appendLine("Widget: ${it.javaClass.simpleName}")
+                typedArrayMap.forEach { entry ->
+                    onApplyInfo(v, entry.key, entry.value,sb)
+                }
+            }
+        }
+        val info = sb.toString()
+        v.setTag(R.id.tag_ui_mode_apply_info, info)
+    }
+    fun onApplyInfo(
+        view: View,
+        styleable: IntArray,
+        typedArray: CachedTypedValueArray,
+        sb: StringBuilder
+    ) {
+
+        val attrInfo = buildAttributeInfo(view, styleable, typedArray)
+        sb.append(attrInfo)
+    }
+
+
     /**
      * Assemble 阶段的 Debug 入口
      * @return true 表示继续执行，false 表示中断执行
@@ -220,19 +288,18 @@ object WidgetDebugTool {
     private fun buildViewInfo(view: View, attributeSet: AttributeSet): String {
         val builder = StringBuilder()
         builder.appendLine("View Info:")
-        builder.appendLine("  Class: ${view.javaClass.name}")
+        builder.appendLine("Class: ${view.javaClass.name}")
         val idName = if (view.id == View.NO_ID) "" else view.resources?.getResourceName(view.id)
-        builder.appendLine("  Id: ${if (view.id == View.NO_ID) "NO_ID" else "${idName} = 0x${view.id.toString(16)}"}")
+        builder.appendLine("Id: ${if (view.id == View.NO_ID) "NO_ID" else "${idName} = 0x${view.id.toString(16)}"}")
 
         if (attributeSet != null) {
-            builder.appendLine("  Attribute Count: ${attributeSet.attributeCount}")
-            builder.appendLine("  Style Attribute: 0x${attributeSet.styleAttribute.toString(16)}")
-
+            builder.appendLine("Attribute Count: ${attributeSet.attributeCount}")
+            builder.appendLine("Style Attribute: 0x${attributeSet.styleAttribute.toString(16)}")
             // 输出关键属性
             for (i in 0 until attributeSet.attributeCount) {
                 val attrName = attributeSet.getAttributeName(i)
                 val attrValue = attributeSet.getAttributeValue(i)
-                builder.appendLine("    [$attrName] = $attrValue")
+                builder.appendLine("[$attrName] = $attrValue")
             }
         }
 
@@ -248,13 +315,11 @@ object WidgetDebugTool {
         typedArray: CachedTypedValueArray
     ): String {
         val builder = StringBuilder()
-        builder.appendLine("Apply Info:")
-        builder.appendLine("  Styleable Length: ${styleable.size}")
-        builder.appendLine("  TypedArray Length: ${typedArray.length()}")
+        builder.append("\nStyleable Length: ${styleable.size}")
+        builder.append("\nTypedArray Length: ${typedArray.length()}")
 
         val indexCount = typedArray.length()
         if (indexCount > 0) {
-            builder.appendLine("  Attributes:")
             for (i in 0 until indexCount) {
                 val indexInStyleable = typedArray.getIndex(i)
                 val typedValue = typedArray.peekValue(indexInStyleable)
@@ -265,13 +330,12 @@ object WidgetDebugTool {
                     } catch (e: Exception) {
                         "unknown"
                     }
-
-                    builder.appendLine("    [$indexInStyleable] $attrName")
-                    builder.appendLine("      TypeValue: ${typedValue.toString()}")
+                    builder.append("\n[$indexInStyleable] $attrName")
+                    builder.append("\nTypedValue: ${typedValue.toString()}")
                     if (typedValue.resourceId != 0) {
                         try {
                             val resourceName = view.context.resources.getResourceName(typedValue.resourceId)
-                            builder.appendLine("      ResourceName: $resourceName")
+                            builder.append("\n name: $resourceName")
                         } catch (e: Exception) {
                             // ignore
                         }

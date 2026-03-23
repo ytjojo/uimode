@@ -13,4 +13,7 @@
     <item name="tag_ui_mode_on_ui_mode_changed" type="id" />
     <item name="tag_ui_mode_theme_typed_value" type="id" />
 
+    <item name="tag_ui_mode_assemble_info" type="id" />
+    <item name="tag_ui_mode_apply_info" type="id" />
+
 </resources>

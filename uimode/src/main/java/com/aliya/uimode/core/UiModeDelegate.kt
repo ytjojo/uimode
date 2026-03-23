@@ -33,6 +33,9 @@ object UiModeDelegate {
                 isSave = result
             }
         }
+        if(isSave && WidgetDebugTool.isDebugEnabled){
+            WidgetDebugTool.onAssembleInfo(v, attrs)
+        }
         val viewUiModeChanged = WidgetRegister.getViewUiModeChanged(v::class.java)
         if(viewUiModeChanged != null){
             isSave = true
@@ -67,12 +70,8 @@ object UiModeDelegate {
         val tag = v.getTag(R.id.tag_ui_mode_type_array_map)
         if (tag != null && tag is Map<*, *>) {
             val typeArrayMap = tag as Map<IntArray, CachedTypedValueArray>
-
             list.forEach {
                 typeArrayMap.forEach { entry ->
-                    if (WidgetDebugTool.isDebugEnabled) {
-                        WidgetDebugTool.onApplyDebug(v, entry.key, entry.value,it)
-                    }
                     if (HideLog.isDebuggable()) {
                         val idResName = if(v.id == View.NO_ID) "" else v.resources.getResourceName(v.id)
                         HideLog.i(
@@ -91,11 +90,7 @@ object UiModeDelegate {
         if (tagCustom != null && tagCustom is Map<*, *>) {
             val typedArrayMap = tagCustom as Map<IntArray, CachedTypedValueArray>
             list.forEach {
-                if (WidgetDebugTool.isDebugEnabled) {
-                    typedArrayMap.forEach { entry ->
-                        WidgetDebugTool.onApplyDebug(v, entry.key, entry.value,it)
-                    }
-                }
+
                 if (HideLog.isDebuggable()) {
                     val idResName = if(v.id == View.NO_ID) "" else v.resources.getResourceName(v.id)
                     HideLog.i(
@@ -105,6 +100,9 @@ object UiModeDelegate {
                 }
                 it.onApplyCustom(v, typedArrayMap)
             }
+        }
+        if (WidgetDebugTool.isDebugEnabled) {
+            WidgetDebugTool.onApplyInfo(v)
         }
         val tagOnUiModeChanged = v.getTag(R.id.tag_ui_mode_on_ui_mode_changed)
         if (tagOnUiModeChanged != null && tagOnUiModeChanged is OnViewUiModeChanged<*>) {

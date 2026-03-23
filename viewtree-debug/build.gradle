@@ -1,5 +1,15 @@
 apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
 
+
+ext {
+    bintrayName = 'viewtree-debug'
+    artifact = bintrayName
+    libraryName = 'viewtree-debug'
+    libraryDescription = 'debug tool show view tree'
+    libraryVersion = "1.0.0"
+//    libraryVersion = uimode_main_release_version
+}
 android {
     namespace 'com.aliya.viewtreedebug'
     compileSdkVersion 35
@@ -17,13 +27,27 @@ android {
         }
     }
 
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
     }
+    publishing {
+        singleVariant("release") {
+            withSourcesJar()
+            withJavadocJar()
+        }
+    }
 }
 
+kotlin {
+    jvmToolchain(17)
+}
 dependencies {
-    implementation 'androidx.appcompat:appcompat:1.7.1'
+    implementation deps.androidx.appcompat
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:${kotlin_version}"
     implementation 'androidx.recyclerview:recyclerview:1.4.0'
 }
+
+apply from: '../mevenUpload.gradle'

@@ -75,10 +75,6 @@ abstract class AbstractWidget : IApplyAttrResourceId {
 
 
     override fun assemble(view: View, attributeSet: AttributeSet): Boolean {
-        if (WidgetDebugTool.isDebugEnabled) {
-            WidgetDebugTool.onAssembleDebug(view, attributeSet, this)
-        }
-
         var ignoreValue = ""
         val ignoreAttrNames = HashSet<String>()
         val ignoreAttrIds = HashSet<Int>()

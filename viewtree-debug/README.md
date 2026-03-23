@@ -9,7 +9,7 @@
 圆点获取坐标状态使用系统悬浮窗显示小点
 手指可以自由拖动小点在屏幕中移动
 #### 坐标View列表状态
-手指抬起后3秒显示横向列表,列表为所在悬浮点根据坐标获取View树中对应View的信息.
+手指抬起后1秒显示横向列表,列表为所在悬浮点根据坐标获取View树中对应View的信息.
 列表会做排序越是内层ChildView越靠前,且childView区域一定要包含在悬浮小点坐标
 Z轴堆叠（如 FrameLayout 或自定义 DrawingOrder）的情况，应当优先展示用户肉眼可见的最上层 View。
 列表可以左右滑动,列表最多显示20条数据
@@ -71,5 +71,24 @@ PopupWindow > Dialog > Activity
 
 从顶层 Window → 向下遍历
 命中第一个包含 (x, y) 的 Window 即停止	
+
+## 支持扩展接口供外部开发者注册注入信息
+- 新增可扩展接口 DetailInfoProvider ，供外部开发者注册注入：
+- 新增多注册能力（去重）、注销、清空注册：
+  - registerDetailInfoProvider(...)
+  - unregisterDetailInfoProvider(...)
+  - clearDetailInfoProviders(...)
+- 在 bindNodeDetail 中调用所有已注册接口，收集返回的 String 并展示在“【扩展信息】”区块：
+- 支持注册多个 provider，按注册顺序拼接展示。
+
+
+## 代码库自动初始化
+
+ViewTreeDebugProvider 继承ContentProvider
+ContentProvider 中onCreate 方法中进行初始化
+AndroidManifest.xml中注册ViewTreeDebugProvider
+
+
+
 ## 性能
 及时回收Bitmap，避免内存泄漏。
