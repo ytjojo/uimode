@@ -372,12 +372,12 @@ public final class ViewTreeDebugTool {
                             hideListOverlay();
                             overlayMode = OverlayMode.DOT;
                             mainHandler.removeCallbacks(settleRunnable);
-                            mainHandler.postDelayed(settleRunnable, 3000L);
+                            mainHandler.postDelayed(settleRunnable, 1000L);
                             return true;
                         case MotionEvent.ACTION_UP:
                         case MotionEvent.ACTION_CANCEL:
                             mainHandler.removeCallbacks(settleRunnable);
-                            mainHandler.postDelayed(settleRunnable, 3000L);
+                            mainHandler.postDelayed(settleRunnable, 1000L);
                             return true;
                         default:
                             return false;
@@ -399,8 +399,17 @@ public final class ViewTreeDebugTool {
             if (!enabled || dotParams == null) {
                 return;
             }
-            int x = dotParams.x + dotSizePx / 2;
-            int y = dotParams.y + dotSizePx / 2;
+            int x;
+            int y;
+            if (dotView != null && dotView.getParent() != null) {
+                int[] location = new int[2];
+                dotView.getLocationOnScreen(location);
+                x = location[0] + dotView.getWidth() / 2;
+                y = location[1] + dotView.getHeight() / 2;
+            } else {
+                x = dotParams.x + dotSizePx / 2;
+                y = dotParams.y + dotSizePx / 2;
+            }
             WindowEntry topWindow = WindowInspector.findTopWindowHit(x, y);
             currentHitWindow = topWindow;
             if (topWindow == null) {
@@ -1068,8 +1077,8 @@ public final class ViewTreeDebugTool {
                 return;
             }
             ensureHighlightOverlay();
-            highlightOverlayView.setHighlightRect(node.rect);
             addOrUpdateView(highlightOverlayView, highlightParams);
+            highlightOverlayView.setHighlightRect(node.rect);
         }
 
         private void ensureHighlightOverlay() {
@@ -1257,7 +1266,9 @@ public final class ViewTreeDebugTool {
     private static final class HighlightOverlayView extends View {
         private final Paint fillPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         private final Paint strokePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        private final RectF rect = new RectF();
+        private final RectF screenRect = new RectF();
+        private final RectF drawRect = new RectF();
+        private final int[] locationOnScreen = new int[2];
         private boolean hasRect;
 
         HighlightOverlayView(Context context) {
@@ -1271,14 +1282,15 @@ public final class ViewTreeDebugTool {
         }
 
         void setHighlightRect(@NonNull Rect highlightRect) {
-            rect.set(highlightRect);
-            hasRect = !rect.isEmpty();
+            screenRect.set(highlightRect);
+            hasRect = !screenRect.isEmpty();
             invalidate();
         }
 
         void clearHighlightRect() {
             hasRect = false;
-            rect.setEmpty();
+            screenRect.setEmpty();
+            drawRect.setEmpty();
             invalidate();
         }
 
@@ -1288,8 +1300,15 @@ public final class ViewTreeDebugTool {
             if (!hasRect) {
                 return;
             }
-            canvas.drawRect(rect, fillPaint);
-            canvas.drawRect(rect, strokePaint);
+            getLocationOnScreen(locationOnScreen);
+            drawRect.set(
+                    screenRect.left - locationOnScreen[0],
+                    screenRect.top - locationOnScreen[1],
+                    screenRect.right - locationOnScreen[0],
+                    screenRect.bottom - locationOnScreen[1]
+            );
+            canvas.drawRect(drawRect, fillPaint);
+            canvas.drawRect(drawRect, strokePaint);
         }
 
         private static int dp(Context context, float dpValue) {
