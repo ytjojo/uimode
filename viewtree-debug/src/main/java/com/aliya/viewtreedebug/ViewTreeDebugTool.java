@@ -247,6 +247,7 @@ public final class ViewTreeDebugTool {
         private EditText searchInputView;
         private TextView searchTipView;
         private WindowManager.LayoutParams fullParams;
+        private HighlightOverlayView fullHighlightOverlayView;
         private Bitmap detailBitmap;
         private TreeNode selectedNode;
         private TreeNode currentRootNode;
@@ -445,6 +446,25 @@ public final class ViewTreeDebugTool {
             int horizontalPadding = dp(8f);
             int verticalPadding = dp(6f);
             root.setPadding(horizontalPadding, verticalPadding, horizontalPadding, verticalPadding);
+            LinearLayout content = new LinearLayout(application);
+            content.setOrientation(LinearLayout.VERTICAL);
+            root.addView(content, new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+            LinearLayout actionBar = new LinearLayout(application);
+            actionBar.setOrientation(LinearLayout.HORIZONTAL);
+            actionBar.setGravity(Gravity.CENTER_VERTICAL);
+            TextView back = buildActionButton("←");
+            TextView close = buildActionButton("X");
+            TextView title = new TextView(application);
+            title.setText("坐标命中列表");
+            title.setTextColor(Color.WHITE);
+            title.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
+            LinearLayout.LayoutParams titleLp = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f);
+            titleLp.leftMargin = dp(8f);
+            titleLp.rightMargin = dp(8f);
+            actionBar.addView(back, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+            actionBar.addView(title, titleLp);
+            actionBar.addView(close, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+            content.addView(actionBar, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
             RecyclerView recyclerView = new RecyclerView(application);
             final LinearLayoutManager layoutManager = new LinearLayoutManager(application, RecyclerView.HORIZONTAL, false);
             recyclerView.setLayoutManager(layoutManager);
@@ -467,7 +487,22 @@ public final class ViewTreeDebugTool {
                     }
                 }
             });
-            root.addView(recyclerView, new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+            LinearLayout.LayoutParams listLp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            listLp.topMargin = dp(6f);
+            content.addView(recyclerView, listLp);
+            back.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    hideListOverlay();
+                    overlayMode = OverlayMode.DOT;
+                }
+            });
+            close.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    disable();
+                }
+            });
             listView = root;
             hitRecyclerView = recyclerView;
             listParams = createCommonLayoutParams();
@@ -514,6 +549,7 @@ public final class ViewTreeDebugTool {
             addOrUpdateView(fullView, fullParams);
             scrollToSelected();
             bindNodeDetail(selectedNode);
+            updateTreeNodeHighlight(selectedNode);
         }
 
         private void ensureFullOverlay() {
@@ -521,7 +557,10 @@ public final class ViewTreeDebugTool {
                 return;
             }
             FrameLayout root = new FrameLayout(application);
-            root.setBackgroundColor(Color.parseColor("#F2161616"));
+            root.setBackgroundColor(Color.parseColor("#99161616"));
+
+            HighlightOverlayView fullHighlightView = new HighlightOverlayView(application);
+            root.addView(fullHighlightView, new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
 
             LinearLayout container = new LinearLayout(application);
             container.setOrientation(LinearLayout.VERTICAL);
@@ -589,6 +628,7 @@ public final class ViewTreeDebugTool {
                 public void onNodeClick(TreeNode node) {
                     selectedNode = node;
                     bindNodeDetail(node);
+                    updateTreeNodeHighlight(node);
                     treeAdapter.updateSelectedNode(selectedNode);
                 }
 
@@ -612,7 +652,7 @@ public final class ViewTreeDebugTool {
             LinearLayout detailContainer = new LinearLayout(application);
             detailContainer.setOrientation(LinearLayout.VERTICAL);
             detailContainer.setPadding(dp(10f), dp(10f), dp(10f), dp(10f));
-            detailContainer.setBackgroundColor(Color.parseColor("#D92D2D2D"));
+            detailContainer.setBackgroundColor(Color.parseColor("#332D2D2D"));
             TextView detail = new TextView(application);
             detail.setTextColor(Color.WHITE);
             detail.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
@@ -665,6 +705,7 @@ public final class ViewTreeDebugTool {
             });
 
             fullView = root;
+            fullHighlightOverlayView = fullHighlightView;
             treeRecyclerView = recyclerView;
             detailText = detail;
             detailImage = imageView;
@@ -962,6 +1003,9 @@ public final class ViewTreeDebugTool {
 
         private void hideFullOverlay() {
             removeViewSafe(fullView);
+            if (fullHighlightOverlayView != null) {
+                fullHighlightOverlayView.clearHighlightRect();
+            }
             recycleDetailBitmap();
         }
 
@@ -999,7 +1043,16 @@ public final class ViewTreeDebugTool {
             selectedNode = node;
             treeAdapter.applySearchState(lastSearchQuery, searchMatches, selectedNode);
             bindNodeDetail(selectedNode);
+            updateTreeNodeHighlight(selectedNode);
             scrollToSelected();
+        }
+
+        private void updateTreeNodeHighlight(@Nullable TreeNode node) {
+            if (node == null || fullHighlightOverlayView == null) {
+                return;
+            }
+            fullHighlightOverlayView.setHighlightRect(node.rect);
+            clearWindowHighlight();
         }
 
         private void clearSearch() {
@@ -1076,6 +1129,11 @@ public final class ViewTreeDebugTool {
             if (!enabled) {
                 return;
             }
+            if (overlayMode == OverlayMode.FULL && fullHighlightOverlayView != null) {
+                fullHighlightOverlayView.setHighlightRect(node.rect);
+                clearWindowHighlight();
+                return;
+            }
             ensureHighlightOverlay();
             addOrUpdateView(highlightOverlayView, highlightParams);
             highlightOverlayView.setHighlightRect(node.rect);
@@ -1098,6 +1156,13 @@ public final class ViewTreeDebugTool {
         }
 
         private void clearHighlight() {
+            if (fullHighlightOverlayView != null) {
+                fullHighlightOverlayView.clearHighlightRect();
+            }
+            clearWindowHighlight();
+        }
+
+        private void clearWindowHighlight() {
             if (highlightOverlayView != null) {
                 highlightOverlayView.clearHighlightRect();
             }
@@ -1459,7 +1524,7 @@ public final class ViewTreeDebugTool {
                     prefix = "[+]";
                 }
                 tv.setText((matched ? "★ " : "") + prefix + " " + node.title);
-                tv.setBackgroundColor(selected ? Color.parseColor("#3D5AFE") : Color.TRANSPARENT);
+                tv.setBackgroundColor(selected ? Color.parseColor("#993D5AFE") : Color.TRANSPARENT);
                 tv.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
