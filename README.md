@@ -294,8 +294,8 @@ ImageView
     android:layout_width="30dp"
     android:layout_height="30dp"
     android:background="@drawable/ic_nav_bar_back_dark"
-    app:view_colorFilter="@color/_dddddd_343434"
-    app:view_colorFilterMode="src_in"
+    app:drawable_colorFilter="@color/_dddddd_343434"
+    app:drawable_colorFilterMode="src_in"
 />
 
 
@@ -303,8 +303,8 @@ ImageView
 android:layout_width="30dp"
 android:layout_height="30dp"
 android:leftDrawable="@drawable/ic_nav_bar_back_dark"
-app:view_colorFilter="@color/_dddddd_343434"
-app:view_colorFilterMode="src_in"
+app:drawable_colorFilter="@color/_dddddd_343434"
+app:drawable_colorFilterMode="src_in"
 />
 ```
 

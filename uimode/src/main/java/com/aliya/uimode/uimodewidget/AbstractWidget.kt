@@ -181,10 +181,11 @@ abstract class AbstractWidget : IApplyAttrResourceId {
                             }
                             if(!onInterceptPutCacheTypeValue(view,styleable,indexInStyleable,typedValue,typedArray,cachedTypeArray)){
                                 cachedTypeArray.putTypeValue(indexInStyleable, typedValue)
+                                cachedTypeArray.putIndexAttr( indexInStyleable)
                             }
 
                         }
-                        cachedTypeArray.putIndexAttr(i, indexInStyleable)
+
                     }
                     if (!cachedTypeArray.isEmpty()) {
                         cachedTypeArrayMap.put(styleable, cachedTypeArray)
@@ -216,6 +217,7 @@ abstract class AbstractWidget : IApplyAttrResourceId {
                         val typedValue = TypedValue()
                         if (typedArray.getValue(indexInStyleable, typedValue)) {
                             cachedTypeArray.putTypeValue(indexInStyleable, typedValue)
+                            cachedTypeArray.putIndexAttr( indexInStyleable)
                         }
 
                         if (HideLog.isDebuggable()) {
@@ -238,7 +240,7 @@ abstract class AbstractWidget : IApplyAttrResourceId {
 
                         }
 
-                        cachedTypeArray.putIndexAttr(i, indexInStyleable)
+
                     }
                     if (!cachedTypeArray.isEmpty()) {
                         cachedTypeArrayMap.put(styleable, cachedTypeArray)
@@ -317,8 +319,8 @@ abstract class AbstractWidget : IApplyAttrResourceId {
                     if ( typedArray.indexCount > 0) {
                         val typedValue = TypedValue()
                         if (typedArray.getValue(0, typedValue) && isLegalType(typedValue)) {
-                            attrTypedArray?.putTypeValue(index, typedValue)
-                            attrTypedArray.putIndexAttr(attrTypedArray.getIndexCount(), index)
+                            attrTypedArray.putTypeValue(index, typedValue)
+                            attrTypedArray.putIndexAttr( index)
                         }
 
                     }

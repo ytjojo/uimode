@@ -222,9 +222,10 @@ open class TextViewWidget : AbstractWidget() {
                                     )
                                 ) {
                                     cachedTypedValueArray.putTypeValue(index, styleTypedValue)
+                                    cachedTypedValueArray.putIndexAttr( index)
                                 }
                             }
-                            cachedTypedValueArray.putIndexAttr(index, index)
+
                             styleTypedArray.recycle()
                         }
 

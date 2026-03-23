@@ -63,7 +63,7 @@ object UiModeManager {
     /**
      * 是否全局支持TextView的Drawable夜间遮罩
      * 与drawableTint互斥
-     * 与view_colorFilter互斥
+     * 与drawable_colorFilter互斥
      */
     var isSupportTextViewDrawableMask = false
 
@@ -391,11 +391,11 @@ object UiModeManager {
         if (cachedTypeArray == null) {
             cachedTypeArray = CachedTypedValueArray(v.resources, WeakReference(v.context))
             map[styleableRes] = cachedTypeArray
-            cachedTypeArray.putIndexAttr(0, index)
+            cachedTypeArray.putIndexAttr( index)
             map[styleableRes] = cachedTypeArray
         } else {
             if (cachedTypeArray.peekValue(index) == null) {
-                cachedTypeArray.putIndexAttr(cachedTypeArray.getIndexCount(), index)
+                cachedTypeArray.putIndexAttr( index)
             }
         }
         val typedValue = TypedValue()
@@ -447,20 +447,28 @@ object UiModeManager {
     /**
      *
      * 禁用 View 日夜间切换,无法恢复
-     * 移除 View 的所有日夜间属性值
+     * 不移除 View日夜间属性值
      */
     fun disableViewUimode(view: View){
-        removeViewAllValue( view)
+        ViewStore.removeView(view.context, view)
     }
 
+    /**
+     *
+     * 禁用 View 日夜间切换,无法恢复
+     * 不移除 View日夜间属性值
+     */
+    fun enableViewUimode(view: View){
+       saveView(view.context, view)
+    }
 
     /**
      * 移除 View 的所有日夜间属性值
      */
     fun removeViewAllValue(
-        v: View,
+        view: View,
     ) {
-        val tag = v.getTag(R.id.tag_ui_mode_type_array_map)
+        val tag = view.getTag(R.id.tag_ui_mode_type_array_map)
         var map: HashMap<IntArray, CachedTypedValueArray?>? = null
         if (tag != null) {
             map = tag as HashMap<IntArray, CachedTypedValueArray?>
@@ -468,9 +476,9 @@ object UiModeManager {
                 value?.recycle()
             }
             map.clear()
-            v.setTag(R.id.tag_ui_mode_type_array_map, null)
+            view.setTag(R.id.tag_ui_mode_type_array_map, null)
         }
-        ViewStore.removeView(v.context, v)
+        ViewStore.removeView(view.context, view)
 
     }
 

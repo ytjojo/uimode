@@ -17,24 +17,73 @@ open class ViewWidget : AbstractWidget() {
 
     @CallSuper
     override fun onRegisterStyleable() {
-        registerAttrArray(androidx.appcompat.R.styleable.ViewBackgroundHelper)
         registerAttrArray(R.styleable.UiModeView)
+        registerAttrArray(androidx.appcompat.R.styleable.ViewBackgroundHelper)
+        registerAttrArray(R.styleable.UiModeViewEffectsStyle)
     }
 
 
     override fun assemble(view: View, attributeSet: AttributeSet): Boolean {
         return super.assemble(view, attributeSet)
     }
-    override fun onAssemble(view: View, styleable: IntArray, indexInStyleable: Int,typedValue: TypedValue): Boolean {
-        if(Arrays.equals(styleable, R.styleable.UiModeView) && indexInStyleable == R.styleable.UiModeView_android_theme){
-            view.setTag(R.id.tag_ui_mode_theme_typed_value,typedValue)
+
+    override fun onAssemble(
+        view: View,
+        styleable: IntArray,
+        indexInStyleable: Int,
+        typedValue: TypedValue
+    ): Boolean {
+        if (Arrays.equals(
+                styleable,
+                R.styleable.UiModeView
+            ) && indexInStyleable == R.styleable.UiModeView_android_theme
+        ) {
+            view.setTag(R.id.tag_ui_mode_theme_typed_value, typedValue)
             return true
         }
         return false
     }
-    override fun onApply(v: View, styleable: IntArray, typedArray: CachedTypedValueArray): Boolean {
+
+    override fun onApply(
+        view: View,
+        styleable: IntArray,
+        typedArray: CachedTypedValueArray
+    ): Boolean {
 
         if (Arrays.equals(styleable, R.styleable.UiModeView)) {
+            val indexCount = typedArray.length()
+            for (i in 0 until indexCount) {
+                val indexInAttrArray = typedArray.getIndex(i)
+                val typedValue = typedArray.peekValue(indexInAttrArray)
+                if (typedValue != null) {
+                    when (indexInAttrArray) {
+                        R.styleable.UiModeView_android_foreground -> {
+                            TypedValueUtils.getDrawable(
+                                view,
+                                typedValue,
+                            )?.let {
+                                view.foreground = it
+                            }
+                        }
+
+                        R.styleable.UiModeView_view_invalidate -> {
+                            view.invalidate()
+                        }
+
+                        R.styleable.UiModeView_android_theme -> {
+                            val style = TypedValueUtils.getStyle(view, typedValue)
+                            if (style != 0) {
+                                view.getContext().getTheme()?.applyStyle(style, true)
+                            }
+                        }
+
+
+                    }
+                }
+            }
+            return true
+        } else if (Arrays.equals(styleable, R.styleable.UiModeViewEffectsStyle)) {
+
             val indexCount = typedArray.length()
             var colorFilterColor: Int? = null
             var colorFilterMode: PorterDuff.Mode? = null
@@ -43,30 +92,26 @@ open class ViewWidget : AbstractWidget() {
                 val typedValue = typedArray.peekValue(indexInAttrArray)
                 if (typedValue != null) {
                     when (indexInAttrArray) {
-                        R.styleable.UiModeView_android_foreground -> {
-                            TypedValueUtils.getDrawable(
-                                v,
-                                typedValue,
-                            )?.let {
-                                v.foreground = it
-                            }
-                        }
-                        R.styleable.UiModeView_view_invalidate -> {
-                            v.invalidate()
+
+                        R.styleable.UiModeViewEffectsStyle_drawable_colorFilter -> {
+                            colorFilterColor = TypedValueUtils.getColor(view, typedValue)
                         }
 
-                        R.styleable.UiModeView_android_theme -> {
-                            val style = TypedValueUtils.getStyle(v, typedValue)
-                            if (style != 0) {
-                                v.getContext().getTheme()?.applyStyle(style, true)
+                        R.styleable.UiModeViewEffectsStyle_mutate_drawable -> {
+                            val isMutate = typedArray.getBoolean(indexInAttrArray, false)
+                            if (isMutate) {
+                                view.setTag(R.id.tag_mutate_drawable, true)
+                                DrawableMutateHelper.mutateTargetDrawable(view)
                             }
                         }
-                        R.styleable.UiModeView_view_colorFilter -> {
-                            colorFilterColor = TypedValueUtils.getColor(v, typedValue)
+
+                        R.styleable.UiModeViewEffectsStyle_drawable_colorFilterMode -> {
+                            colorFilterMode =
+                                TypedValueUtils.getPorterDuffMode(view, typedValue, this)
                         }
 
-                        R.styleable.UiModeView_view_colorFilterMode -> {
-                            colorFilterMode = TypedValueUtils.getPorterDuffMode(v, typedValue, this)
+                        R.styleable.UiModeViewEffectsStyle_view_alpha -> {
+                            view.alpha = typedArray.getFloat(indexInAttrArray, 1f)
                         }
 
                     }
@@ -74,40 +119,70 @@ open class ViewWidget : AbstractWidget() {
             }
             colorFilterColor?.let { color ->
                 val mode = colorFilterMode ?: PorterDuff.Mode.SRC_IN
-                if(v is ImageView) {
-                    v.setColorFilter(color, mode)
-                }else if(v is TextView){
+                if (view is ImageView) {
+                    view.setImageDrawable(view.drawable.mutate())
+                    view.setColorFilter(color, mode)
+                } else if (view is TextView) {
                     var isHasCompoundDrawable = false
-                    v.getCompoundDrawablesRelative().forEach {
-                        if(it != null) {
+
+                    val mutates = view.getCompoundDrawablesRelative().map {
+                        if (it != null) {
+                            val mutateDrawable = it.mutate()
                             isHasCompoundDrawable = true
-                            it.setColorFilter(color, mode)
+                            mutateDrawable.setColorFilter(color, mode)
+                            mutateDrawable
+                        }else{
+                            null
                         }
                     }
 
-                    if(!isHasCompoundDrawable){
-                        v.compoundDrawables.forEach {
-                            if(it != null) {
+                    if (isHasCompoundDrawable) {
+                        view.setCompoundDrawablesRelativeWithIntrinsicBounds(
+                            mutates[0],
+                            mutates[1],
+                            mutates[2],
+                            mutates[3]
+                        )
+                    }
+
+                    if (!isHasCompoundDrawable) {
+                        val mutates =  view.compoundDrawables.map {
+                            if (it != null) {
+                                val mutateDrawable = it.mutate()
                                 isHasCompoundDrawable = true
-                                it.setColorFilter(color, mode)
+                                mutateDrawable.setColorFilter(color, mode)
+                                mutateDrawable
+                            }else{
+                                null
                             }
                         }
+                        if (isHasCompoundDrawable) {
+                            view.setCompoundDrawablesWithIntrinsicBounds(
+                                mutates[0],
+                                mutates[1],
+                                mutates[2],
+                                mutates[3]
+                            )
+                        }
                     }
-                    if(!isHasCompoundDrawable){
-                        v.background?.setColorFilter(color, mode)
-                        v.foreground?.setColorFilter(color, mode)
+                    if (!isHasCompoundDrawable) {
+                        view.background = view.background?.mutate()
+                        view.background?.setColorFilter(color, mode)
+                        view.foreground = view.foreground?.mutate()
+                        view.foreground?.setColorFilter(color, mode)
                     }
 
-                }else {
-                    v.background?.setColorFilter(color, mode)
-                    v.foreground?.setColorFilter(color, mode)
+                } else {
+                    view.background = view.background?.mutate()
+                    view.background?.setColorFilter(color, mode)
+                    view.foreground = view.foreground?.mutate()
+                    view.foreground?.setColorFilter(color, mode)
                 }
-
             }
             return true
-        }else if (Arrays.equals(styleable, androidx.appcompat.R.styleable.ViewBackgroundHelper)) {
+        } else if (Arrays.equals(styleable, androidx.appcompat.R.styleable.ViewBackgroundHelper)) {
             val indexCount = typedArray.length()
-            var background = v.background
+            var background = view.background
             var colorStateList: ColorStateList? = null
             for (i in 0 until indexCount) {
                 val attr = typedArray.getIndex(i)
@@ -117,14 +192,15 @@ open class ViewWidget : AbstractWidget() {
                         androidx.appcompat.R.styleable.ViewBackgroundHelper_android_background -> {
 
                             background = TypedValueUtils.getDrawable(
-                                v,
+                                view,
                                 typedValue,
                             )
                         }
+
                         androidx.appcompat.R.styleable.ViewBackgroundHelper_backgroundTint -> {
 
                             colorStateList = TypedValueUtils.getColorStateList(
-                                v,
+                                view,
                                 typedValue,
                             )
                         }
@@ -132,11 +208,11 @@ open class ViewWidget : AbstractWidget() {
                     }
                 }
             }
-            if (background != null && background != v.background) {
-                v.background = background
+            if (background != null && background != view.background) {
+                view.background = background
             }
             colorStateList?.let {
-                ViewCompat.setBackgroundTintList(v, it)
+                ViewCompat.setBackgroundTintList(view, it)
             }
 
             return true
@@ -150,7 +226,7 @@ open class ViewWidget : AbstractWidget() {
         styleable: IntArray,
         typedArray: CachedTypedValueArray
     ): Boolean {
-        if(Arrays.equals(styleable, R.styleable.UiModeView)){
+        if (Arrays.equals(styleable, R.styleable.UiModeViewEffectsStyle)) {
             return false
         }
         return super.onInterceptApplyWhenOnAssemble(view, styleable, typedArray)

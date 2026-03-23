@@ -11,6 +11,7 @@ import com.aliya.uimode.UiModeManager
 import com.aliya.uimode.debug.WidgetDebugTool
 import com.aliya.uimode.uimodewidget.AbstractWidget
 import com.aliya.uimode.uimodewidget.TypedValueUtils
+import com.aliya.uimode.utils.AppResourceUtils
 import com.aliya.uimode.utils.AppUtil
 
 object UiModeDelegate {
@@ -18,6 +19,9 @@ object UiModeDelegate {
 
     fun onViewCreated(v: View, attrs: AttributeSet) {
         val activity = AppUtil.findActivity(v.context)
+        if(activity == null && AppResourceUtils.isRecreateOnUiModeChange(activity)){
+            return
+        }
         if(activity != null && UiModeManager.isContainsIgnoreActivity(activity::class.java)){
             return
         }

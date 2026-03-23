@@ -27,8 +27,8 @@
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:src="@mipmap/ic_home"
-                app:view_colorFilter="@color/_dddddd_343434"
-                app:view_colorFilterMode="src_in" />
+                app:drawable_colorFilter="@color/_dddddd_343434"
+                app:drawable_colorFilterMode="src_in" />
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:layout_width="50dp"
@@ -50,8 +50,9 @@
                 app:bl_corners_radius="10dp"
                 app:bl_stroke_color="@color/_ff4081_aa8080"
                 app:bl_stroke_width="2dp"
-                app:view_colorFilter="@color/_dddddd_343434"
-                app:view_colorFilterMode="src_in" />
+                app:drawable_colorFilter="@color/_dddddd_343434"
+                app:drawable_colorFilterMode="src_in" />
+
 
             <com.noober.background.view.BLTextView
                 android:layout_width="wrap_content"
@@ -77,6 +78,20 @@
                 android:src="@drawable/community_ic_draft_box"
                 app:tint="@color/text_dark_primary" />
 
+            <ImageView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="10dp"
+                android:src="@drawable/community_ic_draft_box"
+                app:drawable_colorFilter="@color/_ff4081_aa8080"
+                />
+            <ImageView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="10dp"
+                android:src="@drawable/community_ic_draft_box"
+                />
+
 
             <View
                 android:layout_width="40dp"
@@ -87,7 +102,14 @@
 
 
 
-
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_marginTop="10dp"
+                android:text="测试原图是否被错误更改"
+                android:drawableLeft="@drawable/community_ic_draft_box"
+                android:drawableBottom="@mipmap/ic_home"
+                />
 
         </LinearLayout>
 

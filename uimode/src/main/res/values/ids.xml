@@ -2,6 +2,7 @@
 <resources>
 
     <item name="tag_ui_mode" type="id" />
+    <item name="tag_mutate_drawable" type="id" />
     <item name="tag_ui_mode_mask_drawable" type="id" />
     <item name="tag_ui_mode_view_current_theme" type="id" />
     <item name="tag_ui_mode_widget_style" type="id" />

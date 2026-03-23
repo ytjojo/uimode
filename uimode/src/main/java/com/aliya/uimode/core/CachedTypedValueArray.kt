@@ -14,6 +14,7 @@ import androidx.annotation.StyleableRes
 import androidx.core.content.ContextCompat
 import com.aliya.uimode.utils.DrawableCompatUtil
 import java.lang.ref.WeakReference
+import androidx.core.util.size
 
 class CachedTypedValueArray(var resources: Resources, var contextRef: WeakReference<Context>) {
 
@@ -31,10 +32,16 @@ class CachedTypedValueArray(var resources: Resources, var contextRef: WeakRefere
 
     fun putTypeValue(@StyleableRes index: Int, typedValue: TypedValue) {
         typeValues.put(index, typedValue)
+        putIndexAttr(index)
     }
 
-    fun putIndexAttr(index: Int, @StyleableRes attr: Int) {
-        indexToAttr.put(index, attr)
+    fun putIndexAttr( @StyleableRes indexOfStyleableRes: Int) {
+        for (i in 0 until indexToAttr.size){
+            if (indexToAttr.get(i) == indexOfStyleableRes) {
+                return
+            }
+        }
+        indexToAttr.put(indexToAttr.size, indexOfStyleableRes)
     }
 
     fun getReferenceId(@StyleableRes index: Int): Int {

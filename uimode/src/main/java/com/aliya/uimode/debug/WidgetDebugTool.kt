@@ -221,7 +221,8 @@ object WidgetDebugTool {
         val builder = StringBuilder()
         builder.appendLine("View Info:")
         builder.appendLine("  Class: ${view.javaClass.name}")
-        builder.appendLine("  Id: ${if (view.id == View.NO_ID) "NO_ID" else "0x${view.id.toString(16)}"}")
+        val idName = if (view.id == View.NO_ID) "" else view.resources?.getResourceName(view.id)
+        builder.appendLine("  Id: ${if (view.id == View.NO_ID) "NO_ID" else "${idName} = 0x${view.id.toString(16)}"}")
 
         if (attributeSet != null) {
             builder.appendLine("  Attribute Count: ${attributeSet.attributeCount}")
@@ -266,9 +267,7 @@ object WidgetDebugTool {
                     }
 
                     builder.appendLine("    [$indexInStyleable] $attrName")
-                    builder.appendLine("      Type: ${typedValue.type}")
-                    builder.appendLine("      ResourceId: 0x${typedValue.resourceId.toString(16)}")
-
+                    builder.appendLine("      TypeValue: ${typedValue.toString()}")
                     if (typedValue.resourceId != 0) {
                         try {
                             val resourceName = view.context.resources.getResourceName(typedValue.resourceId)

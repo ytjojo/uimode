@@ -29,18 +29,14 @@
         <!--<attr name="border_overlay" format="boolean" />-->
     </declare-styleable>
 
-    <declare-styleable name="UiModeView">
-        <attr name="view_invalidate" format="boolean" />
-        <!--uiMode忽略的属性，多个属性时属性名之间用'|'分割-->
-        <attr name="uiMode_ignore" format="string" />
-        <attr name="view_alpha" format="reference" />
-        <attr name="android:foreground" />
-        <attr name="android:theme" />
 
+    <declare-styleable name="UiModeViewEffectsStyle">
+        <!--   background foreground imageDrawable compoundDrawable mutate    -->
+        <attr name="mutate_drawable" format="boolean" />
         <!-- 设置颜色过滤器 -->
-        <attr name="view_colorFilter" format="color|reference" />
+        <attr name="drawable_colorFilter" format="color|reference" />
         <!-- 颜色过滤器的混合模式，默认值为 src_in -->
-        <attr name="view_colorFilterMode" format="enum">
+        <attr name="drawable_colorFilterMode" format="enum">
             <enum name="clear" value="0" />
             <enum name="src" value="1" />
             <enum name="dst" value="2" />
@@ -60,6 +56,19 @@
             <enum name="add" value="16" />
             <enum name="overlay" value="17" />
         </attr>
+        <attr name="view_alpha" format="reference" />
+    </declare-styleable>
+
+    <declare-styleable name="UiModeView">
+
+        <attr name="view_invalidate" format="boolean" />
+        <!--uiMode忽略的属性，多个属性时属性名之间用'|'分割-->
+        <attr name="uiMode_ignore" format="string" />
+
+        <attr name="android:foreground" />
+        <attr name="android:theme" />
+
+
     </declare-styleable>
 
     <declare-styleable name="TextViewHelper">

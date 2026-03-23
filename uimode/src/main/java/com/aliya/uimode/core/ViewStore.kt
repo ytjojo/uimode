@@ -34,7 +34,7 @@ object ViewStore {
             putView2Map(ctx, v, mContextViewMap, referenceQueue)
         } else {
             val activity = AppUtil.findActivity(ctx)
-            if (activity != null) {
+            if (activity != null && !AppResourceUtils.isRecreateOnUiModeChange(activity)) {
                 putView2Map(activity, v, mActivityViewMap, null)
             }
         }
