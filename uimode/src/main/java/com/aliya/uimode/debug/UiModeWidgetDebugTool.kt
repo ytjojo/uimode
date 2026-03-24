@@ -6,7 +6,6 @@ import com.aliya.uimode.R
 import com.aliya.uimode.core.CachedTypedValueArray
 import com.aliya.uimode.core.OnViewUiModeChanged
 import com.aliya.uimode.core.UiModeChangeListener
-import com.aliya.uimode.core.UiModeDelegate.TAG
 import com.aliya.uimode.core.WidgetRegister
 import com.aliya.uimode.uimodewidget.AbstractWidget
 import com.aliya.uimode.utils.AppUtil
@@ -15,7 +14,7 @@ import com.aliya.uimode.utils.AppUtil
  * AbstractWidget 的 Debug 工具类
  * 用于在 assemble 和 apply 方法中进行断言和断点调试输出
  */
-object WidgetDebugTool {
+object UiModeWidgetDebugTool {
 
     /**
      * Debug 模式开关

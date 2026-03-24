@@ -1,6 +1,5 @@
 package com.aliya.uimode.core
 
-import android.content.res.TypedArray
 import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.View
@@ -8,7 +7,7 @@ import androidx.annotation.StyleRes
 import com.aliya.uimode.HideLog
 import com.aliya.uimode.R
 import com.aliya.uimode.UiModeManager
-import com.aliya.uimode.debug.WidgetDebugTool
+import com.aliya.uimode.debug.UiModeWidgetDebugTool
 import com.aliya.uimode.uimodewidget.AbstractWidget
 import com.aliya.uimode.uimodewidget.TypedValueUtils
 import com.aliya.uimode.utils.AppResourceUtils
@@ -33,8 +32,8 @@ object UiModeDelegate {
                 isSave = result
             }
         }
-        if(isSave && WidgetDebugTool.isDebugEnabled){
-            WidgetDebugTool.onAssembleInfo(v, attrs)
+        if(isSave && UiModeWidgetDebugTool.isDebugEnabled){
+            UiModeWidgetDebugTool.onAssembleInfo(v, attrs)
         }
         val viewUiModeChanged = WidgetRegister.getViewUiModeChanged(v::class.java)
         if(viewUiModeChanged != null){
@@ -111,8 +110,8 @@ object UiModeDelegate {
         if (v is UiModeChangeListener) {
             v.onUiModeChange()
         }
-        if (WidgetDebugTool.isDebugEnabled) {
-            WidgetDebugTool.onApplyInfo(v, applyCount)
+        if (UiModeWidgetDebugTool.isDebugEnabled) {
+            UiModeWidgetDebugTool.onApplyInfo(v, applyCount)
         }
 
 

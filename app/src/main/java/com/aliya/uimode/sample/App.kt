@@ -10,7 +10,7 @@ import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatDelegate
 import com.aliya.uimode.R
-import com.aliya.uimode.debug.WidgetDebugTool
+import com.aliya.uimode.debug.UiModeWidgetDebugTool
 import com.aliya.viewtreedebug.ViewTreeDebugTool
 import com.aliya.viewtreedebug.ViewTreeDebugTool.DetailInfoProvider
 
@@ -31,7 +31,7 @@ class App : Application() {
         AppUiMode.init(this@App)
         registerUiModeObserver()
 
-        WidgetDebugTool.isDebugEnabled = true
+        UiModeWidgetDebugTool.isDebugEnabled = true
         ViewTreeDebugTool.registerDetailInfoProvider(object : DetailInfoProvider {
             override fun provide(view: View): String? {
                 return view.getTag(R.id.tag_ui_mode_assemble_info) as? String?

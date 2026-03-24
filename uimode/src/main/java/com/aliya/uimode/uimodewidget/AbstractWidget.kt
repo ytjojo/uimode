@@ -14,7 +14,6 @@ import com.aliya.uimode.HideLog
 import com.aliya.uimode.R
 import com.aliya.uimode.core.UiModeChangeListener
 import com.aliya.uimode.core.ViewStore
-import com.aliya.uimode.debug.WidgetDebugTool
 import com.aliya.uimode.utils.AppResourceUtils
 import com.aliya.uimode.utils.AppUtil
 import java.lang.ref.WeakReference
