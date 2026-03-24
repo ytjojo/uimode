@@ -35,10 +35,13 @@ object UiModeDelegate {
         if(isSave && UiModeWidgetDebugTool.isDebugEnabled){
             UiModeWidgetDebugTool.onAssembleInfo(v, attrs)
         }
-        val viewUiModeChanged = WidgetRegister.getViewUiModeChanged(v::class.java)
-        if(viewUiModeChanged != null){
+        val viewCreateUiModeChangedList = WidgetRegister.getViewCreateUiModeChanged(v::class.java) as? ArrayList<OnViewCreateUiModeChanged<View>>
+        if(viewCreateUiModeChangedList != null && viewCreateUiModeChangedList.isNotEmpty() ){
+            viewCreateUiModeChangedList.forEach { viewUiModeChanged ->
+                viewUiModeChanged.onCreate(v)
+            }
             isSave = true
-            v.setTag(R.id.tag_ui_mode_on_ui_mode_changed,viewUiModeChanged)
+            v.setTag(R.id.tag_ui_mode_view_ui_mode_changed_list,viewCreateUiModeChangedList)
         }
         if(isSave){
             ViewStore.saveView(v.context, v)
@@ -102,10 +105,17 @@ object UiModeDelegate {
             }
         }
 
-        val tagOnUiModeChanged = v.getTag(R.id.tag_ui_mode_on_ui_mode_changed)
+        val tagOnUiModeChanged = v.getTag(R.id.tag_ui_mode_user_view_ui_mode_changed)
         if (tagOnUiModeChanged != null && tagOnUiModeChanged is OnViewUiModeChanged<*>) {
             val onUiModeChanged = tagOnUiModeChanged as OnViewUiModeChanged<View>
             onUiModeChanged.onChanged(v)
+        }
+        val viewCreateUiModeChangedList = v.getTag(R.id.tag_ui_mode_view_ui_mode_changed_list)
+        if (viewCreateUiModeChangedList != null && viewCreateUiModeChangedList is ArrayList<*>) {
+            val viewUiModeChangedList = viewCreateUiModeChangedList as ArrayList<OnViewUiModeChanged<View>>
+            viewUiModeChangedList.forEach {
+                it.onChanged(v)
+            }
         }
         if (v is UiModeChangeListener) {
             v.onUiModeChange()

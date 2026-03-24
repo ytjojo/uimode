@@ -18,7 +18,7 @@ ext {
     artifact = bintrayName
     libraryName = 'Background-uimode'
     libraryDescription = 'BackgroundCompat suport uimode changed by com.noober.background'
-    libraryVersion = '1.0.2'
+    libraryVersion = '1.0.3'
 //    libraryVersion = uimode_main_release_version
 }
 android {

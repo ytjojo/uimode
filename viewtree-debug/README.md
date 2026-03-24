@@ -85,6 +85,8 @@ PopupWindow > Dialog > Activity
 
 从顶层 Window → 向下遍历
 命中第一个包含 (x, y) 的 Window 即停止	
+- 坐标统一使用屏幕坐标系进行命中计算，避免 Dialog/PopupWindow 的窗口偏移导致误判
+- 调试工具自身悬浮窗会从 Window 扫描中过滤，避免命中到调试面板而非业务 Window
 
 ## 支持扩展接口供外部开发者注册注入信息
 - 新增可扩展接口 DetailInfoProvider ，供外部开发者注册注入：

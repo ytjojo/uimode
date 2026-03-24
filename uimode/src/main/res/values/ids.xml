@@ -10,7 +10,8 @@
     <item name="tag_ui_mode_custom_type_array_map" type="id" />
     <item name="tag_ui_mode_is_save_store" type="id" />
 
-    <item name="tag_ui_mode_on_ui_mode_changed" type="id" />
+    <item name="tag_ui_mode_view_ui_mode_changed_list" type="id" />
+    <item name="tag_ui_mode_user_view_ui_mode_changed" type="id" />
     <item name="tag_ui_mode_theme_typed_value" type="id" />
 
     <item name="tag_ui_mode_assemble_info" type="id" />

@@ -28,6 +28,7 @@ object ViewStore {
 
     fun saveView(ctx: Context?, v: View?) {
         if (ctx == null || v == null) return
+        if (v.getTag(R.id.tag_ui_mode_is_save_store) == true) return
         v.setTag(R.id.tag_ui_mode_is_save_store, true)
         // 寻找 context 装饰器对应的 activity 或 application
         if (ctx is Application) {
@@ -159,7 +160,7 @@ object ViewStore {
 
 
     fun removeUselessViews(activity: Activity) {
-        mActivityViewMap.remove(activity)
+        mActivityViewMap.remove(activity)?.clear()
         clearUselessContextViews()
     }
 

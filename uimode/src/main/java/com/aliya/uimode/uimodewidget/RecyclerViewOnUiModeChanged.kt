@@ -1,10 +1,10 @@
 package com.aliya.uimode.uimodewidget
 
 import androidx.recyclerview.widget.RecyclerView
-import com.aliya.uimode.core.OnViewUiModeChanged
+import com.aliya.uimode.core.OnViewCreateUiModeChanged
 import com.aliya.uimode.core.WidgetRegister
 
-class RecyclerViewOnUiModeChanged:OnViewUiModeChanged<RecyclerView> {
+class RecyclerViewOnUiModeChanged: OnViewCreateUiModeChanged<RecyclerView> {
 
     override fun onChanged(view: RecyclerView) {
         view.adapter?.notifyDataSetChanged()
@@ -12,6 +12,9 @@ class RecyclerViewOnUiModeChanged:OnViewUiModeChanged<RecyclerView> {
     }
 
     fun registerViewUiModeChanged(){
-        WidgetRegister.registerViewUiModeChanged(RecyclerView::class.java,this)
+        WidgetRegister.registerViewCreateUiModeChanged(RecyclerView::class.java,this)
+    }
+
+    override fun onCreate(view: RecyclerView) {
     }
 }

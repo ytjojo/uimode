@@ -9,25 +9,26 @@ object WidgetRegister {
 
     private val mCacheTypeRegister = LinkedHashMap<Class<*>,ArrayList<out AbstractWidget>>()
 
-    private val mOnViewUiModeChangedMap = HashMap<Class<*>, OnViewUiModeChanged<*>>()
+    private val mOnViewUiModeChangedMap = HashMap<Class<*>, OnViewCreateUiModeChanged<*>>()
 
 
-    fun <T:View> registerViewUiModeChanged(clazz: Class<T>,onViewUiModeChanged: OnViewUiModeChanged<T>){
+    fun <T:View> registerViewCreateUiModeChanged(clazz: Class<T>, onViewUiModeChanged: OnViewCreateUiModeChanged<T>){
         mOnViewUiModeChangedMap.put(clazz,onViewUiModeChanged)
     }
 
-    fun <T:View> getViewUiModeChanged(clazz: Class<T>): OnViewUiModeChanged<T>?{
+    fun <T:View> getViewCreateUiModeChanged(clazz: Class<T>): ArrayList<OnViewCreateUiModeChanged<T>>?{
+        val list = ArrayList<OnViewCreateUiModeChanged<T>>()
         if (View::class.java.isAssignableFrom(clazz)) {
             var superclass: Class<*>? = clazz
             while (superclass != null && View::class.java.isAssignableFrom(clazz)) {
-                val onViewUiModeChanged = mOnViewUiModeChangedMap.get(superclass) as? OnViewUiModeChanged<T>?
+                val onViewUiModeChanged = mOnViewUiModeChangedMap.get(superclass) as? OnViewCreateUiModeChanged<T>?
                 if (onViewUiModeChanged != null) {
-                    return onViewUiModeChanged
+                    list.add(onViewUiModeChanged)
                 }
                 superclass = superclass.superclass
             }
         }
-        return null
+        return list
     }
 
     fun isContains(clazz: Class<*>): Boolean {

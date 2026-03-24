@@ -194,9 +194,13 @@ object UiModeWidgetDebugTool {
             }
         }
 
-        val tagOnUiModeChanged = v.getTag(R.id.tag_ui_mode_on_ui_mode_changed)
+        val tagOnUiModeChanged = v.getTag(R.id.tag_ui_mode_user_view_ui_mode_changed)
         if (tagOnUiModeChanged != null && tagOnUiModeChanged is OnViewUiModeChanged<*>) {
             sb.appendLine("OnViewUiModeChanged onChanged(view)")
+        }
+        val viewCreateUiModeChangedList = v.getTag(R.id.tag_ui_mode_view_ui_mode_changed_list)
+        if (viewCreateUiModeChangedList != null && viewCreateUiModeChangedList is ArrayList<*>) {
+            sb.appendLine("viewCreateUiModeChangedList onChanged(view)")
         }
         if (v is UiModeChangeListener) {
             sb.appendLine("UiModeChangeListener onChanged")

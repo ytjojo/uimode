@@ -23,15 +23,18 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.app.AppCompatDelegate.NightMode
 import androidx.core.view.LayoutInflaterCompat
+import androidx.lifecycle.LifecycleOwner
 import com.aliya.uimode.core.CachedTypedValueArray
 import com.aliya.uimode.core.FactoryMerger
+import com.aliya.uimode.core.OnViewCreateUiModeChanged
+import com.aliya.uimode.core.OnViewUiModeChanged
 import com.aliya.uimode.core.UiModeChangeListener
 import com.aliya.uimode.core.UiModeDelegate
 import com.aliya.uimode.core.UiModeDelegate.onUiModeChanged
 import com.aliya.uimode.core.UiModeInflaterFactory
 import com.aliya.uimode.core.ViewStore
+import com.aliya.uimode.core.WidgetRegister
 import com.aliya.uimode.utils.AppResourceUtils
-import com.aliya.uimode.utils.LayoutInflaterHelper
 import java.lang.ref.WeakReference
 
 /**
@@ -356,6 +359,17 @@ object UiModeManager {
 
 
     /**
+     * 注册 UiModeChangeListener
+     * 根据监听者生命周期，自动取消注册
+     */
+    fun registerUiModeChangeListener(
+        lifecycleOwner: LifecycleOwner,
+        listener: UiModeChangeListener
+    ){
+        ViewStore.registerUiModeChangeListener(lifecycleOwner, listener)
+    }
+
+    /**
      * 保存手动创建的View
      */
     fun saveView(context: Context, v: View) {
@@ -453,10 +467,27 @@ object UiModeManager {
         ViewStore.removeView(view.context, view)
     }
 
+
     /**
      *
-     * 禁用 View 日夜间切换,无法恢复
-     * 不移除 View日夜间属性值
+     * 添加 View 日夜间切换监听
+     */
+    fun <T : View> addOnViewUiModeChanged(view: T, onViewUiModeChanged: OnViewUiModeChanged<T>){
+        ViewStore.saveView(view.context, view)
+        view.setTag(R.id.tag_ui_mode_user_view_ui_mode_changed,onViewUiModeChanged)
+
+    }
+
+    /**
+     * 注册 View 日夜间切换监听
+     */
+    fun <T:View> registerViewCreateUiModeChanged(clazz: Class<T>,onViewUiModeChanged: OnViewCreateUiModeChanged<T>){
+        WidgetRegister.registerViewCreateUiModeChanged(clazz,onViewUiModeChanged)
+    }
+
+    /**
+     *
+     * 重新启用 View 日夜间切换
      */
     fun enableViewUimode(view: View){
        saveView(view.context, view)

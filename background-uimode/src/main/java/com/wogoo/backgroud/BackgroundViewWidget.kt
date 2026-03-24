@@ -4,9 +4,10 @@ import android.content.res.TypedArray
 import android.os.Build
 import android.view.View
 import com.aliya.uimode.core.CachedTypedValueArray
+import com.aliya.uimode.uimodewidget.AbstractWidget
 import com.aliya.uimode.uimodewidget.ViewWidget
 
-class BackgroundViewWidget : ViewWidget() {
+class BackgroundViewWidget : AbstractWidget() {
 
 
     /**
@@ -24,8 +25,6 @@ class BackgroundViewWidget : ViewWidget() {
      *
      */
     override fun onRegisterStyleable() {
-        super.onRegisterStyleable()
-
         registerCustomAttrArray(com.noober.background.R.styleable.background);
         registerCustomAttrArray(com.noober.background.R.styleable.background_press);
         registerCustomAttrArray(com.noober.background.R.styleable.background_selector);
@@ -36,6 +35,14 @@ class BackgroundViewWidget : ViewWidget() {
         registerCustomAttrArray(com.noober.background.R.styleable.background_multi_selector);
         registerCustomAttrArray(com.noober.background.R.styleable.background_multi_selector_text);
         registerCustomAttrArray(com.noober.background.R.styleable.bl_text);
+    }
+
+    override fun onApply(
+        v: View,
+        styleable: IntArray,
+        typedArray: CachedTypedValueArray
+    ): Boolean {
+        return false
     }
 
     override fun onApplyCustom(v: View, typedArrayMap: Map<IntArray, CachedTypedValueArray>) {

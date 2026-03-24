@@ -55,6 +55,7 @@ public final class ViewTreeDebugTool {
     private static final DebugController CONTROLLER = new DebugController();
     private static final Object DETAIL_INFO_PROVIDER_LOCK = new Object();
     private static final List<DetailInfoProvider> DETAIL_INFO_PROVIDERS = new ArrayList<>();
+    private static final String DEBUG_WINDOW_TITLE_PREFIX = "ViewTreeDebugToolOverlay:";
 
     private ViewTreeDebugTool() {
     }
@@ -118,6 +119,28 @@ public final class ViewTreeDebugTool {
         synchronized (DETAIL_INFO_PROVIDER_LOCK) {
             DETAIL_INFO_PROVIDERS.clear();
         }
+    }
+
+    private static boolean getVisibleRectOnScreen(@NonNull View view, @NonNull Rect outRect) {
+        if (!view.getGlobalVisibleRect(outRect)) {
+            return false;
+        }
+        View root = view.getRootView();
+        if (root == null) {
+            return true;
+        }
+        Rect rootRect = new Rect();
+        if (!root.getGlobalVisibleRect(rootRect)) {
+            return true;
+        }
+        int[] rootLocation = new int[2];
+        root.getLocationOnScreen(rootLocation);
+        int offsetX = rootLocation[0] - rootRect.left;
+        int offsetY = rootLocation[1] - rootRect.top;
+        if (offsetX != 0 || offsetY != 0) {
+            outRect.offset(offsetX, offsetY);
+        }
+        return true;
     }
 
     private enum OverlayMode {
@@ -185,7 +208,7 @@ public final class ViewTreeDebugTool {
             this.windowKind = windowKind;
             this.depth = depth;
             Rect bounds = new Rect();
-            view.getGlobalVisibleRect(bounds);
+            getVisibleRectOnScreen(view, bounds);
             this.rect = bounds;
             this.title = ViewInspector.buildTitle(view, depth, bounds, windowKind);
         }
@@ -738,7 +761,7 @@ public final class ViewTreeDebugTool {
             int[] location = new int[2];
             view.getLocationOnScreen(location);
             Rect visibleRect = new Rect();
-            boolean visible = view.getGlobalVisibleRect(visibleRect);
+            boolean visible = getVisibleRectOnScreen(view, visibleRect);
             ViewGroup.LayoutParams params = view.getLayoutParams();
             String marginText = "N/A";
             if (params instanceof ViewGroup.MarginLayoutParams) {
@@ -948,6 +971,7 @@ public final class ViewTreeDebugTool {
                     : WindowManager.LayoutParams.TYPE_PHONE;
             params.width = WindowManager.LayoutParams.WRAP_CONTENT;
             params.height = WindowManager.LayoutParams.WRAP_CONTENT;
+            params.setTitle(DEBUG_WINDOW_TITLE_PREFIX + application.getPackageName());
             return params;
         }
 
@@ -1570,7 +1594,7 @@ public final class ViewTreeDebugTool {
             List<WindowEntry> windows = collectWindows();
             for (WindowEntry entry : windows) {
                 Rect rect = new Rect();
-                if (entry.root.getGlobalVisibleRect(rect) && rect.contains(x, y)) {
+                if (getVisibleRectOnScreen(entry.root, rect) && rect.contains(x, y)) {
                     return entry;
                 }
             }
@@ -1613,6 +1637,9 @@ public final class ViewTreeDebugTool {
                     if (root == null || params == null || root.getVisibility() != View.VISIBLE) {
                         continue;
                     }
+                    if (isDebugOverlayWindow(params)) {
+                        continue;
+                    }
                     WindowKind kind = classifyWindow(root, params);
                     windows.add(new WindowEntry(root, params, kind, i));
                 }
@@ -1645,6 +1672,11 @@ public final class ViewTreeDebugTool {
             return WindowKind.ACTIVITY;
         }
 
+        private static boolean isDebugOverlayWindow(@NonNull WindowManager.LayoutParams params) {
+            CharSequence title = params.getTitle();
+            return title != null && title.toString().startsWith(DEBUG_WINDOW_TITLE_PREFIX);
+        }
+
         static boolean containsActivityContext(@Nullable Context context) {
             Context current = context;
             int guard = 0;
@@ -1672,11 +1704,11 @@ public final class ViewTreeDebugTool {
             Collections.sort(list, new Comparator<ViewHitInfo>() {
                 @Override
                 public int compare(ViewHitInfo o1, ViewHitInfo o2) {
-                    if (o1.zOrder != o2.zOrder) {
-                        return Long.compare(o2.zOrder, o1.zOrder);
-                    }
                     if (o1.depth != o2.depth) {
                         return o2.depth - o1.depth;
+                    }
+                    if (o1.zOrder != o2.zOrder) {
+                        return Long.compare(o2.zOrder, o1.zOrder);
                     }
                     long area1 = (long) Math.max(1, o1.rect.width()) * Math.max(1, o1.rect.height());
                     long area2 = (long) Math.max(1, o2.rect.width()) * Math.max(1, o2.rect.height());
@@ -1717,7 +1749,7 @@ public final class ViewTreeDebugTool {
                 return;
             }
             Rect rect = new Rect();
-            if (!view.getGlobalVisibleRect(rect) || !rect.contains(x, y)) {
+            if (!getVisibleRectOnScreen(view, rect) || !rect.contains(x, y)) {
                 return;
             }
             out.add(new ViewHitInfo(view, depth, rect, buildTitle(view, depth, rect, kind), kind, ++orderSeed[0]));
@@ -1767,7 +1799,7 @@ public final class ViewTreeDebugTool {
         @NonNull
         static TreeNode buildTree(@NonNull View root, int depth) {
             Rect rect = new Rect();
-            root.getGlobalVisibleRect(rect);
+            getVisibleRectOnScreen(root, rect);
             TreeNode node = new TreeNode(root, depth, rect, buildNodeTitle(root, rect));
             if (depth < 2) {
                 node.expanded = true;
