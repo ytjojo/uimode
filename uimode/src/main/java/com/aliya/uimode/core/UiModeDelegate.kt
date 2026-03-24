@@ -60,10 +60,11 @@ object UiModeDelegate {
 
         val list: ArrayList<AbstractWidget> = WidgetRegister.getListBySuperclass(v::class.java)
         val tagStyle = v.getTag(R.id.tag_ui_mode_widget_style)
+        var applyCount = 0
         if (tagStyle != null && tagStyle is Int) {
             val styleResId = tagStyle
             list.forEach {
-                it.applyStyle(v, styleResId)
+                applyCount += it.applyStyle(v, styleResId)
             }
         }
 
@@ -101,9 +102,7 @@ object UiModeDelegate {
                 it.onApplyCustom(v, typedArrayMap)
             }
         }
-        if (WidgetDebugTool.isDebugEnabled) {
-            WidgetDebugTool.onApplyInfo(v)
-        }
+
         val tagOnUiModeChanged = v.getTag(R.id.tag_ui_mode_on_ui_mode_changed)
         if (tagOnUiModeChanged != null && tagOnUiModeChanged is OnViewUiModeChanged<*>) {
             val onUiModeChanged = tagOnUiModeChanged as OnViewUiModeChanged<View>
@@ -111,6 +110,9 @@ object UiModeDelegate {
         }
         if (v is UiModeChangeListener) {
             v.onUiModeChange()
+        }
+        if (WidgetDebugTool.isDebugEnabled) {
+            WidgetDebugTool.onApplyInfo(v, applyCount)
         }
 
 

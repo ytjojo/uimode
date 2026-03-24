@@ -68,6 +68,11 @@ View的foreground,background
 对于已展开的 ViewGroup 元素，用户再次双击该元素可折叠并隐藏其所有 childView。
 
 
+## 对应activity 页面onPause、onDestroy对三种状态影响
+- 页面onPause、onDestroy圆点获取坐标状态：不影响
+- 坐标View列表状态：页面onPause、onDestroy,返回圆点获取坐标状态
+- 全屏View树状态：页面onPause、onDestroy,返回圆点获取坐标状态
+
 ## 关闭
 隐藏系统悬浮窗
 ## window view树

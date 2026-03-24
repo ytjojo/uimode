@@ -1169,6 +1169,24 @@ public final class ViewTreeDebugTool {
             removeViewSafe(highlightOverlayView);
         }
 
+        private void restoreDotModeForActivityLifecycle(@NonNull Activity activity) {
+            if (!enabled || topActivity != activity) {
+                return;
+            }
+            if (overlayMode == OverlayMode.LIST) {
+                hideListOverlay();
+                overlayMode = OverlayMode.DOT;
+                ensureDotOverlay();
+                return;
+            }
+            if (overlayMode == OverlayMode.FULL) {
+                hideFullOverlay();
+                hideListOverlay();
+                overlayMode = OverlayMode.DOT;
+                ensureDotOverlay();
+            }
+        }
+
         @Override
         public void onActivityCreated(@NonNull Activity activity, @Nullable android.os.Bundle savedInstanceState) {
         }
@@ -1185,6 +1203,7 @@ public final class ViewTreeDebugTool {
 
         @Override
         public void onActivityPaused(@NonNull Activity activity) {
+            restoreDotModeForActivityLifecycle(activity);
         }
 
         @Override
@@ -1200,6 +1219,7 @@ public final class ViewTreeDebugTool {
 
         @Override
         public void onActivityDestroyed(@NonNull Activity activity) {
+            restoreDotModeForActivityLifecycle(activity);
             if (topActivity == activity) {
                 topActivity = null;
             }

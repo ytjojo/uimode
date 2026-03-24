@@ -25,6 +25,6 @@ interface IApplyAttrResourceId {
      * @param view
      * @param styleRes Style id
      */
-    fun applyStyle(view: View, @StyleRes styleRes: Int)
+    fun applyStyle(view: View, @StyleRes styleRes: Int):Int
 
 }

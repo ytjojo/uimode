@@ -298,7 +298,8 @@ abstract class AbstractWidget : IApplyAttrResourceId {
         return typedValue.resourceId == 0 && typedValue.type >= TypedValue.TYPE_FIRST_COLOR_INT && typedValue.type <= TypedValue.TYPE_LAST_COLOR_INT
     }
 
-    override fun applyStyle(view: View, @StyleRes styleRes: Int) {
+    override fun applyStyle(view: View, @StyleRes styleRes: Int):Int {
+        var applyCount = 0
 
         val tagCachedTypeArrayMap =
             view.getTag(R.id.tag_ui_mode_type_array_map) as? HashMap<IntArray, CachedTypedValueArray>?
@@ -317,6 +318,7 @@ abstract class AbstractWidget : IApplyAttrResourceId {
                         if (typedArray.getValue(0, typedValue) && isLegalType(typedValue)) {
                             attrTypedArray.putTypeValue(index, typedValue)
                             attrTypedArray.putIndexAttr( index)
+                            applyCount++
                         }
 
                     }
@@ -331,6 +333,7 @@ abstract class AbstractWidget : IApplyAttrResourceId {
                 onApply(view, styleable, attrTypedArray)
             }
         }
+        return applyCount
 
     }
 

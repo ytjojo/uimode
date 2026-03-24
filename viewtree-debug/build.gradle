@@ -8,7 +8,6 @@ ext {
     libraryName = 'viewtree-debug'
     libraryDescription = 'debug tool show view tree'
     libraryVersion = "1.0.0"
-//    libraryVersion = uimode_main_release_version
 }
 android {
     namespace 'com.aliya.viewtreedebug'

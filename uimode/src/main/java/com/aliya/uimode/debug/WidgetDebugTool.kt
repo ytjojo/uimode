@@ -4,6 +4,8 @@ import android.view.View
 import com.aliya.uimode.HideLog
 import com.aliya.uimode.R
 import com.aliya.uimode.core.CachedTypedValueArray
+import com.aliya.uimode.core.OnViewUiModeChanged
+import com.aliya.uimode.core.UiModeChangeListener
 import com.aliya.uimode.core.UiModeDelegate.TAG
 import com.aliya.uimode.core.WidgetRegister
 import com.aliya.uimode.uimodewidget.AbstractWidget
@@ -162,12 +164,14 @@ object WidgetDebugTool {
 
     fun onApplyInfo(
         v: View,
+        applyStyleCount: Int
     ) {
         val list: ArrayList<AbstractWidget> = WidgetRegister.getListBySuperclass(v::class.java)
         val sb = StringBuilder()
         val tag = v.getTag(R.id.tag_ui_mode_type_array_map)
         val currentTime = java.text.SimpleDateFormat("HH:mm:ss", java.util.Locale.getDefault()).format(java.util.Date())
         sb.append("====== Apply Start @ time: ${currentTime}  =======")
+        sb.appendLine("applyStyleCount: $applyStyleCount")
         val isNight = v.resources.configuration.uiMode and android.content.res.Configuration.UI_MODE_NIGHT_MASK == android.content.res.Configuration.UI_MODE_NIGHT_YES
         sb.appendLine("====  是否是夜间 : ${isNight}  =====")
         if (tag != null && tag is Map<*, *>) {
@@ -190,6 +194,15 @@ object WidgetDebugTool {
                 }
             }
         }
+
+        val tagOnUiModeChanged = v.getTag(R.id.tag_ui_mode_on_ui_mode_changed)
+        if (tagOnUiModeChanged != null && tagOnUiModeChanged is OnViewUiModeChanged<*>) {
+            sb.appendLine("OnViewUiModeChanged onChanged(view)")
+        }
+        if (v is UiModeChangeListener) {
+            sb.appendLine("UiModeChangeListener onChanged")
+        }
+
         val info = sb.toString()
         v.setTag(R.id.tag_ui_mode_apply_info, info)
     }
