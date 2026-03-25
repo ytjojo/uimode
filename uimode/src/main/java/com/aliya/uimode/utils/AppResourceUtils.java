@@ -130,7 +130,6 @@ public class AppResourceUtils {
         TypedValue typedValue = getTypedValue();
         context.getTheme().resolveAttribute(attrResId, typedValue, true);
 
-        HideLog.d("ThemeUtils", "ColorStateList type:" + typedValue.toString());
         return ContextCompat.getColorStateList(context, typedValue.resourceId);
     }
 
@@ -165,7 +164,6 @@ public class AppResourceUtils {
         }
         TypedValue typedValue = getTypedValue();
         context.getTheme().resolveAttribute(attrResId, typedValue, true);
-        HideLog.d("getDrawable", "drawable type:" + typedValue.toString());
 
         return  DrawableCompatUtil.getDrawable(context, typedValue.resourceId);
 

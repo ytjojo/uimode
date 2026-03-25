@@ -46,6 +46,10 @@ final public class HideLog {
         HideLog.isDebug = isDebug;
     }
 
+
+    public static boolean isDebugCompat() {
+        return isDebug && debuggable;
+    }
     public static boolean isDebuggable() {
         return debuggable;
     }

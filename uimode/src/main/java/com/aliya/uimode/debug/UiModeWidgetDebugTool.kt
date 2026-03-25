@@ -1,6 +1,7 @@
 package com.aliya.uimode.debug
 import android.util.AttributeSet
 import android.view.View
+import com.aliya.uimode.AppStack
 import com.aliya.uimode.HideLog
 import com.aliya.uimode.R
 import com.aliya.uimode.core.CachedTypedValueArray
@@ -28,10 +29,7 @@ object UiModeWidgetDebugTool {
      */
     var isAssertionEnabled = false
 
-    /**
-     * 是否记录性能数据
-     */
-    var isPerformanceMonitoringEnabled = false
+
 
     /**
      * 需要调试的 View 类名列表 (支持模糊匹配)
@@ -57,6 +55,13 @@ object UiModeWidgetDebugTool {
     var debugViewIds: MutableSet<Int> = mutableSetOf()
 
     /**
+     * 需要调试的 View Tag 列表
+     * 例如：["tag_1", "tag_2"]
+     * 为空时表示不指定 Tag 过滤
+     */
+    var debugViewTags: MutableSet<String> = mutableSetOf()
+
+    /**
      * 断言回调接口
      */
     interface AssertionCallback {
@@ -67,7 +72,6 @@ object UiModeWidgetDebugTool {
         fun onAssembleAssertion(
             view: View,
             attributeSet: AttributeSet,
-            widget: AbstractWidget
         ): Boolean
 
         /**
@@ -76,9 +80,6 @@ object UiModeWidgetDebugTool {
          */
         fun onApplyAssertion(
             view: View,
-            styleable: IntArray,
-            typedArray: CachedTypedValueArray,
-            widget: AbstractWidget
         ): Boolean
     }
 
@@ -112,7 +113,7 @@ object UiModeWidgetDebugTool {
         if (!isDebugEnabled) return false
 
         if(!debugActivityClassNamees.isEmpty()){
-           val activity =  AppUtil.findActivity(view.context)
+           val activity = AppUtil.findActivity(view.context)
             if (activity == null || !debugActivityClassNamees.any {
                 activity.javaClass.simpleName.contains(it, ignoreCase = true)
             }) {
@@ -133,9 +134,19 @@ object UiModeWidgetDebugTool {
         // 如果指定了调试的 View ID，检查是否匹配
         if (debugViewIds.isNotEmpty()) {
             val viewId = view.id
-            if (viewId == View.NO_ID || !debugViewIds.contains(viewId)) {
-                return false
+            if (viewId != View.NO_ID && !debugViewIds.contains(viewId)) {
+                return true
             }
+        }
+        if (debugViewTags.isNotEmpty()) {
+            val viewTag = view.tag
+            if (viewTag != null && debugViewTags.contains(viewTag)) {
+                return true
+            }
+        }
+        val activity = AppUtil.findActivity(view.context)
+        if (activity != null && AppStack.topActivity() != activity) {
+            return false
         }
 
         return true
@@ -155,6 +166,9 @@ object UiModeWidgetDebugTool {
             stringBuilder.append("\nWidget: ${widget.javaClass.simpleName}")
         }
         val info = stringBuilder.toString()
+        if(HideLog.isDebuggable()){
+            this.onAssembleDebug(view,attributeSet, info)
+        }
         view.setTag(R.id.tag_ui_mode_assemble_info, info)
         return info
 
@@ -169,7 +183,7 @@ object UiModeWidgetDebugTool {
         val sb = StringBuilder()
         val tag = v.getTag(R.id.tag_ui_mode_type_array_map)
         val currentTime = java.text.SimpleDateFormat("HH:mm:ss", java.util.Locale.getDefault()).format(java.util.Date())
-        sb.append("====== Apply Start @ time: ${currentTime}  =======")
+        sb.appendLine("====== Apply Start @ time: ${currentTime}  =======")
         sb.appendLine("applyStyleCount: $applyStyleCount")
         val isNight = v.resources.configuration.uiMode and android.content.res.Configuration.UI_MODE_NIGHT_MASK == android.content.res.Configuration.UI_MODE_NIGHT_YES
         sb.appendLine("====  是否是夜间 : ${isNight}  =====")
@@ -207,6 +221,9 @@ object UiModeWidgetDebugTool {
         }
 
         val info = sb.toString()
+        if (HideLog.isDebuggable()) {
+            this.onApplyDebug(v, info)
+        }
         v.setTag(R.id.tag_ui_mode_apply_info, info)
     }
     fun onApplyInfo(
@@ -228,21 +245,16 @@ object UiModeWidgetDebugTool {
     fun onAssembleDebug(
         view: View,
         attributeSet: AttributeSet,
-        widget: AbstractWidget,
+        info: String
     ): Boolean {
         if (!shouldDebugView(view)) return true
 
-        val viewInfo = buildViewInfo(view, attributeSet)
-
-        HideLog.d("WidgetDebug", "========== Assemble Start ==========")
-        HideLog.d("WidgetDebug", "Widget: ${widget.javaClass.simpleName}")
-        HideLog.d("WidgetDebug", viewInfo)
-
+        HideLog.i("WidgetDebug", "Assemble: $info")
         // 执行断言检查
         if (isAssertionEnabled) {
             for (callback in assertionCallbacks) {
                 try {
-                    val result = callback.onAssembleAssertion(view, attributeSet, widget)
+                    val result = callback.onAssembleAssertion(view, attributeSet)
                     if (!result) {
                         HideLog.e("WidgetDebug", "❌ Assertion failed in onAssemble")
                         return false
@@ -265,23 +277,16 @@ object UiModeWidgetDebugTool {
      */
     fun onApplyDebug(
         view: View,
-        styleable: IntArray,
-        typedArray: CachedTypedValueArray,
-        widget: AbstractWidget,
+        info: String
     ): Boolean {
         if (!shouldDebugView(view)) return true
-
-        val attrInfo = buildAttributeInfo(view, styleable, typedArray)
-
-        HideLog.d("WidgetDebug", "========== Apply Start ==========")
-        HideLog.d("WidgetDebug", "Widget: ${widget.javaClass.simpleName}")
-        HideLog.d("WidgetDebug", attrInfo)
+        HideLog.d("WidgetDebug", "Apply: $info")
 
         // 执行断言检查
         if (isAssertionEnabled) {
             for (callback in assertionCallbacks) {
                 try {
-                    val result = callback.onApplyAssertion(view, styleable, typedArray, widget)
+                    val result = callback.onApplyAssertion(view)
                     if (!result) {
                         HideLog.e("WidgetDebug", "❌ Assertion failed in onApply")
                         return false
@@ -370,9 +375,9 @@ object UiModeWidgetDebugTool {
     fun reset() {
         isDebugEnabled = false
         isAssertionEnabled = false
-        isPerformanceMonitoringEnabled = false
         debugViewClasses.clear()
         debugViewIds.clear()
+        debugViewTags.clear()
         clearAssertionCallbacks()
     }
 }

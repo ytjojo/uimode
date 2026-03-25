@@ -4,7 +4,6 @@ import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.View
 import androidx.annotation.StyleRes
-import com.aliya.uimode.HideLog
 import com.aliya.uimode.R
 import com.aliya.uimode.UiModeManager
 import com.aliya.uimode.debug.UiModeWidgetDebugTool
@@ -75,13 +74,6 @@ object UiModeDelegate {
             val typeArrayMap = tag as Map<IntArray, CachedTypedValueArray>
             list.forEach {
                 typeArrayMap.forEach { entry ->
-                    if (HideLog.isDebuggable()) {
-                        val idResName = if(v.id == View.NO_ID) "" else v.resources.getResourceName(v.id)
-                        HideLog.i(
-                            TAG,
-                            " onApply view class: ${v::class.java.canonicalName} id = ${idResName} widget class : ${it::class.java.canonicalName} "
-                        )
-                    }
                     it.onApply(v, entry.key, entry.value)
                 }
             }
@@ -93,14 +85,6 @@ object UiModeDelegate {
         if (tagCustom != null && tagCustom is Map<*, *>) {
             val typedArrayMap = tagCustom as Map<IntArray, CachedTypedValueArray>
             list.forEach {
-
-                if (HideLog.isDebuggable()) {
-                    val idResName = if(v.id == View.NO_ID) "" else v.resources.getResourceName(v.id)
-                    HideLog.i(
-                        TAG,
-                        " onApply view class: ${v::class.java.canonicalName} id = ${idResName} widget class : ${it::class.java.canonicalName} "
-                    )
-                }
                 it.onApplyCustom(v, typedArrayMap)
             }
         }

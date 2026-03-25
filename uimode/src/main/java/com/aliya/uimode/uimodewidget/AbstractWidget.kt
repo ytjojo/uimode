@@ -10,7 +10,6 @@ import android.util.TypedValue
 import android.view.View
 import androidx.annotation.CallSuper
 import androidx.annotation.StyleRes
-import com.aliya.uimode.HideLog
 import com.aliya.uimode.R
 import com.aliya.uimode.core.UiModeChangeListener
 import com.aliya.uimode.core.ViewStore
@@ -145,26 +144,6 @@ abstract class AbstractWidget : IApplyAttrResourceId {
                                 typedValue
                             )
                         ) {
-                            if (HideLog.isDebuggable()) {
-                                val idResName = if(view.id == View.NO_ID) "" else view.resources.getResourceName(view.id)
-                                if(typedValue.resourceId == 0){
-                                    HideLog.i(
-                                        "assemble",
-                                        "class: ${view::class.java.canonicalName} id : ${idResName} typedValue : " + typedValue.toString()
-                                    )
-                                }else{
-                                    HideLog.i(
-                                        "assemble",
-                                        "class : ${view::class.java.canonicalName} id = ${idResName}  path : " + typedValue.string + " attrName : " + view.context.resources.getResourceName(
-                                            styleable[indexInStyleable]
-                                        ) + " typedValue : ${typedValue.toString()}" + " resourceName = " + view.context.resources.getResourceName(
-                                            typedValue.resourceId
-                                        )
-                                    )
-                                }
-
-                            }
-
                             if (attrValueMap.isNotEmpty()) {
                                 val attrName =
                                     view.context.resources.getResourceName(styleable[indexInStyleable])
@@ -214,28 +193,6 @@ abstract class AbstractWidget : IApplyAttrResourceId {
                             cachedTypeArray.putTypeValue(indexInStyleable, typedValue)
                             cachedTypeArray.putIndexAttr( indexInStyleable)
                         }
-
-                        if (HideLog.isDebuggable()) {
-                            val idResName = if(view.id == View.NO_ID) "" else view.resources.getResourceName(view.id)
-                            if(typedValue.resourceId == 0){
-                                HideLog.i(
-                                    "assemble",
-                                    "class: ${view::class.java.canonicalName} id : ${idResName} typedValue : " + typedValue.toString()
-                                )
-                            }else{
-                                HideLog.i(
-                                    "assemble",
-                                    "class : ${view::class.java.canonicalName} id = ${idResName}  path : " + typedValue.string + " attrName : " + view.context.resources.getResourceName(
-                                        styleable[indexInStyleable]
-                                    ) + " typedValue : ${typedValue.toString()}" + " resourceName = " + view.context.resources.getResourceName(
-                                        typedValue.resourceId
-                                    )
-                                )
-                            }
-
-                        }
-
-
                     }
                     if (!cachedTypeArray.isEmpty()) {
                         cachedTypeArrayMap.put(styleable, cachedTypeArray)

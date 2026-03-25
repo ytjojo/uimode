@@ -9,6 +9,8 @@ import android.util.TypedValue
 import android.view.View
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
+import com.aliya.uimode.HideLog
+import com.aliya.uimode.UiModeManager
 import com.aliya.uimode.utils.AppResourceUtils
 import com.aliya.uimode.utils.DrawableCompatUtil
 
@@ -53,7 +55,8 @@ class TypedValueUtils {
             return null
         }
 
-        fun getDrawable(
+
+        private fun getDrawableInternal(
             v: View,
             typedValue: TypedValue,
         ): Drawable? {
@@ -82,6 +85,27 @@ class TypedValueUtils {
                 }
             }
             return null
+        }
+        fun getDrawable(
+            v: View,
+            typedValue: TypedValue,
+        ): Drawable? {
+            val drawable = getDrawableInternal(v, typedValue)
+            if (drawable != null && HideLog.isDebugCompat()) {
+                if(drawable.alpha != 255){
+                    HideLog.e(
+                        "getDrawable",
+                        "drawable alpha is not 255,alpha = ${drawable.alpha} typedValue : ${typedValue}"
+                    )
+                }
+                if(drawable.colorFilter != null){
+                    HideLog.e(
+                        "getDrawable",
+                        "drawable colorFilter is not null typedValue : ${typedValue}"
+                    )
+                }
+            }
+            return drawable
         }
 
         fun getColorStateList(
