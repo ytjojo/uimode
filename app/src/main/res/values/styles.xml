@@ -65,6 +65,30 @@
         <item name="android:textColor">@color/text_yellow</item>
     </style>
 
+    <!-- 底部弹窗动画 -->
+    <style name="BottomSheetAnimation" parent="android:Animation">
+        <item name="android:windowEnterAnimation">@anim/popup_enter</item>
+        <item name="android:windowExitAnimation">@anim/popup_exit</item>
+    </style>
+    <!-- 底部弹窗 Dialog 样式 -->
+    <style name="BottomSheetDialogStyle" parent="android:style/Theme.Dialog">
+        <!-- 边框 -->
+        <item name="android:windowFrame">@null</item>
+        <!-- 是否浮现在 activity 之上 -->
+        <item name="android:windowIsFloating">true</item>
+        <!-- 半透明 -->
+        <item name="android:windowIsTranslucent">true</item>
+        <!-- 无标题 -->
+        <item name="android:windowNoTitle">true</item>
+        <!-- 背景透明 -->
+        <item name="android:background">@android:color/transparent</item>
+        <!-- 弹窗背景透明 -->
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <!-- 遮罩层透明 -->
+        <item name="android:backgroundDimEnabled">true</item>
+        <item name="android:backgroundDimAmount">0.5</item>
+    </style>
+
 
 
 </resources>

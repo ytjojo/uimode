@@ -7,7 +7,7 @@ ext {
     artifact = bintrayName
     libraryName = 'viewtree-debug'
     libraryDescription = 'debug tool show view tree'
-    libraryVersion = "1.0.1"
+    libraryVersion = "1.0.2"
 }
 android {
     namespace 'com.aliya.viewtreedebug'

@@ -122,25 +122,19 @@ public final class ViewTreeDebugTool {
     }
 
     private static boolean getVisibleRectOnScreen(@NonNull View view, @NonNull Rect outRect) {
-        if (!view.getGlobalVisibleRect(outRect)) {
+        Rect localVisibleRect = new Rect();
+        if (!view.getLocalVisibleRect(localVisibleRect)) {
             return false;
         }
-        View root = view.getRootView();
-        if (root == null) {
-            return true;
-        }
-        Rect rootRect = new Rect();
-        if (!root.getGlobalVisibleRect(rootRect)) {
-            return true;
-        }
-        int[] rootLocation = new int[2];
-        root.getLocationOnScreen(rootLocation);
-        int offsetX = rootLocation[0] - rootRect.left;
-        int offsetY = rootLocation[1] - rootRect.top;
-        if (offsetX != 0 || offsetY != 0) {
-            outRect.offset(offsetX, offsetY);
-        }
-        return true;
+        int[] location = new int[2];
+        view.getLocationOnScreen(location);
+        outRect.set(
+                location[0] + localVisibleRect.left,
+                location[1] + localVisibleRect.top,
+                location[0] + localVisibleRect.right,
+                location[1] + localVisibleRect.bottom
+        );
+        return outRect.width() > 0 && outRect.height() > 0;
     }
 
     private enum OverlayMode {
@@ -1592,13 +1586,16 @@ public final class ViewTreeDebugTool {
         @Nullable
         static WindowEntry findTopWindowHit(int x, int y) {
             List<WindowEntry> windows = collectWindows();
+            WindowEntry best = null;
             for (WindowEntry entry : windows) {
                 Rect rect = new Rect();
                 if (getVisibleRectOnScreen(entry.root, rect) && rect.contains(x, y)) {
-                    return entry;
+                    if (best == null || entry.index > best.index) {
+                        best = entry;
+                    }
                 }
             }
-            return null;
+            return best;
         }
 
         @Nullable
@@ -1666,7 +1663,18 @@ public final class ViewTreeDebugTool {
                     || type == WindowManager.LayoutParams.TYPE_APPLICATION_SUB_PANEL) {
                 return WindowKind.POPUP;
             }
-            if (type == WindowManager.LayoutParams.TYPE_APPLICATION_ATTACHED_DIALOG || !containsActivityContext(root.getContext())) {
+            if (type == WindowManager.LayoutParams.TYPE_BASE_APPLICATION) {
+                return WindowKind.ACTIVITY;
+            }
+
+            if(type >= WindowManager.LayoutParams.FIRST_APPLICATION_WINDOW &&
+                    type <= WindowManager.LayoutParams.LAST_APPLICATION_WINDOW && containsActivityContext(root.getContext())) {
+                return WindowKind.DIALOG;
+            }
+            if (type == WindowManager.LayoutParams.TYPE_APPLICATION_ATTACHED_DIALOG ) {
+                return WindowKind.DIALOG;
+            }
+            if (containsActivityContext(root.getContext())) {
                 return WindowKind.DIALOG;
             }
             return WindowKind.ACTIVITY;
@@ -1679,8 +1687,7 @@ public final class ViewTreeDebugTool {
 
         static boolean containsActivityContext(@Nullable Context context) {
             Context current = context;
-            int guard = 0;
-            while (current != null && guard < 20) {
+            while (current != null) {
                 if (current instanceof Activity) {
                     return true;
                 }
@@ -1689,7 +1696,6 @@ public final class ViewTreeDebugTool {
                 } else {
                     break;
                 }
-                guard++;
             }
             return false;
         }

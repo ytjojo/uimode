@@ -1,227 +1,261 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/bg_color"
-    android:gravity="center_horizontal"
-    android:id="@+id/activity_root"
-    android:orientation="vertical"
     tools:context=".MainActivity">
 
-    <com.aliya.uimode.sample.view.TopBar
-        android:id="@+id/top_bar"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorPrimary" />
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        tools:context=".MainActivity">
 
-    <TextView
-        android:id="@+id/btn_toggle_view_tree_debug"
-        android:layout_width="match_parent"
-        android:layout_height="45dp"
-        android:background="?android:selectableItemBackground"
-        android:drawableRight="@drawable/ic_arrow_right"
-        android:gravity="left|center_vertical"
-        android:paddingLeft="25dp"
-        android:text="开启 View 树调试工具"
-        android:textColor="@color/text_color"
-        android:textSize="16sp"
-        app:maskColor="@android:color/transparent" />
+        <com.aliya.uimode.sample.view.TopBar
+            android:id="@+id/top_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimary" />
 
-    <include layout="@layout/layout_divider_line" />
+        <TextView
+            android:id="@+id/btn_toggle_view_tree_debug"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:background="?android:selectableItemBackground"
+            android:drawableRight="@drawable/ic_arrow_right"
+            android:gravity="left|center_vertical"
+            android:paddingLeft="25dp"
+            android:text="开启 View 树调试工具"
+            android:textColor="@color/text_color"
+            android:textSize="16sp"
+            app:maskColor="@android:color/transparent" />
 
-    <TextView
-        android:id="@+id/btn_go_simple"
-        android:layout_width="match_parent"
-        android:layout_height="45dp"
-        android:background="?android:selectableItemBackground"
-        android:drawableRight="@drawable/ic_arrow_right"
-        android:gravity="left|center_vertical"
-        android:paddingLeft="25dp"
-        android:text="示例页"
-        android:textColor="@color/text_color"
-        android:textSize="16sp"
-        app:maskColor="@android:color/transparent" />
+        <include layout="@layout/layout_divider_line" />
 
-    <include layout="@layout/layout_divider_line" />
+        <TextView
+            android:id="@+id/btn_go_simple"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:background="?android:selectableItemBackground"
+            android:drawableRight="@drawable/ic_arrow_right"
+            android:gravity="left|center_vertical"
+            android:paddingLeft="25dp"
+            android:text="示例页"
+            android:textColor="@color/text_color"
+            android:textSize="16sp"
+            app:maskColor="@android:color/transparent" />
 
-    <TextView
-        android:id="@+id/btn_go_theme_simple"
-        android:layout_width="match_parent"
-        android:layout_height="45dp"
-        android:background="?android:selectableItemBackground"
-        android:drawableRight="@drawable/ic_arrow_right"
-        android:gravity="left|center_vertical"
-        android:paddingLeft="25dp"
-        android:text="Theme示例页"
-        android:textColor="@color/text_color"
-        android:textSize="16sp"
-        app:maskColor="@android:color/transparent" />
+        <include layout="@layout/layout_divider_line" />
 
-    <include layout="@layout/layout_divider_line" />
+        <TextView
+            android:id="@+id/btn_go_theme_simple"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:background="?android:selectableItemBackground"
+            android:drawableRight="@drawable/ic_arrow_right"
+            android:gravity="left|center_vertical"
+            android:paddingLeft="25dp"
+            android:text="Theme示例页"
+            android:textColor="@color/text_color"
+            android:textSize="16sp"
+            app:maskColor="@android:color/transparent" />
 
-    <TextView
-        android:id="@+id/btn_go_image_view_simple"
-        android:layout_width="match_parent"
-        android:layout_height="45dp"
-        android:background="?android:selectableItemBackground"
-        android:drawableRight="@drawable/ic_arrow_right"
-        android:gravity="left|center_vertical"
-        android:paddingLeft="25dp"
-        android:text="ImageView示例页"
-        android:textColor="@color/text_color"
-        android:textSize="16sp"
-        app:maskColor="@android:color/transparent" />
+        <include layout="@layout/layout_divider_line" />
 
-    <include layout="@layout/layout_divider_line" />
+        <TextView
+            android:id="@+id/btn_go_image_view_simple"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:background="?android:selectableItemBackground"
+            android:drawableRight="@drawable/ic_arrow_right"
+            android:gravity="left|center_vertical"
+            android:paddingLeft="25dp"
+            android:text="ImageView示例页"
+            android:textColor="@color/text_color"
+            android:textSize="16sp"
+            app:maskColor="@android:color/transparent" />
 
-    <TextView
-        android:id="@+id/btn_go_list_view_simple"
-        android:layout_width="match_parent"
-        android:layout_height="45dp"
-        android:background="?android:selectableItemBackground"
-        android:drawableRight="@drawable/ic_arrow_right"
-        android:gravity="left|center_vertical"
-        android:paddingLeft="25dp"
-        android:text="ListView示例页"
-        android:textColor="@color/text_color"
-        android:textSize="16sp"
-        app:maskColor="@android:color/transparent" />
+        <include layout="@layout/layout_divider_line" />
 
-    <include layout="@layout/layout_divider_line" />
+        <TextView
+            android:id="@+id/btn_go_list_view_simple"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:background="?android:selectableItemBackground"
+            android:drawableRight="@drawable/ic_arrow_right"
+            android:gravity="left|center_vertical"
+            android:paddingLeft="25dp"
+            android:text="ListView示例页"
+            android:textColor="@color/text_color"
+            android:textSize="16sp"
+            app:maskColor="@android:color/transparent" />
 
-    <TextView
-        android:id="@+id/btn_go_recycler_view_simple"
-        android:layout_width="match_parent"
-        android:layout_height="45dp"
-        android:background="?android:selectableItemBackground"
-        android:drawableRight="@drawable/ic_arrow_right"
-        android:gravity="left|center_vertical"
-        android:paddingLeft="25dp"
-        android:text="RecyclerView示例页"
-        android:textColor="@color/text_color"
-        android:textSize="16sp"
-        app:maskColor="@android:color/transparent" />
+        <include layout="@layout/layout_divider_line" />
 
-    <include layout="@layout/layout_divider_line" />
+        <TextView
+            android:id="@+id/btn_go_recycler_view_simple"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:background="?android:selectableItemBackground"
+            android:drawableRight="@drawable/ic_arrow_right"
+            android:gravity="left|center_vertical"
+            android:paddingLeft="25dp"
+            android:text="RecyclerView示例页"
+            android:textColor="@color/text_color"
+            android:textSize="16sp"
+            app:maskColor="@android:color/transparent" />
 
-    <TextView
-        android:id="@+id/btn_go_web_view_simple"
-        android:layout_width="match_parent"
-        android:layout_height="45dp"
-        android:background="?android:selectableItemBackground"
-        android:drawableRight="@drawable/ic_arrow_right"
-        android:gravity="left|center_vertical"
-        android:paddingLeft="25dp"
-        android:text="WebView示例页"
-        android:textColor="@color/text_color"
-        android:textSize="16sp"
-        app:maskColor="@android:color/transparent" />
+        <include layout="@layout/layout_divider_line" />
 
-    <include layout="@layout/layout_divider_line" />
+        <TextView
+            android:id="@+id/btn_go_web_view_simple"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:background="?android:selectableItemBackground"
+            android:drawableRight="@drawable/ic_arrow_right"
+            android:gravity="left|center_vertical"
+            android:paddingLeft="25dp"
+            android:text="WebView示例页"
+            android:textColor="@color/text_color"
+            android:textSize="16sp"
+            app:maskColor="@android:color/transparent" />
 
-    <TextView
-        android:id="@+id/btn_go_text_view_simple"
-        android:layout_width="match_parent"
-        android:layout_height="45dp"
-        android:background="?android:selectableItemBackground"
-        android:drawableRight="@drawable/ic_arrow_right"
-        android:gravity="left|center_vertical"
-        android:paddingLeft="25dp"
-        android:text="TextView示例页"
-        android:textColor="@color/text_color"
-        android:textSize="16sp"
-        app:maskColor="@android:color/transparent" />
+        <include layout="@layout/layout_divider_line" />
 
-    <include layout="@layout/layout_divider_line" />
+        <TextView
+            android:id="@+id/btn_go_text_view_simple"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:background="?android:selectableItemBackground"
+            android:drawableRight="@drawable/ic_arrow_right"
+            android:gravity="left|center_vertical"
+            android:paddingLeft="25dp"
+            android:text="TextView示例页"
+            android:textColor="@color/text_color"
+            android:textSize="16sp"
+            app:maskColor="@android:color/transparent" />
 
-    <TextView
-        android:id="@+id/btn_go_bug_simple"
-        android:layout_width="match_parent"
-        android:layout_height="45dp"
-        android:background="?android:selectableItemBackground"
-        android:drawableRight="@drawable/ic_arrow_right"
-        android:gravity="left|center_vertical"
-        android:paddingLeft="25dp"
-        android:text="问题示例页"
-        android:textColor="@color/text_color"
-        android:textSize="16sp"
-        app:maskColor="@android:color/transparent" />
+        <include layout="@layout/layout_divider_line" />
 
-    <include layout="@layout/layout_divider_line" />
+        <TextView
+            android:id="@+id/btn_go_bug_simple"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:background="?android:selectableItemBackground"
+            android:drawableRight="@drawable/ic_arrow_right"
+            android:gravity="left|center_vertical"
+            android:paddingLeft="25dp"
+            android:text="问题示例页"
+            android:textColor="@color/text_color"
+            android:textSize="16sp"
+            app:maskColor="@android:color/transparent" />
 
-    <TextView
-        android:id="@+id/btn_go_local_set"
-        android:layout_width="match_parent"
-        android:layout_height="45dp"
-        android:background="?android:selectableItemBackground"
-        android:drawableRight="@drawable/ic_arrow_right"
-        android:gravity="left|center_vertical"
-        android:paddingLeft="25dp"
-        android:text="独立日夜间示例页"
-        android:textColor="@color/text_color"
-        android:textSize="16sp"
-        app:maskColor="@android:color/transparent" />
+        <include layout="@layout/layout_divider_line" />
 
-    <include layout="@layout/layout_divider_line" />
-    <TextView
-        android:id="@+id/btn_go_simple_test"
-        android:layout_width="match_parent"
-        android:layout_height="45dp"
-        android:background="?android:selectableItemBackground"
-        android:drawableRight="@drawable/ic_arrow_right"
-        android:gravity="left|center_vertical"
-        android:paddingLeft="25dp"
-        android:text="简单示例页"
-        android:textColor="@color/text_color"
-        android:textSize="16sp"
-        app:maskColor="@android:color/transparent" />
+        <TextView
+            android:id="@+id/btn_go_local_set"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:background="?android:selectableItemBackground"
+            android:drawableRight="@drawable/ic_arrow_right"
+            android:gravity="left|center_vertical"
+            android:paddingLeft="25dp"
+            android:text="独立日夜间示例页"
+            android:textColor="@color/text_color"
+            android:textSize="16sp"
+            app:maskColor="@android:color/transparent" />
 
-    <include layout="@layout/layout_divider_line" />
+        <include layout="@layout/layout_divider_line" />
 
-    <TextView
-        android:id="@+id/btn_go_style_test"
-        android:layout_width="match_parent"
-        android:layout_height="45dp"
-        android:background="?android:selectableItemBackground"
-        android:drawableRight="@drawable/ic_arrow_right"
-        android:gravity="left|center_vertical"
-        android:paddingLeft="25dp"
-        android:text="style示例页"
-        android:textColor="@color/text_color"
-        android:textSize="16sp"
-        app:maskColor="@android:color/transparent" />
+        <TextView
+            android:id="@+id/btn_go_simple_test"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:background="?android:selectableItemBackground"
+            android:drawableRight="@drawable/ic_arrow_right"
+            android:gravity="left|center_vertical"
+            android:paddingLeft="25dp"
+            android:text="简单示例页"
+            android:textColor="@color/text_color"
+            android:textSize="16sp"
+            app:maskColor="@android:color/transparent" />
 
-    <include layout="@layout/layout_divider_line" />
+        <include layout="@layout/layout_divider_line" />
+
+        <TextView
+            android:id="@+id/btn_go_style_test"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:background="?android:selectableItemBackground"
+            android:drawableRight="@drawable/ic_arrow_right"
+            android:gravity="left|center_vertical"
+            android:paddingLeft="25dp"
+            android:text="style示例页"
+            android:textColor="@color/text_color"
+            android:textSize="16sp"
+            app:maskColor="@android:color/transparent" />
+
+        <include layout="@layout/layout_divider_line" />
 
 
-    <TextView
-        android:id="@+id/btn_go_backlib_test"
-        android:layout_width="match_parent"
-        android:layout_height="45dp"
-        android:background="?android:selectableItemBackground"
-        android:drawableRight="@drawable/ic_arrow_right"
-        android:gravity="left|center_vertical"
-        android:paddingLeft="25dp"
-        android:text="第三方背景库示例页"
-        android:textColor="@color/text_color"
-        android:textSize="16sp"
-        app:maskColor="@android:color/transparent" />
+        <TextView
+            android:id="@+id/btn_go_backlib_test"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:background="?android:selectableItemBackground"
+            android:drawableRight="@drawable/ic_arrow_right"
+            android:gravity="left|center_vertical"
+            android:paddingLeft="25dp"
+            android:text="第三方背景库示例页"
+            android:textColor="@color/text_color"
+            android:textSize="16sp"
+            app:maskColor="@android:color/transparent" />
 
-    <TextView
-        android:id="@+id/btn_go_tint_colorFilter_test"
-        android:layout_width="match_parent"
-        android:layout_height="45dp"
-        android:background="?android:selectableItemBackground"
-        android:drawableRight="@drawable/ic_arrow_right"
-        android:gravity="left|center_vertical"
-        android:paddingLeft="25dp"
-        android:text="tint和colorFilter示例页"
-        android:textColor="@color/text_color"
-        android:textSize="16sp"
-        app:maskColor="@android:color/transparent" />
+        <TextView
+            android:id="@+id/btn_go_tint_colorFilter_test"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:background="?android:selectableItemBackground"
+            android:drawableRight="@drawable/ic_arrow_right"
+            android:gravity="left|center_vertical"
+            android:paddingLeft="25dp"
+            android:text="tint和colorFilter示例页"
+            android:textColor="@color/text_color"
+            android:textSize="16sp"
+            app:maskColor="@android:color/transparent" />
 
-    <include layout="@layout/layout_divider_line" />
+        <TextView
+            android:id="@+id/btn_show_dialog"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:background="?android:selectableItemBackground"
+            android:drawableRight="@drawable/ic_arrow_right"
+            android:gravity="left|center_vertical"
+            android:paddingLeft="25dp"
+            android:text="显示弹窗"
+            android:textColor="@color/text_color"
+            android:textSize="16sp"
+            app:maskColor="@android:color/transparent" />
 
-</LinearLayout>
+        <TextView
+            android:id="@+id/btn_show_popupWindow"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:background="?android:selectableItemBackground"
+            android:drawableRight="@drawable/ic_arrow_right"
+            android:gravity="left|center_vertical"
+            android:paddingLeft="25dp"
+            android:text="显示PopupWindow"
+            android:textColor="@color/text_color"
+            android:textSize="16sp"
+            app:maskColor="@android:color/transparent" />
+
+        <include layout="@layout/layout_divider_line" />
+
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>
+

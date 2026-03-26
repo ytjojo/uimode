@@ -74,6 +74,10 @@
             android:name="com.aliya.uimode.sample.TintColorFilterActivity"
             android:configChanges="uiMode"
             android:label="示例页" />
+        <activity
+            android:name="com.aliya.uimode.sample.CustomBottomSheetDialogActivity"
+            android:configChanges="uiMode"
+            android:label="示例页" />
 
         <receiver
             android:name="com.aliya.uimode.sample.ConfigChangesReceiver"
