@@ -48,9 +48,9 @@ class StyleTestActivity : BaseActivity() {
         }
 
 
-        findViewById<View>(R.id.tv_simple1).setOnClickListener {
+        findViewById<View>(R.id.view_back_style_null).setOnClickListener {
             index = index % 3
-            UiModeManager.applyStyle(it, styleInt[index])
+            UiModeManager.applyStyleUimode(it, styleInt[index])
             index++
 
         }

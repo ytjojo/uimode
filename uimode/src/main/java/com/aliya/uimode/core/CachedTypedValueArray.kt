@@ -48,6 +48,9 @@ class CachedTypedValueArray(var resources: Resources, var contextRef: WeakRefere
         return typeValues.get(index)!!.resourceId
     }
 
+    fun removeTypeValue(@StyleableRes index: Int) {
+        typeValues.remove(index)
+    }
 
     fun getBoolean(@StyleableRes index: Int, defValue: Boolean): Boolean {
         val typedValue = typeValues.get(index)
@@ -63,9 +66,6 @@ class CachedTypedValueArray(var resources: Resources, var contextRef: WeakRefere
 
     }
 
-    fun getChangingConfigurations(): Int {
-        throw UnsupportedOperationException("Cannot getChangingConfigurations")
-    }
 
     fun getColor(@StyleableRes index: Int, defValue: Int): Int {
 

@@ -1,19 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/activity_root"
     android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:gravity="center_horizontal"
     android:layout_height="match_parent"
     android:background="@color/_ffffff_202124">
-
-
-    <com.aliya.uimode.sample.view.TopBar
-        android:id="@+id/top_bar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/colorPrimary"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/tv_change_local_mode"
@@ -24,9 +17,7 @@
         android:layout_marginTop="25dp"
         android:text="未设置LocalUiMode"
         android:textColor="@color/_484848_7a7b7d"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/top_bar"
-        app:layout_goneMarginTop="10dp" />
+      />
 
     <TextView
         android:id="@+id/tv_simple1"
@@ -37,39 +28,96 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="25dp"
         android:drawableTop="@mipmap/ic_home"
-        android:text="自定义"
+        android:text="自定义style带背景"
         android:textColor="@color/_484848_7a7b7d"
         app:drawableTint="@color/_484848_7a7b7d"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_change_local_mode"
-        app:layout_goneMarginTop="10dp" />
+      />
 
 
     <View
         android:id="@+id/view_back_style"
-        style="@style/backStyleRed"
+        style="@style/backStyleRed_dark"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_gravity="center_horizontal"
         android:layout_marginStart="16dp"
         android:layout_marginTop="25dp"
         android:text="自定义"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_simple1" />
+        />
 
     <TextView
-        android:id="@+id/tv_simple2"
-        style="@style/text_yellow_style"
+        android:id="@+id/tv_style_sample"
+        style="@style/text_left_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginStart="16dp"
         android:layout_marginTop="25dp"
         android:padding="10dp"
-        android:text="自定义字体样式"
+        android:textColor="@color/text_dark_primary"
+        android:text="style_left_icon"
         app:bl_corners_radius="8dp"
         app:bl_solid_color="@color/card_back_color"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/view_back_style" />
+        />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+
+    <TextView
+        android:id="@+id/tv_simple_text_color_style"
+        style="@style/text_yellow_style"
+        android:tag="tv_simple_left_drawable"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginStart="16dp"
+        android:drawableLeft="@null"
+        android:textColor="@color/text_dark_primary"
+        android:layout_marginTop="25dp"
+        android:padding="10dp"
+        android:text="style设置textColor,同时覆盖textColor"
+
+        />
+    <TextView
+        android:id="@+id/view_back_style_null"
+        style="@style/backStyleRed"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="25dp"
+        android:gravity="center"
+        android:textColor="@color/text_dark_primary"
+        android:background="@null"
+        android:text="backgroud-style同时设置background为null"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_simple1" />
+    <TextView
+        android:id="@+id/tv_simple_left_drawable"
+        style="@style/text_left_icon"
+        android:tag="tv_simple_left_drawable"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginStart="16dp"
+        android:drawableLeft="@null"
+        android:textColor="@color/text_dark_primary"
+        android:layout_marginTop="25dp"
+        android:padding="10dp"
+        android:text="style设置drawableLeft,同时设置@null"
+       />
+
+    <TextView
+        android:id="@+id/tv_appearance_test"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="8dp"
+        android:gravity="center"
+        android:paddingHorizontal="6dp"
+        android:tag="tv_appearance_test"
+        android:text="color是appearance颜色值"
+        android:textAppearance="@style/TextViewYellowAppearance" />
+
+
+</LinearLayout>

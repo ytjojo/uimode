@@ -393,14 +393,8 @@ object UiModeManager {
         @StyleableRes index: Int,
         @AnyRes resourceId: Int
     ) {
-        val tag = v.getTag(R.id.tag_ui_mode_type_array_map)
-        var map: HashMap<IntArray, CachedTypedValueArray?>? = null
-        if (tag != null) {
-            map = tag as HashMap<IntArray, CachedTypedValueArray?>
-        } else {
-            map = HashMap()
-            v.setTag(R.id.tag_ui_mode_type_array_map, map)
-        }
+        var map: HashMap<IntArray, CachedTypedValueArray> = ViewStore.getCreateIfNullCachedTypeArrayMap(v)
+
         var cachedTypeArray = map[styleableRes] as? CachedTypedValueArray?
         if (cachedTypeArray == null) {
             cachedTypeArray = CachedTypedValueArray(v.resources, WeakReference(v.context))
@@ -437,11 +431,8 @@ object UiModeManager {
         styleableRes: IntArray,
         @StyleableRes index: Int,
     ) {
-        val tag = v.getTag(R.id.tag_ui_mode_type_array_map)
-        var map: HashMap<IntArray, CachedTypedValueArray?>? = null
-        if (tag != null) {
-            map = tag as HashMap<IntArray, CachedTypedValueArray?>
-
+        var map: HashMap<IntArray, CachedTypedValueArray>? = ViewStore.getCachedTypeArrayMap(v)
+        if (map != null) {
             var cachedTypeArray = map[styleableRes] as? CachedTypedValueArray?
             if (cachedTypeArray != null) {
                 if (cachedTypeArray.peekValue(index) != null) {
@@ -499,15 +490,13 @@ object UiModeManager {
     fun removeViewAllValue(
         view: View,
     ) {
-        val tag = view.getTag(R.id.tag_ui_mode_type_array_map)
-        var map: HashMap<IntArray, CachedTypedValueArray?>? = null
-        if (tag != null) {
-            map = tag as HashMap<IntArray, CachedTypedValueArray?>
+        val map = ViewStore.getCachedTypeArrayMap(view)
+        if (map != null) {
             map.forEach { (key, value) ->
                 value?.recycle()
             }
             map.clear()
-            view.setTag(R.id.tag_ui_mode_type_array_map, null)
+            ViewStore.clearViewCachedTypeArrayMap(view)
         }
         ViewStore.removeView(view.context, view)
 
@@ -604,8 +593,8 @@ object UiModeManager {
     /**
      * 应用样式
      */
-    fun applyStyle(v: View, @StyleRes style: Int) {
-        UiModeDelegate.applyStyle(v, style)
+    fun applyStyleUimode(v: View, @StyleRes style: Int) {
+        UiModeDelegate.applyStyleUimode(v, style)
     }
 
 

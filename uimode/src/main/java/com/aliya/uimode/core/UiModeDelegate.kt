@@ -60,18 +60,9 @@ object UiModeDelegate {
 
 
         val list: ArrayList<AbstractWidget> = WidgetRegister.getListBySuperclass(v::class.java)
-        val tagStyle = v.getTag(R.id.tag_ui_mode_widget_style)
-        var applyCount = 0
-        if (tagStyle != null && tagStyle is Int) {
-            val styleResId = tagStyle
-            list.forEach {
-                applyCount += it.applyStyle(v, styleResId)
-            }
-        }
 
-        val tag = v.getTag(R.id.tag_ui_mode_type_array_map)
-        if (tag != null && tag is Map<*, *>) {
-            val typeArrayMap = tag as Map<IntArray, CachedTypedValueArray>
+        val typeArrayMap = ViewStore.getCachedTypeArrayMap(v)
+        if (typeArrayMap != null) {
             list.forEach {
                 typeArrayMap.forEach { entry ->
                     it.onApply(v, entry.key, entry.value)
@@ -96,7 +87,7 @@ object UiModeDelegate {
         }
         val viewCreateUiModeChangedList = v.getTag(R.id.tag_ui_mode_view_ui_mode_changed_list)
         if (viewCreateUiModeChangedList != null && viewCreateUiModeChangedList is ArrayList<*>) {
-            val viewUiModeChangedList = viewCreateUiModeChangedList as ArrayList<OnViewUiModeChanged<View>>
+            val viewUiModeChangedList = viewCreateUiModeChangedList as ArrayList<OnViewCreateUiModeChanged<View>>
             viewUiModeChangedList.forEach {
                 it.onChanged(v)
             }
@@ -105,27 +96,28 @@ object UiModeDelegate {
             v.onUiModeChange()
         }
         if (UiModeWidgetDebugTool.isDebugEnabled) {
-            UiModeWidgetDebugTool.onApplyInfo(v, applyCount)
+            UiModeWidgetDebugTool.onApplyInfo(v)
         }
 
 
     }
 
 
-    fun applyStyle(v: View,@StyleRes style:Int) {
-        val tagStyle = v.getTag(R.id.tag_ui_mode_widget_style)
+    fun applyStyleUimode(v: View, @StyleRes style:Int) {
+        val tagStyle = ViewStore.getViewStyleTag(v)
         val list = WidgetRegister.getListBySuperclass(v::class.java)
         if(style != tagStyle){
-            v.setTag(R.id.tag_ui_mode_widget_style,style)
+            ViewStore.setViewStyleTag(v,style)
             val theme = v.context.theme
             list.forEach {
-                it.applyStyle(v, style)
+                it.assembleStyle(v, style)
             }
         }
 
         if(v.getTag(R.id.tag_ui_mode_is_save_store) != true){
             ViewStore.saveView(v.context,v)
         }
+        this.onUiModeChanged(v)
     }
 
 

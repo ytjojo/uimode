@@ -7,6 +7,7 @@ import com.aliya.uimode.R
 import com.aliya.uimode.core.CachedTypedValueArray
 import com.aliya.uimode.core.OnViewUiModeChanged
 import com.aliya.uimode.core.UiModeChangeListener
+import com.aliya.uimode.core.ViewStore
 import com.aliya.uimode.core.WidgetRegister
 import com.aliya.uimode.uimodewidget.AbstractWidget
 import com.aliya.uimode.utils.AppUtil
@@ -177,18 +178,18 @@ object UiModeWidgetDebugTool {
 
     fun onApplyInfo(
         v: View,
-        applyStyleCount: Int
     ) {
+
+        val applyStyleCount = ViewStore.getApplyStyleAttrCount(v)
         val list: ArrayList<AbstractWidget> = WidgetRegister.getListBySuperclass(v::class.java)
         val sb = StringBuilder()
-        val tag = v.getTag(R.id.tag_ui_mode_type_array_map)
+        val typeArrayMap = ViewStore.getCachedTypeArrayMap(v)
         val currentTime = java.text.SimpleDateFormat("HH:mm:ss", java.util.Locale.getDefault()).format(java.util.Date())
         sb.appendLine("====== Apply Start @ time: ${currentTime}  =======")
         sb.appendLine("applyStyleCount: $applyStyleCount")
         val isNight = v.resources.configuration.uiMode and android.content.res.Configuration.UI_MODE_NIGHT_MASK == android.content.res.Configuration.UI_MODE_NIGHT_YES
         sb.appendLine("====  是否是夜间 : ${isNight}  =====")
-        if (tag != null && tag is Map<*, *>) {
-            val typeArrayMap = tag as Map<IntArray, CachedTypedValueArray>
+        if (typeArrayMap != null) {
             list.forEach {
                 sb.appendLine("Widget: ${it.javaClass.simpleName}")
                 typeArrayMap.forEach { entry ->

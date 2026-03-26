@@ -5,6 +5,7 @@ import android.app.Application
 import android.content.Context
 import android.os.SystemClock
 import android.view.View
+import androidx.annotation.StyleRes
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
@@ -26,6 +27,46 @@ object ViewStore {
         HashMap<LifecycleOwner, ArrayList<WeakReference<UiModeChangeListener>>>()
     const val NO_ID = 0 // 这里只能是0
 
+
+
+    fun getCachedTypeArrayMap(view: View): HashMap<IntArray, CachedTypedValueArray>? {
+        return view.getTag(R.id.tag_ui_mode_type_array_map)  as? HashMap<IntArray, CachedTypedValueArray>
+    }
+
+    fun clearViewCachedTypeArrayMap(view: View) {
+        getCachedTypeArrayMap(view)?.clear()
+        view.setTag(R.id.tag_ui_mode_type_array_map, null)
+    }
+
+
+    fun getCreateIfNullCachedTypeArrayMap(view: View): HashMap<IntArray, CachedTypedValueArray> {
+        val cachedTypeArrayMap =  view.getTag(R.id.tag_ui_mode_type_array_map)  as? HashMap<IntArray, CachedTypedValueArray>
+        if(cachedTypeArrayMap == null){
+            val cachedTypeArrayMap = HashMap<IntArray, CachedTypedValueArray>()
+            view.setTag(R.id.tag_ui_mode_type_array_map, cachedTypeArrayMap)
+            return cachedTypeArrayMap
+        }
+        return cachedTypeArrayMap
+    }
+
+
+    fun setViewStyleTag(v: View,@StyleRes style:Int){
+        v.setTag(R.id.tag_ui_mode_widget_style,style)
+    }
+
+    fun getViewStyleTag(v: View):Int?{
+        return v.getTag(R.id.tag_ui_mode_widget_style) as? Int
+    }
+    fun hasViewStyleTag(v: View):Boolean{
+        return v.getTag(R.id.tag_ui_mode_widget_style) is Int
+    }
+    fun clearViewStyleTag(v: View){
+        v.setTag(R.id.tag_ui_mode_widget_style, null)
+    }
+
+    fun getApplyStyleAttrCount(view: View):Int{
+        return (view.getTag(R.id.tag_ui_mode_widget_style_apply_count) as? Int?)?:0
+    }
     fun saveView(ctx: Context?, v: View?) {
         if (ctx == null || v == null) return
         if (v.getTag(R.id.tag_ui_mode_is_save_store) == true) return

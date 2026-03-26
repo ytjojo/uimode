@@ -47,9 +47,18 @@
         <item name="android:background">@color/red_back</item>
     </style>
 
+    <style name="backStyleRed_dark">
+        <item name="android:background">@color/_d12324_520d0d</item>
+    </style>
+
+
 
     <style name="text_yellow_style">
         <item name="android:textColor">@color/text_yellow</item>
+    </style>
+
+    <style name="text_left_icon">
+        <item name="android:drawableLeft">@mipmap/ic_star</item>
     </style>
 
     <style name="TextViewYellowAppearance" parent="android:style/TextAppearance.Material">        <item name="android:textSize">16sp</item>

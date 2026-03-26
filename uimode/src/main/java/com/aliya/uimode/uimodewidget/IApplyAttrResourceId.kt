@@ -1,6 +1,5 @@
 package com.aliya.uimode.uimodewidget
 
-import android.content.res.TypedArray
 import android.util.AttributeSet
 import android.view.View
 import androidx.annotation.StyleRes
@@ -25,6 +24,6 @@ interface IApplyAttrResourceId {
      * @param view
      * @param styleRes Style id
      */
-    fun applyStyle(view: View, @StyleRes styleRes: Int):Int
+    fun assembleStyle(view: View, @StyleRes styleRes: Int):Int
 
 }
