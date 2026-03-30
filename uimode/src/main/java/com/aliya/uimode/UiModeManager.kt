@@ -21,7 +21,6 @@ import androidx.annotation.StyleRes
 import androidx.annotation.StyleableRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.appcompat.app.AppCompatDelegate.NightMode
 import androidx.core.view.LayoutInflaterCompat
 import androidx.lifecycle.LifecycleOwner
 import com.aliya.uimode.core.CachedTypedValueArray
@@ -55,8 +54,9 @@ object UiModeManager {
     @ConfigAbleNightMode
     var appUiMode = AppCompatDelegate.MODE_NIGHT_NO
 
-    @NightMode
-    var systemUiMode = AppCompatDelegate.MODE_NIGHT_NO
+
+    @ConfigurationUIMode
+    var systemConfigurationUiMode = Configuration.UI_MODE_NIGHT_NO
 
     /**
      * 是否全局支持ImageView夜间遮罩
@@ -71,6 +71,7 @@ object UiModeManager {
      */
     var isSupportTextViewDrawableMask = false
 
+    @ConfigurationUIMode
     var appConfigurationUiMode = Configuration.UI_MODE_NIGHT_NO
 
     /**
@@ -139,7 +140,8 @@ object UiModeManager {
     fun init(context: Context, factory2: Factory2?) {
         ColorUimode.initConfigurationContext(context.applicationContext)
         sAppContext = context.applicationContext
-        systemUiMode = getConfigurationUiMode(context.getResources().getConfiguration())
+        systemConfigurationUiMode =
+            getConfigurationUiMode(context.getResources().getConfiguration())
         HideLog.init(sAppContext)
         sFactory2 = factory2
         val appTheme = AppResourceUtils.getManifestApplicationTheme(sAppContext)
@@ -170,12 +172,13 @@ object UiModeManager {
     fun setDefaultUiMode(@ConfigAbleNightMode mode: Int): Boolean {
 
         appUiMode = mode
+        val oldAppConfigAbleNightMode = appConfigurationUiMode
         if (appUiMode == AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM) {
-//            appConfigurationUiMode = getConfigurationUiMode(Resources.getSystem().configuration)
-            appConfigurationUiMode = convertFromAppDelegateToConfigurationMode(systemUiMode)
+            appConfigurationUiMode = systemConfigurationUiMode
         } else {
             appConfigurationUiMode = convertFromAppDelegateToConfigurationMode(appUiMode)
         }
+
         /**
          * 1. 设置默认 uiMode
          * 2. 遍历 AppCompatDelegate 执行 applyDayNight
@@ -183,8 +186,12 @@ object UiModeManager {
          * 2.2 Activity#recreate 或者 Activity.onConfigurationChanged(mode);
          */
         AppCompatDelegate.setDefaultNightMode(mode)
+        AppResourceUtils.updateUiModeForApplication(
+            sAppContext,
+            getUiModeFromConfigurationUiMode(appConfigurationUiMode)
+        )
         // 更新 ApplicationContext
-        return AppResourceUtils.updateUiModeForApplication(sAppContext, mode)
+        return oldAppConfigAbleNightMode != appConfigurationUiMode
     }
 
 
@@ -320,18 +327,19 @@ object UiModeManager {
      * 设置指定当前Activity的夜间模式
      */
     fun setLocalNightMode(activity: AppCompatActivity, @ConfigAbleNightMode uiMode: Int) {
-//        var currentMode = AppResourceUtils.calculateNightMode(activity)
-        var currentMode = getUiModeFromConfiguration(activity.resources.configuration)
-
-        activity.delegate.localNightMode = uiMode
-        var newMode = AppResourceUtils.calculateNightMode(activity)
-        if (newMode == AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM) {
-            newMode = systemUiMode
-        }
+        val currentMode = getUiModeFromConfiguration(activity.resources.configuration)
+        val fixedUiMode = if (uiMode == AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM && appUiMode != AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM) {
+            getUiModeFromConfigurationUiMode(systemConfigurationUiMode)
+        } else uiMode
+        activity.delegate.localNightMode = fixedUiMode
+        val newMode = AppResourceUtils.calculateNightMode(activity)
         if (newMode != currentMode) {
             //todo
         }
         applyUiModeViews(activity)
+        if(fixedUiMode != uiMode){
+            activity.delegate.localNightMode = uiMode
+        }
 
     }
 
@@ -370,7 +378,7 @@ object UiModeManager {
     fun registerUiModeChangeListener(
         lifecycleOwner: LifecycleOwner,
         listener: UiModeChangeListener
-    ){
+    ) {
         ViewStore.registerUiModeChangeListener(lifecycleOwner, listener)
     }
 
@@ -398,17 +406,18 @@ object UiModeManager {
         @StyleableRes index: Int,
         @AnyRes resourceId: Int
     ) {
-        var map: HashMap<IntArray, CachedTypedValueArray> = ViewStore.getCreateIfNullCachedTypeArrayMap(v)
+        var map: HashMap<IntArray, CachedTypedValueArray> =
+            ViewStore.getCreateIfNullCachedTypeArrayMap(v)
 
         var cachedTypeArray = map[styleableRes] as? CachedTypedValueArray?
         if (cachedTypeArray == null) {
             cachedTypeArray = CachedTypedValueArray(v.resources, WeakReference(v.context))
             map[styleableRes] = cachedTypeArray
-            cachedTypeArray.putIndexAttr( index)
+            cachedTypeArray.putIndexAttr(index)
             map[styleableRes] = cachedTypeArray
         } else {
             if (cachedTypeArray.peekValue(index) == null) {
-                cachedTypeArray.putIndexAttr( index)
+                cachedTypeArray.putIndexAttr(index)
             }
         }
         val typedValue = TypedValue()
@@ -459,7 +468,7 @@ object UiModeManager {
      * 禁用 View 日夜间切换,无法恢复
      * 不移除 View日夜间属性值
      */
-    fun disableViewUimode(view: View){
+    fun disableViewUimode(view: View) {
         ViewStore.removeView(view.context, view)
     }
 
@@ -468,25 +477,28 @@ object UiModeManager {
      *
      * 添加 View 日夜间切换监听
      */
-    fun <T : View> addOnViewUiModeChanged(view: T, onViewUiModeChanged: OnViewUiModeChanged<T>){
+    fun <T : View> addOnViewUiModeChanged(view: T, onViewUiModeChanged: OnViewUiModeChanged<T>) {
         ViewStore.saveView(view.context, view)
-        view.setTag(R.id.tag_ui_mode_user_view_ui_mode_changed,onViewUiModeChanged)
+        view.setTag(R.id.tag_ui_mode_user_view_ui_mode_changed, onViewUiModeChanged)
 
     }
 
     /**
      * 注册 View 日夜间切换监听
      */
-    fun <T:View> registerViewCreateUiModeChanged(clazz: Class<T>,onViewUiModeChanged: OnViewCreateUiModeChanged<T>){
-        WidgetRegister.registerViewCreateUiModeChanged(clazz,onViewUiModeChanged)
+    fun <T : View> registerViewCreateUiModeChanged(
+        clazz: Class<T>,
+        onViewUiModeChanged: OnViewCreateUiModeChanged<T>
+    ) {
+        WidgetRegister.registerViewCreateUiModeChanged(clazz, onViewUiModeChanged)
     }
 
     /**
      *
      * 重新启用 View 日夜间切换
      */
-    fun enableViewUimode(view: View){
-       saveView(view.context, view)
+    fun enableViewUimode(view: View) {
+        saveView(view.context, view)
     }
 
     /**
@@ -613,18 +625,19 @@ object UiModeManager {
         if (sAppContext == null) {
             return
         }
-        systemUiMode = getConfigurationUiMode(Resources.getSystem().configuration)
+        systemConfigurationUiMode = getConfigurationUiMode(Resources.getSystem().configuration)
 
-        if (appUiMode != AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM) {
+        if (appUiMode == AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM) {
+            val configurationUiMode: Int =
+                getConfigurationUiMode(Resources.getSystem().configuration)
+            if (appConfigurationUiMode != configurationUiMode) {
+                appConfigurationUiMode = systemConfigurationUiMode
+                // We may need to flush the Resources' drawable cache due to framework bugs..
+                ResourcesFlusher.flush(sAppContext!!.resources)
+                onUIModeChangedInternal()
+            }
+        } else {
             AppResourceUtils.updateUiModeForApplication(sAppContext, appUiMode)
-            return
-        }
-
-        val configurationUiMode: Int = getConfigurationUiMode(Resources.getSystem().configuration)
-        AppCompatDelegate.getDefaultNightMode()
-        if (appConfigurationUiMode != configurationUiMode) {
-            appConfigurationUiMode = convertFromAppDelegateToConfigurationMode(systemUiMode)
-            onUIModeChangedInternal()
         }
 
 
@@ -673,6 +686,20 @@ object UiModeManager {
 
 
     /**
+     * 获取 Configuration 日夜间模式
+     */
+    @ConfigAbleNightMode
+    private fun getUiModeFromConfigurationUiMode(@ConfigurationUIMode configurationUiMode: Int): Int {
+        val mode = when (configurationUiMode) {
+            Configuration.UI_MODE_NIGHT_NO -> AppCompatDelegate.MODE_NIGHT_NO
+            Configuration.UI_MODE_NIGHT_YES -> AppCompatDelegate.MODE_NIGHT_YES
+            else -> AppCompatDelegate.MODE_NIGHT_NO
+        }
+        return mode
+    }
+
+
+    /**
      * 将 AppCompatDelegate.MODE_NIGHT_XXX 转换成 Configuration.UI_MODE_NIGHT_XXX
      */
     private fun convertFromAppDelegateToConfigurationMode(mode: Int): Int {
@@ -703,4 +730,12 @@ object UiModeManager {
     )
     @Retention(AnnotationRetention.SOURCE)
     annotation class ConfigAbleNightMode
+
+
+    @IntDef(
+        Configuration.UI_MODE_NIGHT_YES,
+        Configuration.UI_MODE_NIGHT_NO,
+    )
+    @Retention(AnnotationRetention.SOURCE)
+    annotation class ConfigurationUIMode
 }

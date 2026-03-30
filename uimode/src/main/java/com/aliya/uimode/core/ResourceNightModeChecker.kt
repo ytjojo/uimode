@@ -21,11 +21,7 @@ object ResourceNightModeChecker {
         val value = AppResourceUtils.getTypedValue()
 
         try {
-            val uiModeMask = Configuration.UI_MODE_NIGHT_MASK
-            val nightConfig = Configuration(context.resources.configuration).apply {
-                uiMode = (uiMode and uiModeMask.inv()) or Configuration.UI_MODE_NIGHT_YES
-            }
-            val resources = context.createConfigurationContext(nightConfig).resources
+            val resources = ColorUimode.nightConfigurationContext?.resources?:getNightResources(context)
             // 2. 获取资源元数据 (true 表示追踪引用)
             resources.getValue(resId, value, true)
             // 如果是文件类资源 (Drawable, Layout, res/color 目录下的 XML)
@@ -54,6 +50,14 @@ object ResourceNightModeChecker {
 
         cache[resId] = hasNight
         return hasNight
+    }
+
+    private fun getNightResources(context: Context): Resources{
+        val uiModeMask = Configuration.UI_MODE_NIGHT_MASK
+        val nightConfig = Configuration(context.resources.configuration).apply {
+            uiMode = (uiMode and uiModeMask.inv()) or Configuration.UI_MODE_NIGHT_YES
+        }
+        return context.createConfigurationContext(nightConfig).resources
     }
 
     private fun resIdIsColor(res: Resources, resId: Int): Boolean {

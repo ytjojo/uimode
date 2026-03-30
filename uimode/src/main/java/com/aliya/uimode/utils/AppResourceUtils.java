@@ -331,7 +331,7 @@ public class AppResourceUtils {
      * @return true : 刷新成功
      * @see androidx.appcompat.app.AppCompatDelegateImpl#updateForNightMode(int, boolean)
      */
-    public static boolean updateUiModeForApplication(Context context,
+    public static void updateUiModeForApplication(Context context,
                                                      @AppCompatDelegate.NightMode int mode) {
         final Resources res = context.getApplicationContext().getResources();
         final Configuration conf = res.getConfiguration();
@@ -346,7 +346,7 @@ public class AppResourceUtils {
                 newNightMode = Configuration.UI_MODE_NIGHT_NO;
                 break;
             default:
-                newNightMode =res.getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+                newNightMode = res.getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
                 break;
         }
 
@@ -362,10 +362,6 @@ public class AppResourceUtils {
             ResourcesFlusher.flush(res);
         }
 
-//        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-//            ResourcesFlusher.flush(sAppContext.getResources());
-//        }
-        return currentNightMode != newNightMode;
     }
 
 
