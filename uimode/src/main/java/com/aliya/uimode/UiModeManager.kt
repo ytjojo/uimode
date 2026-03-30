@@ -117,7 +117,9 @@ object UiModeManager {
             }
 
             override fun onActivityStarted(activity: Activity) {}
-            override fun onActivityResumed(activity: Activity) {}
+            override fun onActivityResumed(activity: Activity) {
+                ViewStore.applyResumedUiModeIfDirty(activity)
+            }
             override fun onActivityPaused(activity: Activity) {}
             override fun onActivityStopped(activity: Activity) {}
             override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {}
@@ -245,7 +247,8 @@ object UiModeManager {
                 }
             }
         }
-        ViewStore.dispatchApplyUiMode()
+        val foregroundActivity = AppStack.topActivity()
+        ViewStore.dispatchApplyUiMode(foregroundActivity)
     }
 
 
@@ -255,7 +258,11 @@ object UiModeManager {
      */
     @JvmStatic
     fun applyUiModeViews(activity: Activity?) {
-        ViewStore.applyUiMode(activity!!)
+        activity?: return
+        if (!AppResourceUtils.isRecreateOnUiModeChange(activity)) { // 若Activity#recreate()会调用，无需动态替换
+            ViewStore.applyUiMode(activity)
+        }
+
     }
 
     @JvmStatic

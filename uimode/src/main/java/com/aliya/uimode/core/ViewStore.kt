@@ -3,6 +3,8 @@ package com.aliya.uimode.core
 import android.app.Activity
 import android.app.Application
 import android.content.Context
+import android.os.Looper
+import android.os.MessageQueue
 import android.os.SystemClock
 import android.view.View
 import androidx.annotation.StyleRes
@@ -11,6 +13,7 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import com.aliya.uimode.HideLog
 import com.aliya.uimode.R
+import com.aliya.uimode.UiModeManager
 import com.aliya.uimode.utils.AppResourceUtils
 import com.aliya.uimode.utils.AppUtil
 import java.lang.ref.ReferenceQueue
@@ -20,17 +23,25 @@ object ViewStore {
 
     private const val TAG = "ViewStore"
     private val mContextViewMap: HashMap<Context, MutableSet<WeakReference<View>>> = HashMap()
-    private val mActivityViewMap: LinkedHashMap<Context, MutableSet<WeakReference<View>>> = LinkedHashMap()
+    private val mActivityViewMap: LinkedHashMap<Context, MutableSet<WeakReference<View>>> =
+        LinkedHashMap()
+
+    /**
+     * 需要执行日夜间切换的 Activity
+     */
+    private val mDirtyActivitySet = LinkedHashSet<Activity>()
+
+    private val mActivityUiModeMap: HashMap<Activity, Boolean> = HashMap()
     private val referenceQueue = ReferenceQueue<View>()
+    private var isIdleApplyScheduled = false
 
     private val uiModeChangeListenerMap =
         HashMap<LifecycleOwner, ArrayList<WeakReference<UiModeChangeListener>>>()
     const val NO_ID = 0 // 这里只能是0
 
 
-
     fun getCachedTypeArrayMap(view: View): HashMap<IntArray, CachedTypedValueArray>? {
-        return view.getTag(R.id.tag_ui_mode_type_array_map)  as? HashMap<IntArray, CachedTypedValueArray>
+        return view.getTag(R.id.tag_ui_mode_type_array_map) as? HashMap<IntArray, CachedTypedValueArray>
     }
 
     fun clearViewCachedTypeArrayMap(view: View) {
@@ -40,8 +51,9 @@ object ViewStore {
 
 
     fun getCreateIfNullCachedTypeArrayMap(view: View): HashMap<IntArray, CachedTypedValueArray> {
-        val cachedTypeArrayMap =  view.getTag(R.id.tag_ui_mode_type_array_map)  as? HashMap<IntArray, CachedTypedValueArray>
-        if(cachedTypeArrayMap == null){
+        val cachedTypeArrayMap =
+            view.getTag(R.id.tag_ui_mode_type_array_map) as? HashMap<IntArray, CachedTypedValueArray>
+        if (cachedTypeArrayMap == null) {
             val cachedTypeArrayMap = HashMap<IntArray, CachedTypedValueArray>()
             view.setTag(R.id.tag_ui_mode_type_array_map, cachedTypeArrayMap)
             return cachedTypeArrayMap
@@ -50,23 +62,26 @@ object ViewStore {
     }
 
 
-    fun setViewStyleTag(v: View,@StyleRes style:Int){
-        v.setTag(R.id.tag_ui_mode_widget_style,style)
+    fun setViewStyleTag(v: View, @StyleRes style: Int) {
+        v.setTag(R.id.tag_ui_mode_widget_style, style)
     }
 
-    fun getViewStyleTag(v: View):Int?{
+    fun getViewStyleTag(v: View): Int? {
         return v.getTag(R.id.tag_ui_mode_widget_style) as? Int
     }
-    fun hasViewStyleTag(v: View):Boolean{
+
+    fun hasViewStyleTag(v: View): Boolean {
         return v.getTag(R.id.tag_ui_mode_widget_style) is Int
     }
-    fun clearViewStyleTag(v: View){
+
+    fun clearViewStyleTag(v: View) {
         v.setTag(R.id.tag_ui_mode_widget_style, null)
     }
 
-    fun getApplyStyleAttrCount(view: View):Int{
-        return (view.getTag(R.id.tag_ui_mode_widget_style_apply_count) as? Int?)?:0
+    fun getApplyStyleAttrCount(view: View): Int {
+        return (view.getTag(R.id.tag_ui_mode_widget_style_apply_count) as? Int?) ?: 0
     }
+
     fun saveView(ctx: Context?, v: View?) {
         if (ctx == null || v == null) return
         if (v.getTag(R.id.tag_ui_mode_is_save_store) == true) return
@@ -78,9 +93,13 @@ object ViewStore {
             val activity = AppUtil.findActivity(ctx)
             if (activity != null && !AppResourceUtils.isRecreateOnUiModeChange(activity)) {
                 putView2Map(activity, v, mActivityViewMap, null)
+                if (!mActivityUiModeMap.containsKey(activity)) {
+                    mActivityUiModeMap[activity] = UiModeManager.isNight()
+                }
             }
         }
     }
+
     fun removeView(ctx: Context?, v: View?) {
         if (ctx == null || v == null) return
         v.setTag(R.id.tag_ui_mode_is_save_store, null)
@@ -137,28 +156,36 @@ object ViewStore {
      *
      * @param policy apply 策略
      */
-    fun dispatchApplyUiMode() {
+    fun dispatchApplyUiMode(foregroundActivity: Activity? = null) {
         val startTime = SystemClock.elapsedRealtime()
+        mDirtyActivitySet.clear()
         // 1、先执行Activity相关的View
         for ((key, value) in mActivityViewMap.entries.reversed()) {
             if (AppResourceUtils.isRecreateOnUiModeChange(key)) {
                 // Activity#recreate()会调用，无需动态替换
                 continue
             }
-            val activityStartTime = SystemClock.elapsedRealtime()
-            onApplyUiMode(value)
-            val costTime = SystemClock.elapsedRealtime() - activityStartTime
-            if (HideLog.isDebuggable()) {
-                HideLog.d(
-                    TAG,
-                    "dispatchApplyUiMode: " + key.javaClass.simpleName + " costTime: ${costTime} ms: "
-                )
+            if (foregroundActivity != null && key !== foregroundActivity) {
+                (key as? Activity)?.let {
+                    if (mActivityUiModeMap.get(it) != UiModeManager.isNight()) {
+                        mDirtyActivitySet.add(it)
+                    }
+
+                }
+                continue
             }
+            (key as? Activity)?.let {
+                applyUiMode(it)
+            }
+
         }
 
         // 2、在执行ApplicationContext相关的View
         for ((_, value) in mContextViewMap) {
             onApplyUiMode(value)
+        }
+        if (foregroundActivity != null) {
+            scheduleIdleApplyIfNeed()
         }
         ViewStore.dispatchUiModeChangeListener()
         if (HideLog.isDebuggable()) {
@@ -170,9 +197,74 @@ object ViewStore {
     }
 
     fun applyUiMode(activity: Activity) {
-        if (!AppResourceUtils.isRecreateOnUiModeChange(activity)) { // 若Activity#recreate()会调用，无需动态替换
-            onApplyUiMode(mActivityViewMap[activity])
+        if (!mDirtyActivitySet.isEmpty()) {
+            mDirtyActivitySet.remove(activity)
         }
+        val activityStartTime = SystemClock.elapsedRealtime()
+        onApplyUiMode(mActivityViewMap[activity])
+        mActivityUiModeMap[activity] = UiModeManager.isNight()
+        val costTime = SystemClock.elapsedRealtime() - activityStartTime
+        if (HideLog.isDebuggable()) {
+            HideLog.d(
+                TAG,
+                "applyUiMode: " + activity.javaClass.simpleName + " costTime: ${costTime} ms: "
+            )
+        }
+
+    }
+
+
+    /**
+     *  在onResume 如果发现 未执行日夜间切换的 Activity apply  UiMode
+     */
+    fun applyResumedUiModeIfDirty(activity: Activity) {
+
+        if (mDirtyActivitySet.remove(activity)) {
+            applyUiMode(activity)
+        }
+    }
+
+    private fun scheduleIdleApplyIfNeed() {
+        if (mDirtyActivitySet.isEmpty() || isIdleApplyScheduled) {
+            return
+        }
+        if (Looper.myLooper() != Looper.getMainLooper()) {
+            return
+        }
+        isIdleApplyScheduled = true
+        Looper.myQueue().addIdleHandler(object : MessageQueue.IdleHandler {
+            override fun queueIdle(): Boolean {
+                val hasPending = applyOneDirtyActivity()
+                if (!hasPending) {
+                    isIdleApplyScheduled = false
+                }
+                return isIdleApplyScheduled
+            }
+        })
+    }
+
+    private fun applyOneDirtyActivity(): Boolean {
+        val iterator = mDirtyActivitySet.iterator()
+        var activity: Activity? = null
+        while (iterator.hasNext()) {
+            val next = iterator.next()
+            iterator.remove()
+            if (next.isFinishing || next.isDestroyed) {
+                continue
+            }
+            activity = next
+            break
+        }
+        activity?.let {
+            applyUiMode(it)
+        }
+        if (HideLog.isDebuggable()) {
+            HideLog.d(
+                TAG,
+                "applyOneDirtyActivity  mDirtyActivitySet count: " + mDirtyActivitySet.size
+            )
+        }
+        return mDirtyActivitySet.isNotEmpty()
     }
 
 
@@ -202,6 +294,8 @@ object ViewStore {
 
     fun removeUselessViews(activity: Activity) {
         mActivityViewMap.remove(activity)?.clear()
+        mDirtyActivitySet.remove(activity)
+        mActivityUiModeMap.remove(activity)
         clearUselessContextViews()
     }
 
@@ -267,4 +361,3 @@ object ViewStore {
 
 
 }
-
