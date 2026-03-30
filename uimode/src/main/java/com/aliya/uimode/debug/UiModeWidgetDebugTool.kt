@@ -160,10 +160,10 @@ object UiModeWidgetDebugTool {
     ): String {
         val stringBuilder: StringBuilder = StringBuilder()
         val viewInfo = buildViewInfo(view, attributeSet)
-        val list = WidgetRegister.getListBySuperclass(view::class.java)
+        val list = WidgetRegister.getWidgetList(view)
         stringBuilder.append("\n ========== Assemble Start ==========")
         stringBuilder.append( viewInfo)
-        list.forEach { widget ->
+        list?.forEach { widget ->
             stringBuilder.append("\nWidget: ${widget.javaClass.simpleName}")
         }
         val info = stringBuilder.toString()
@@ -181,7 +181,7 @@ object UiModeWidgetDebugTool {
     ) {
 
         val applyStyleCount = ViewStore.getApplyStyleAttrCount(v)
-        val list: ArrayList<AbstractWidget> = WidgetRegister.getListBySuperclass(v::class.java)
+        val list: ArrayList<AbstractWidget>? = WidgetRegister.getWidgetList(v)
         val sb = StringBuilder()
         val typeArrayMap = ViewStore.getCachedTypeArrayMap(v)
         val currentTime = java.text.SimpleDateFormat("HH:mm:ss", java.util.Locale.getDefault()).format(java.util.Date())
@@ -190,7 +190,7 @@ object UiModeWidgetDebugTool {
         val isNight = v.resources.configuration.uiMode and android.content.res.Configuration.UI_MODE_NIGHT_MASK == android.content.res.Configuration.UI_MODE_NIGHT_YES
         sb.appendLine("====  是否是夜间 : ${isNight}  =====")
         if (typeArrayMap != null) {
-            list.forEach {
+            list?.forEach {
                 sb.appendLine("Widget: ${it.javaClass.simpleName}")
                 typeArrayMap.forEach { entry ->
                     onApplyInfo(v, entry.key, entry.value,sb)
@@ -201,7 +201,7 @@ object UiModeWidgetDebugTool {
         val tagCustom = v.getTag(R.id.tag_ui_mode_custom_type_array_map)
         if (tagCustom != null && tagCustom is Map<*, *>) {
             val typedArrayMap = tagCustom as Map<IntArray, CachedTypedValueArray>
-            list.forEach {
+            list?.forEach {
                 sb.appendLine("Widget: ${it.javaClass.simpleName}")
                 typedArrayMap.forEach { entry ->
                     onApplyInfo(v, entry.key, entry.value,sb)

@@ -67,18 +67,9 @@ object ResourceNightModeChecker {
     // 对于简单颜色值，对比日夜间模式下的具体数值
     private fun checkColorDifference(context: Context, resId: Int): Boolean {
         return try {
-            val uiModeMask = Configuration.UI_MODE_NIGHT_MASK
 
-            val dayConfig = Configuration(context.resources.configuration).apply {
-                uiMode = (uiMode and uiModeMask.inv()) or Configuration.UI_MODE_NIGHT_NO
-            }
-            val dayColor = context.createConfigurationContext(dayConfig).getColor(resId)
-
-            val nightConfig = Configuration(context.resources.configuration).apply {
-                uiMode = (uiMode and uiModeMask.inv()) or Configuration.UI_MODE_NIGHT_YES
-            }
-            val nightColor = context.createConfigurationContext(nightConfig).getColor(resId)
-
+            val dayColor = ColorUimode.dayConfigurationContext?.getColor(resId)
+            val nightColor = ColorUimode.nightConfigurationContext?.getColor(resId)
             dayColor != nightColor
         } catch (e: Exception) {
             false

@@ -25,6 +25,7 @@ import androidx.appcompat.app.AppCompatDelegate.NightMode
 import androidx.core.view.LayoutInflaterCompat
 import androidx.lifecycle.LifecycleOwner
 import com.aliya.uimode.core.CachedTypedValueArray
+import com.aliya.uimode.core.ColorUimode
 import com.aliya.uimode.core.FactoryMerger
 import com.aliya.uimode.core.OnViewCreateUiModeChanged
 import com.aliya.uimode.core.OnViewUiModeChanged
@@ -136,6 +137,7 @@ object UiModeManager {
      */
     @JvmStatic
     fun init(context: Context, factory2: Factory2?) {
+        ColorUimode.initConfigurationContext(context.applicationContext)
         sAppContext = context.applicationContext
         systemUiMode = getConfigurationUiMode(context.getResources().getConfiguration())
         HideLog.init(sAppContext)
@@ -197,15 +199,20 @@ object UiModeManager {
             return
         }
         val uiModeChange = setDefaultUiMode(mode)
-        var appTheme = 0
+
         // 应用Application
         if (uiModeChange) {
-            appTheme = AppResourceUtils.getManifestApplicationTheme(sAppContext)
-            if (appTheme != 0) {
-                sAppContext!!.theme.applyStyle(appTheme, true)
-            }
+            onUIModeChangedInternal()
         }
 
+
+    }
+
+    private fun onUIModeChangedInternal() {
+        val appTheme = AppResourceUtils.getManifestApplicationTheme(sAppContext)
+        if (appTheme != 0) {
+            sAppContext!!.theme.applyStyle(appTheme, true)
+        }
         // 遍历应用所有Activity
         val appStack = AppStack.getAppStack()
         if (appStack != null) {
@@ -220,13 +227,11 @@ object UiModeManager {
                 if (activity is AppCompatActivity) {
                     activity.delegate.applyDayNight()
                 }
-                if (uiModeChange) {
-                    val theme = AppResourceUtils.getManifestActivityTheme(activity)
-                    if (theme != 0) {
-                        activity.theme.applyStyle(theme, true)
-                    } else if (appTheme != 0) {
-                        activity.theme.applyStyle(appTheme, true)
-                    }
+                val theme = AppResourceUtils.getManifestActivityTheme(activity)
+                if (theme != 0) {
+                    activity.theme.applyStyle(theme, true)
+                } else if (appTheme != 0) {
+                    activity.theme.applyStyle(appTheme, true)
                 }
                 if (activity is UiModeChangeListener) {
                     (activity as UiModeChangeListener).onUiModeChange()
@@ -618,7 +623,8 @@ object UiModeManager {
         val configurationUiMode: Int = getConfigurationUiMode(Resources.getSystem().configuration)
         AppCompatDelegate.getDefaultNightMode()
         if (appConfigurationUiMode != configurationUiMode) {
-            setUiMode(appUiMode)
+            appConfigurationUiMode = convertFromAppDelegateToConfigurationMode(systemUiMode)
+            onUIModeChangedInternal()
         }
 
 
@@ -643,6 +649,13 @@ object UiModeManager {
         return appUiMode == AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
     }
 
+
+    /**
+     * 获取颜色,兼容日夜间模式
+     */
+    fun getColorWithUiMode(@ColorRes resId: Int): Int {
+        return ColorUimode.getColor(resId)
+    }
 
     /**
      * 获取 Configuration 日夜间模式

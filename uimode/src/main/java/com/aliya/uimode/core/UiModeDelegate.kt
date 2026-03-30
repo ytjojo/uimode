@@ -23,9 +23,9 @@ object UiModeDelegate {
         if(activity != null && UiModeManager.isContainsIgnoreActivity(activity::class.java)){
             return
         }
-        val list = WidgetRegister.getListBySuperclass(v::class.java)
+        val list = WidgetRegister.getWidgetList(v)
         var isSave = false
-        list.forEach {
+        list?.forEach {
             val result = it.assemble(v, attrs)
             if (result) {
                 isSave = result
@@ -59,11 +59,11 @@ object UiModeDelegate {
         }
 
 
-        val list: ArrayList<AbstractWidget> = WidgetRegister.getListBySuperclass(v::class.java)
+        val list: ArrayList<AbstractWidget>? = WidgetRegister.getWidgetList(v)
 
         val typeArrayMap = ViewStore.getCachedTypeArrayMap(v)
         if (typeArrayMap != null) {
-            list.forEach {
+            list?.forEach {
                 typeArrayMap.forEach { entry ->
                     it.onApply(v, entry.key, entry.value)
                 }
@@ -75,7 +75,7 @@ object UiModeDelegate {
         val tagCustom = v.getTag(R.id.tag_ui_mode_custom_type_array_map)
         if (tagCustom != null && tagCustom is Map<*, *>) {
             val typedArrayMap = tagCustom as Map<IntArray, CachedTypedValueArray>
-            list.forEach {
+            list?.forEach {
                 it.onApplyCustom(v, typedArrayMap)
             }
         }
@@ -105,11 +105,11 @@ object UiModeDelegate {
 
     fun applyStyleUimode(v: View, @StyleRes style:Int) {
         val tagStyle = ViewStore.getViewStyleTag(v)
-        val list = WidgetRegister.getListBySuperclass(v::class.java)
+        val list = WidgetRegister.getWidgetList(v)
         if(style != tagStyle){
             ViewStore.setViewStyleTag(v,style)
             val theme = v.context.theme
-            list.forEach {
+            list?.forEach {
                 it.assembleStyle(v, style)
             }
         }

@@ -141,6 +141,6 @@ public class LocalTopBar extends FrameLayout implements View.OnClickListener, Ui
 
     @Override
     public void onUiModeChange() {
-        bindModeView();
+
     }
 }

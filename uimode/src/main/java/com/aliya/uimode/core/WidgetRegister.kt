@@ -2,50 +2,96 @@ package com.aliya.uimode.core
 
 import android.view.View
 import android.widget.*
+import com.aliya.uimode.R
 import com.aliya.uimode.uimodewidget.*
 
 object WidgetRegister {
 
 
-    private val mCacheTypeRegister = LinkedHashMap<Class<*>,ArrayList<out AbstractWidget>>()
-
-    private val mOnViewUiModeChangedMap = HashMap<Class<*>, OnViewCreateUiModeChanged<*>>()
+    private val mTypeWidgetRegisterMap = LinkedHashMap<Class<*>, ArrayList<out AbstractWidget>>()
 
 
-    fun <T:View> registerViewCreateUiModeChanged(clazz: Class<T>, onViewUiModeChanged: OnViewCreateUiModeChanged<T>){
-        mOnViewUiModeChangedMap.put(clazz,onViewUiModeChanged)
+    private val mTypeWidgetCachedMap = HashMap<Class<*>, ArrayList<out AbstractWidget>?>()
+
+    private val mOnViewUiModeChangedRegisterMap = HashMap<Class<*>, OnViewCreateUiModeChanged<*>>()
+
+
+    private val mOnViewUiModeChangedCached =
+        HashMap<Class<*>, ArrayList<OnViewCreateUiModeChanged<*>>?>()
+
+
+    fun <T : View> registerViewCreateUiModeChanged(
+        clazz: Class<T>,
+        onViewUiModeChanged: OnViewCreateUiModeChanged<T>
+    ) {
+        mOnViewUiModeChangedRegisterMap.put(clazz, onViewUiModeChanged)
     }
 
-    fun <T:View> getViewCreateUiModeChanged(clazz: Class<T>): ArrayList<OnViewCreateUiModeChanged<T>>?{
+    fun <T : View> getViewCreateUiModeChanged(clazz: Class<T>): ArrayList<OnViewCreateUiModeChanged<T>>? {
+
+        if (mOnViewUiModeChangedCached.containsKey(clazz)) {
+            return mOnViewUiModeChangedCached.get(clazz) as? ArrayList<OnViewCreateUiModeChanged<T>>?
+        }
         val list = ArrayList<OnViewCreateUiModeChanged<T>>()
-        if (View::class.java.isAssignableFrom(clazz)) {
+        if (mOnViewUiModeChangedRegisterMap.isNotEmpty()) {
             var superclass: Class<*>? = clazz
-            while (superclass != null && View::class.java.isAssignableFrom(clazz)) {
-                val onViewUiModeChanged = mOnViewUiModeChangedMap.get(superclass) as? OnViewCreateUiModeChanged<T>?
+            while (superclass != null) {
+                val onViewUiModeChanged =
+                    mOnViewUiModeChangedRegisterMap.get(superclass) as? OnViewCreateUiModeChanged<T>?
                 if (onViewUiModeChanged != null) {
                     list.add(onViewUiModeChanged)
                 }
+                if (superclass == View::class.java) {
+                    break
+                }
                 superclass = superclass.superclass
             }
+        }
+        if (list.isNotEmpty()) {
+            mOnViewUiModeChangedCached.put(clazz, list as ArrayList<OnViewCreateUiModeChanged<*>>)
+        } else {
+            mOnViewUiModeChangedCached.put(clazz, null)
+        }
+        return list
+    }
+
+
+    fun <T : View> getViewCreateUiModeChanged(view: View): ArrayList<OnViewCreateUiModeChanged<T>>? {
+        val clazz = view.javaClass
+        if (mOnViewUiModeChangedCached.containsKey(clazz)) {
+            return mOnViewUiModeChangedCached.get(clazz) as? ArrayList<OnViewCreateUiModeChanged<T>>?
+        }
+        val list = ArrayList<OnViewCreateUiModeChanged<T>>()
+        if (mOnViewUiModeChangedRegisterMap.isNotEmpty()) {
+            mOnViewUiModeChangedRegisterMap.forEach { t, u ->
+                if (t.isAssignableFrom(clazz)) {
+                    list.add(u as OnViewCreateUiModeChanged<T>)
+                }
+            }
+        }
+        if (list.isNotEmpty()) {
+            mOnViewUiModeChangedCached.put(clazz, list as ArrayList<OnViewCreateUiModeChanged<*>>)
+        } else {
+            mOnViewUiModeChangedCached.put(clazz, null)
         }
         return list
     }
 
     fun isContains(clazz: Class<*>): Boolean {
         registerDefault()
-        return mCacheTypeRegister.containsKey(clazz)
+        return mTypeWidgetRegisterMap.containsKey(clazz)
     }
 
     fun put(key: Class<*>, widget: AbstractWidget): AbstractWidget {
         registerDefault()
 
-        if (mCacheTypeRegister.containsKey(key)) {
-            val list = mCacheTypeRegister.get(key) as ArrayList<AbstractWidget>
+        if (mTypeWidgetRegisterMap.containsKey(key)) {
+            val list = mTypeWidgetRegisterMap.get(key) as ArrayList<AbstractWidget>
             list.add(widget)
         } else {
             val list = ArrayList<AbstractWidget>()
             list.add(widget)
-            mCacheTypeRegister.put(key, list)
+            mTypeWidgetRegisterMap.put(key, list)
         }
         widget.onRegisterStyleable()
         return widget
@@ -55,12 +101,19 @@ object WidgetRegister {
 
     fun get(key: Class<*>): ArrayList<out AbstractWidget>? {
         registerDefault()
-        return mCacheTypeRegister.get(key)
+        return mTypeWidgetRegisterMap.get(key)
     }
 
-    fun getListBySuperclass(key: Class<*>): ArrayList<AbstractWidget> {
+    fun getListBySuperclass(key: Class<*>): ArrayList<AbstractWidget>? {
         registerDefault()
-        val list = ArrayList<AbstractWidget>()
+        if (mTypeWidgetCachedMap.containsKey(key)) {
+            return mTypeWidgetCachedMap.get(key) as? ArrayList<AbstractWidget>?
+        }
+        val list = (mTypeWidgetCachedMap.get(key) as? ArrayList<AbstractWidget>?)
+            ?: ArrayList<AbstractWidget>()
+        if (list.isNotEmpty()) {
+            return list
+        }
         if (View::class.java.isAssignableFrom(key)) {
             var superclass: Class<*>? = key
             while (superclass != null && View::class.java.isAssignableFrom(key)) {
@@ -71,27 +124,57 @@ object WidgetRegister {
                 superclass = superclass.superclass
             }
         }
+        if (list.isNotEmpty()) {
+            mTypeWidgetCachedMap.put(key, list)
+        } else {
+            mTypeWidgetCachedMap.put(key, null)
+        }
+        return list
+    }
+
+    fun getWidgetList(view: View): ArrayList<AbstractWidget>? {
+
+        val list = (view.getTag(R.id.tag_ui_mode_view_widget_list) as? ArrayList<AbstractWidget>)
+            ?: getListBySuperclass(view.javaClass)
+        view.setTag(R.id.tag_ui_mode_view_widget_list, list)
         return list
     }
 
     private fun registerDefault() {
-        if (mCacheTypeRegister.isNotEmpty()) {
+        if (mTypeWidgetRegisterMap.isNotEmpty()) {
             return
         }
-        mCacheTypeRegister.put(View::class.java, ArrayList<AbstractWidget>().apply { this.add( ViewWidget()) })
-        mCacheTypeRegister.put(TextView::class.java, ArrayList<AbstractWidget>().apply { this.add(TextViewWidget())})
-        mCacheTypeRegister.put(ImageView::class.java,  ArrayList<AbstractWidget>().apply { this.add(ImageViewWidget())})
-        mCacheTypeRegister.put(ProgressBar::class.java,  ArrayList<AbstractWidget>().apply { this.add(ProgressBarWidget())})
-        mCacheTypeRegister.put(SeekBar::class.java, ArrayList<AbstractWidget>().apply { this.add( SeekbarWidget())})
-        mCacheTypeRegister.put(Toolbar::class.java, ArrayList<AbstractWidget>().apply { this.add( ToolbarWidget())})
-        mCacheTypeRegister.put(CompoundButton::class.java,  ArrayList<AbstractWidget>().apply { this.add(ButtonWidget())})
-        mCacheTypeRegister.put(ListView::class.java,  ArrayList<AbstractWidget>().apply { this.add(DividerWidget())})
-        mCacheTypeRegister.put(LinearLayout::class.java,  ArrayList<AbstractWidget>().apply { this.add(DividerWidget())})
-        mCacheTypeRegister.values.forEach {list->
-            for (widget in list){
+        mTypeWidgetRegisterMap.put(
+            View::class.java,
+            ArrayList<AbstractWidget>().apply { this.add(ViewWidget()) })
+        mTypeWidgetRegisterMap.put(
+            TextView::class.java,
+            ArrayList<AbstractWidget>().apply { this.add(TextViewWidget()) })
+        mTypeWidgetRegisterMap.put(
+            ImageView::class.java,
+            ArrayList<AbstractWidget>().apply { this.add(ImageViewWidget()) })
+        mTypeWidgetRegisterMap.put(
+            ProgressBar::class.java,
+            ArrayList<AbstractWidget>().apply { this.add(ProgressBarWidget()) })
+        mTypeWidgetRegisterMap.put(
+            SeekBar::class.java,
+            ArrayList<AbstractWidget>().apply { this.add(SeekbarWidget()) })
+        mTypeWidgetRegisterMap.put(
+            Toolbar::class.java,
+            ArrayList<AbstractWidget>().apply { this.add(ToolbarWidget()) })
+        mTypeWidgetRegisterMap.put(
+            CompoundButton::class.java,
+            ArrayList<AbstractWidget>().apply { this.add(ButtonWidget()) })
+        mTypeWidgetRegisterMap.put(
+            ListView::class.java,
+            ArrayList<AbstractWidget>().apply { this.add(DividerWidget()) })
+        mTypeWidgetRegisterMap.put(
+            LinearLayout::class.java,
+            ArrayList<AbstractWidget>().apply { this.add(DividerWidget()) })
+        mTypeWidgetRegisterMap.values.forEach { list ->
+            for (widget in list) {
                 widget.onRegisterStyleable()
             }
-
 
 
         }

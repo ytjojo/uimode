@@ -6,10 +6,12 @@ import android.graphics.drawable.Drawable
 import android.os.Build
 import android.util.TypedValue
 import android.view.View
+import android.widget.EditText
 import android.widget.TextView
 import androidx.core.widget.TextViewCompat
 import com.aliya.uimode.R
 import com.aliya.uimode.core.CachedTypedValueArray
+import com.aliya.uimode.core.ResourceNightModeChecker
 import java.util.Arrays
 
 open class TextViewWidget : AbstractWidget() {
@@ -44,11 +46,11 @@ open class TextViewWidget : AbstractWidget() {
         }
 
     }
+
     override fun onApply(v: View, styleable: IntArray, typedArray: CachedTypedValueArray): Boolean {
         val textView = v as TextView
         if (Arrays.equals(styleable, R.styleable.TextViewHelper)) {
             val indexCount = typedArray.length()
-
 
 
             var drawableLeft: Drawable? = null
@@ -68,12 +70,12 @@ open class TextViewWidget : AbstractWidget() {
                         }
 
                         R.styleable.TextViewHelper_android_textColor -> {
-                           TypedValueUtils.getColorStateList(
+                            TypedValueUtils.getColorStateList(
                                 v,
                                 typedValue,
                             )?.let {
-                               textView.setTextColor(it)
-                           }
+                                textView.setTextColor(it)
+                            }
 
                         }
 
@@ -87,12 +89,12 @@ open class TextViewWidget : AbstractWidget() {
                         }
 
                         R.styleable.TextViewHelper_android_textColorHint -> {
-                           TypedValueUtils.getColorStateList(
+                            TypedValueUtils.getColorStateList(
                                 v,
                                 typedValue,
                             )?.let {
-                               textView.setHintTextColor(it)
-                           }
+                                textView.setHintTextColor(it)
+                            }
                         }
 
                         R.styleable.TextViewHelper_android_textColorLink -> {
@@ -117,28 +119,28 @@ open class TextViewWidget : AbstractWidget() {
 
 
                         R.styleable.TextViewHelper_android_drawableLeft, R.styleable.TextViewHelper_drawableLeftCompat, R.styleable.TextViewHelper_android_drawableStart -> {
-                            drawableLeft = drawableLeft?: TypedValueUtils.getDrawable(
+                            drawableLeft = drawableLeft ?: TypedValueUtils.getDrawable(
                                 v,
                                 typedValue,
                             )
                         }
 
                         R.styleable.TextViewHelper_android_drawableTop, R.styleable.TextViewHelper_drawableTopCompat -> {
-                            drawableTop = drawableTop?:TypedValueUtils.getDrawable(
+                            drawableTop = drawableTop ?: TypedValueUtils.getDrawable(
                                 v,
                                 typedValue,
                             )
                         }
 
                         R.styleable.TextViewHelper_android_drawableRight, R.styleable.TextViewHelper_drawableRightCompat, R.styleable.TextViewHelper_android_drawableEnd -> {
-                            drawableRight = drawableRight?:TypedValueUtils.getDrawable(
+                            drawableRight = drawableRight ?: TypedValueUtils.getDrawable(
                                 v,
                                 typedValue,
                             )
                         }
 
                         R.styleable.TextViewHelper_android_drawableBottom, R.styleable.TextViewHelper_drawableBottomCompat -> {
-                            drawableBottom = drawableBottom?:TypedValueUtils.getDrawable(
+                            drawableBottom = drawableBottom ?: TypedValueUtils.getDrawable(
                                 v,
                                 typedValue,
                             )
@@ -157,21 +159,21 @@ open class TextViewWidget : AbstractWidget() {
                 }
             }
 
-            val compoundDrawablesRelative =  textView.compoundDrawablesRelative
+            val compoundDrawablesRelative = textView.compoundDrawablesRelative
             val compoundDrawables = textView.compoundDrawables
             if (drawableLeft == null) {
-                drawableLeft =compoundDrawables[0]?:compoundDrawablesRelative[0]
+                drawableLeft = compoundDrawables[0] ?: compoundDrawablesRelative[0]
             }
             if (drawableTop == null) {
-                drawableTop = compoundDrawables[1]?:compoundDrawablesRelative[1]
+                drawableTop = compoundDrawables[1] ?: compoundDrawablesRelative[1]
             }
             if (drawableRight == null) {
-                drawableRight = compoundDrawables[2]?:compoundDrawablesRelative[2]
+                drawableRight = compoundDrawables[2] ?: compoundDrawablesRelative[2]
             }
             if (drawableBottom == null) {
-                drawableBottom = compoundDrawables[3]?:compoundDrawablesRelative[3]
+                drawableBottom = compoundDrawables[3] ?: compoundDrawablesRelative[3]
             }
-            if(drawableLeft != null || drawableTop != null || drawableRight != null || drawableBottom != null){
+            if (drawableLeft != null || drawableTop != null || drawableRight != null || drawableBottom != null) {
                 textView.setCompoundDrawablesWithIntrinsicBounds(
                     drawableLeft,
                     drawableTop,
@@ -201,40 +203,61 @@ open class TextViewWidget : AbstractWidget() {
         if (Arrays.equals(
                 styleable,
                 R.styleable.TextViewHelper
-            ) && indexInStyleable == R.styleable.TextViewHelper_android_textAppearance
+            )
         ) {
-            val styleRes = TypedValueUtils.getStyle(view, rawTypedValue)
-            if (styleRes != 0) {
-                styleable.forEachIndexed { index, attrResId ->
-                    val cachedTypedValue = cachedTypedValueArray.peekValue(index)
-                    if (cachedTypedValue == null) {
-                        val styleTypedValue = TypedValue()
-                        rawTypedArray.getValue(index, styleTypedValue)
-                        if (styleTypedValue.type == TypedValue.TYPE_NULL) {
-                            val styleTypedArray = view.context.obtainStyledAttributes(
-                                styleRes, intArrayOf(
-                                    attrResId
-                                )
-                            )
-                            if (styleTypedArray.indexCount > 0) {
-                                if (styleTypedArray.getValue(0, styleTypedValue) && isLegalType(
-                                        styleTypedValue
-                                    )
-                                ) {
-                                    cachedTypedValueArray.putTypeValue(index, styleTypedValue)
-                                    cachedTypedValueArray.putIndexAttr( index)
-                                }
-                            }
+            when (indexInStyleable) {
+                R.styleable.TextViewHelper_android_textAppearance -> {
+                    return true
+                }
 
-                            styleTypedArray.recycle()
-                        }
-
+                R.styleable.TextViewHelper_android_textColor -> {
+                    if (isHexColorResourceType(rawTypedValue) || !ResourceNightModeChecker.hasNightModeResource(
+                            view.context,
+                            rawTypedValue.resourceId
+                        )
+                    ) {
+                        return true
                     }
+                }
 
+                R.styleable.TextViewHelper_android_textColorHighlight -> {
+                    if (isHexColorResourceType(rawTypedValue) || !ResourceNightModeChecker.hasNightModeResource(
+                            view.context,
+                            rawTypedValue.resourceId
+                        )
+                    ) {
+                        return true
+                    }
+                }
+
+                R.styleable.TextViewHelper_android_textColorHint -> {
+                    if (isHexColorResourceType(rawTypedValue) || !ResourceNightModeChecker.hasNightModeResource(
+                            view.context,
+                            rawTypedValue.resourceId
+                        )
+                    ) {
+                        return true
+                    }
+                }
+
+                R.styleable.TextViewHelper_android_textColorLink -> {
+                    if (isHexColorResourceType(rawTypedValue) || !ResourceNightModeChecker.hasNightModeResource(
+                            view.context,
+                            rawTypedValue.resourceId
+                        )
+                    ) {
+                        return true
+                    }
+                }
+
+                R.styleable.TextViewHelper_android_textCursorDrawable -> {
+                    if (view !is EditText) {
+                        return true
+                    }
                 }
 
             }
-            return true
+
         }
         return super.onInterceptPutCacheTypeValue(
             view,

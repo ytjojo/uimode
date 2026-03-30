@@ -19,8 +19,8 @@ import java.lang.ref.WeakReference
 object ViewStore {
 
     private const val TAG = "ViewStore"
-    private val mContextViewMap: MutableMap<Context, MutableSet<WeakReference<View>>> = HashMap()
-    private val mActivityViewMap: MutableMap<Context, MutableSet<WeakReference<View>>> = HashMap()
+    private val mContextViewMap: HashMap<Context, MutableSet<WeakReference<View>>> = HashMap()
+    private val mActivityViewMap: LinkedHashMap<Context, MutableSet<WeakReference<View>>> = LinkedHashMap()
     private val referenceQueue = ReferenceQueue<View>()
 
     private val uiModeChangeListenerMap =
@@ -140,7 +140,7 @@ object ViewStore {
     fun dispatchApplyUiMode() {
         val startTime = SystemClock.elapsedRealtime()
         // 1、先执行Activity相关的View
-        for ((key, value) in mActivityViewMap) {
+        for ((key, value) in mActivityViewMap.entries.reversed()) {
             if (AppResourceUtils.isRecreateOnUiModeChange(key)) {
                 // Activity#recreate()会调用，无需动态替换
                 continue

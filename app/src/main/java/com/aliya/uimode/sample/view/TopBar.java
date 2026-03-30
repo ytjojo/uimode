@@ -101,6 +101,7 @@ public class TopBar extends FrameLayout implements View.OnClickListener, UiModeC
                 break;
         }
         AppUiMode.setUiMode(nextUiMode);
+        bindModeView();
     }
 
     private void bindModeView() {
@@ -119,6 +120,5 @@ public class TopBar extends FrameLayout implements View.OnClickListener, UiModeC
 
     @Override
     public void onUiModeChange() {
-        bindModeView();
     }
 }
