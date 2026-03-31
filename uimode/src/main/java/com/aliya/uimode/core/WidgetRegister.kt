@@ -20,6 +20,12 @@ object WidgetRegister {
         HashMap<Class<*>, ArrayList<OnViewCreateUiModeChanged<*>>?>()
 
 
+    /**
+     * 注册 OnViewCreateUiModeChanged
+     *
+     * @param clazz view 类
+     * @param onViewUiModeChanged OnViewCreateUiModeChanged
+     */
     fun <T : View> registerViewCreateUiModeChanged(
         clazz: Class<T>,
         onViewUiModeChanged: OnViewCreateUiModeChanged<T>
@@ -27,6 +33,12 @@ object WidgetRegister {
         mOnViewUiModeChangedRegisterMap.put(clazz, onViewUiModeChanged)
     }
 
+    /**
+     * 获取 view 相关 OnViewCreateUiModeChanged 列表
+     *
+     * @param clazz view 类
+     * @return widget 列表
+     */
     fun <T : View> getViewCreateUiModeChanged(clazz: Class<T>): ArrayList<OnViewCreateUiModeChanged<T>>? {
 
         if (mOnViewUiModeChangedCached.containsKey(clazz)) {
@@ -56,6 +68,12 @@ object WidgetRegister {
     }
 
 
+    /**
+     * 获取 view 相关 OnViewCreateUiModeChanged 列表
+     *
+     * @param view view
+     * @return widget 列表
+     */
     fun <T : View> getViewCreateUiModeChanged(view: View): ArrayList<OnViewCreateUiModeChanged<T>>? {
         val clazz = view.javaClass
         if (mOnViewUiModeChangedCached.containsKey(clazz)) {
@@ -82,6 +100,13 @@ object WidgetRegister {
         return mTypeWidgetRegisterMap.containsKey(clazz)
     }
 
+    /**
+     * 注册 widget
+     *
+     * @param key widget 类
+     * @param widget widget
+     * @return widget
+     */
     fun put(key: Class<*>, widget: AbstractWidget): AbstractWidget {
         registerDefault()
 
@@ -104,6 +129,12 @@ object WidgetRegister {
         return mTypeWidgetRegisterMap.get(key)
     }
 
+    /**
+     * 获取 view 相关 widget 列表
+     *
+     * @param key view 类
+     * @return widget 列表
+     */
     fun getListBySuperclass(key: Class<*>): ArrayList<AbstractWidget>? {
         registerDefault()
         if (mTypeWidgetCachedMap.containsKey(key)) {
@@ -132,6 +163,12 @@ object WidgetRegister {
         return list
     }
 
+    /**
+     * 获取 view 相关 widget 列表
+     *
+     * @param view view
+     * @return widget 列表
+     */
     fun getWidgetList(view: View): ArrayList<AbstractWidget>? {
 
         val list = (view.getTag(R.id.tag_ui_mode_view_widget_list) as? ArrayList<AbstractWidget>)
@@ -140,6 +177,9 @@ object WidgetRegister {
         return list
     }
 
+    /**
+     * 注册默认 widget
+     */
     private fun registerDefault() {
         if (mTypeWidgetRegisterMap.isNotEmpty()) {
             return

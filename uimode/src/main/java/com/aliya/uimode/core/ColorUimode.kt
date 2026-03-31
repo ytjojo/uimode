@@ -5,6 +5,7 @@ import android.content.res.Configuration
 import android.graphics.Color
 import androidx.annotation.ColorRes
 import com.aliya.uimode.UiModeManager
+import android.content.res.ColorStateList
 
 class ColorUimode {
 
@@ -36,6 +37,13 @@ class ColorUimode {
             }
 
 
+        }
+        fun getColorStateList(@ColorRes resId: Int): ColorStateList? {
+            return if (UiModeManager.isNight()) {
+                nightConfigurationContext?.getColorStateList(resId)
+            } else {
+                dayConfigurationContext?.getColorStateList(resId)
+            }
         }
     }
 }

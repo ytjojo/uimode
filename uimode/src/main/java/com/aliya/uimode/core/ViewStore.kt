@@ -22,7 +22,13 @@ import java.lang.ref.WeakReference
 object ViewStore {
 
     private const val TAG = "ViewStore"
+    /**
+     * context 相关 view map
+     */
     private val mContextViewMap: HashMap<Context, MutableSet<WeakReference<View>>> = HashMap()
+    /**
+     * activity 相关 view map
+     */
     private val mActivityViewMap: LinkedHashMap<Context, MutableSet<WeakReference<View>>> =
         LinkedHashMap()
 
@@ -30,9 +36,15 @@ object ViewStore {
      * 需要执行日夜间切换的 Activity
      */
     private val mDirtyActivitySet = LinkedHashSet<Activity>()
-
+    /**
+     * activity 相关 UiMode 状态 map
+     */
     private val mActivityUiModeMap: HashMap<Activity, Boolean> = HashMap()
     private val referenceQueue = ReferenceQueue<View>()
+
+    /**
+     * 是否已计划执行空闲切换
+     */
     private var isIdleApplyScheduled = false
 
     private val uiModeChangeListenerMap =
@@ -82,6 +94,12 @@ object ViewStore {
         return (view.getTag(R.id.tag_ui_mode_widget_style_apply_count) as? Int?) ?: 0
     }
 
+    /**
+     * 保存 view 到 map 中
+     *
+     * @param ctx context
+     * @param v view
+     */
     fun saveView(ctx: Context?, v: View?) {
         if (ctx == null || v == null) return
         if (v.getTag(R.id.tag_ui_mode_is_save_store) == true) return
@@ -100,6 +118,12 @@ object ViewStore {
         }
     }
 
+    /**
+     * 从 map 中移除 view
+     *
+     * @param ctx context
+     * @param v view
+     */
     fun removeView(ctx: Context?, v: View?) {
         if (ctx == null || v == null) return
         v.setTag(R.id.tag_ui_mode_is_save_store, null)
@@ -123,6 +147,13 @@ object ViewStore {
     }
 
 
+    /**
+     * 从 collection 中移除 item
+     *
+     * @param collection collection
+     * @param filter filter
+     * @return 是否移除成功
+     */
     private fun <E> removeItemIf(
         collection: MutableCollection<E>,
         filter: (E) -> Boolean
@@ -138,6 +169,14 @@ object ViewStore {
         return removed
     }
 
+    /**
+     * 将 view 放入 map 中
+     *
+     * @param ctx context
+     * @param v view
+     * @param map map
+     * @param queue reference queue
+     */
     private fun putView2Map(
         ctx: Context, v: View, map: MutableMap<Context, MutableSet<WeakReference<View>>>,
         queue: ReferenceQueue<View>?
@@ -154,7 +193,7 @@ object ViewStore {
     /**
      * 分发执行全部 view UiMode
      *
-     * @param policy apply 策略
+     * @param foregroundActivity 当前前台 activity
      */
     fun dispatchApplyUiMode(foregroundActivity: Activity? = null) {
         val startTime = SystemClock.elapsedRealtime()
@@ -196,6 +235,11 @@ object ViewStore {
         }
     }
 
+    /**
+     * 执行 activity 相关 view UiMode
+     *
+     * @param activity activity
+     */
     fun applyUiMode(activity: Activity) {
         if (!mDirtyActivitySet.isEmpty()) {
             mDirtyActivitySet.remove(activity)
@@ -216,6 +260,8 @@ object ViewStore {
 
     /**
      *  在onResume 如果发现 未执行日夜间切换的 Activity apply  UiMode
+     * 
+     * @param activity activity
      */
     fun applyResumedUiModeIfDirty(activity: Activity) {
 
@@ -224,6 +270,11 @@ object ViewStore {
         }
     }
 
+    /**
+     * 分发执行全部 view UiMode
+     *
+     * @param foregroundActivity 当前前台 activity
+     */
     private fun scheduleIdleApplyIfNeed() {
         if (mDirtyActivitySet.isEmpty() || isIdleApplyScheduled) {
             return
@@ -243,6 +294,11 @@ object ViewStore {
         })
     }
 
+    /**
+     * 执行一个 dirty 相关 activity UiMode
+     *
+     * @return 是否还有 dirty activity
+     */
     private fun applyOneDirtyActivity(): Boolean {
         val iterator = mDirtyActivitySet.iterator()
         var activity: Activity? = null
@@ -271,7 +327,6 @@ object ViewStore {
     /**
      * apply UiMode to Sets View
      *
-     * @param policy      apply 策略
      * @param weakViewSet view sets WeakReference
      */
     private fun onApplyUiMode(weakViewSet: MutableSet<WeakReference<View>>?) {
@@ -291,7 +346,11 @@ object ViewStore {
         }
     }
 
-
+    /**
+     * 移除 activity 相关 view
+     *
+     * @param activity activity
+     */
     fun removeUselessViews(activity: Activity) {
         mActivityViewMap.remove(activity)?.clear()
         mDirtyActivitySet.remove(activity)
@@ -299,6 +358,10 @@ object ViewStore {
         clearUselessContextViews()
     }
 
+
+    /**
+     * 清除无用的 context view
+     */
     private fun clearUselessContextViews() {
         var ref = referenceQueue.poll()
         while (ref != null) {
@@ -318,6 +381,12 @@ object ViewStore {
     }
 
 
+    /**
+     * 注册 UiMode 变化监听器
+     *
+     * @param lifecycleOwner lifecycleOwner
+     * @param listener       UiMode 变化监听器
+     */
     fun registerUiModeChangeListener(
         lifecycleOwner: LifecycleOwner,
         listener: UiModeChangeListener
@@ -351,6 +420,9 @@ object ViewStore {
         })
     }
 
+    /**
+     * 分发执行全部 UiMode 变化监听器
+     */
     fun dispatchUiModeChangeListener() {
         for ((_, value) in uiModeChangeListenerMap) {
             for (weakListener in value) {
