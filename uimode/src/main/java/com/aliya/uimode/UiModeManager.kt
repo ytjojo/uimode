@@ -535,6 +535,14 @@ object UiModeManager {
         )
     }
 
+    fun removeViewValueDrawableTint(view: TextView) {
+        removeViewValue(
+            view,
+            R.styleable.TextViewHelper,
+            R.styleable.TextViewHelper_drawableTint,
+        )
+    }
+
     fun removeViewValueBackground(view: View) {
         removeViewValue(
             view,
@@ -573,6 +581,15 @@ object UiModeManager {
             view,
             R.styleable.TextViewHelper,
             R.styleable.TextViewHelper_android_textColor,
+            color
+        )
+    }
+
+    fun saveViewValueTextDrawableTint(view: TextView, @ColorRes color: Int) {
+        saveViewValue(
+            view,
+            R.styleable.TextViewHelper,
+            R.styleable.TextViewHelper_drawableTint,
             color
         )
     }

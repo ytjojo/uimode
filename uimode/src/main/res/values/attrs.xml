@@ -62,13 +62,14 @@
     <declare-styleable name="UiModeView">
 
         <attr name="view_invalidate" format="boolean" />
-        <!--uiMode忽略的属性，多个属性时属性名之间用'|'分割-->
+        <!--uiMode忽略的属性，为空忽略所有属性,多个属性时属性名之间用'|'分割-->
+        <!--忽略所有属性   例app:uiMode_ignore=""  -->
+        <!--忽略textColor   例app:uiMode_ignore="textColor"  -->
+        <!--忽略textColor和drawableLeft   例app:uiMode_ignore=“textColor|drawableLeft”  -->
         <attr name="uiMode_ignore" format="string" />
 
         <attr name="android:foreground" />
         <attr name="android:theme" />
-
-
     </declare-styleable>
 
     <declare-styleable name="TextViewHelper">
