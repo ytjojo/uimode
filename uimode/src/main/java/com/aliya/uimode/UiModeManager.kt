@@ -414,23 +414,23 @@ object UiModeManager {
         @AnyRes resourceId: Int
     ) {
         var map: HashMap<IntArray, CachedTypedValueArray> =
-            ViewStore.getCreateIfNullCachedTypeArrayMap(v)
+            ViewStore.getCreateIfNullCachedTypedArrayMap(v)
 
-        var cachedTypeArray = map[styleableRes] as? CachedTypedValueArray?
-        if (cachedTypeArray == null) {
-            cachedTypeArray = CachedTypedValueArray(v.resources, WeakReference(v.context))
-            map[styleableRes] = cachedTypeArray
-            cachedTypeArray.putIndexAttr(index)
-            map[styleableRes] = cachedTypeArray
+        var cachedTypedArray = map[styleableRes] as? CachedTypedValueArray?
+        if (cachedTypedArray == null) {
+            cachedTypedArray = CachedTypedValueArray(v.resources, WeakReference(v.context))
+            map[styleableRes] = cachedTypedArray
+            cachedTypedArray.putIndexAttr(index)
+            map[styleableRes] = cachedTypedArray
         } else {
-            if (cachedTypeArray.peekValue(index) == null) {
-                cachedTypeArray.putIndexAttr(index)
+            if (cachedTypedArray.peekValue(index) == null) {
+                cachedTypedArray.putIndexAttr(index)
             }
         }
         val typedValue = TypedValue()
         typedValue.type = TypedValue.TYPE_STRING
         typedValue.resourceId = resourceId
-        cachedTypeArray.putTypeValue(index, typedValue)
+        cachedTypedArray.putTypeValue(index, typedValue)
         saveView(v.context, v)
         onUiModeChanged(v)
     }
@@ -452,14 +452,14 @@ object UiModeManager {
         styleableRes: IntArray,
         @StyleableRes index: Int,
     ) {
-        var map: HashMap<IntArray, CachedTypedValueArray>? = ViewStore.getCachedTypeArrayMap(v)
+        var map: HashMap<IntArray, CachedTypedValueArray>? = ViewStore.getCachedTypedArrayMap(v)
         if (map != null) {
-            var cachedTypeArray = map[styleableRes] as? CachedTypedValueArray?
-            if (cachedTypeArray != null) {
-                if (cachedTypeArray.peekValue(index) != null) {
-                    cachedTypeArray.removeValue(index)
-                    if (cachedTypeArray.isEmpty()) {
-                        cachedTypeArray.recycle()
+            var cachedTypedArray = map[styleableRes] as? CachedTypedValueArray?
+            if (cachedTypedArray != null) {
+                if (cachedTypedArray.peekValue(index) != null) {
+                    cachedTypedArray.removeValue(index)
+                    if (cachedTypedArray.isEmpty()) {
+                        cachedTypedArray.recycle()
                         map.remove(styleableRes)
                     }
                 }
@@ -514,13 +514,13 @@ object UiModeManager {
     fun removeViewAllValue(
         view: View,
     ) {
-        val map = ViewStore.getCachedTypeArrayMap(view)
+        val map = ViewStore.getCachedTypedArrayMap(view)
         if (map != null) {
             map.forEach { (key, value) ->
                 value?.recycle()
             }
             map.clear()
-            ViewStore.clearViewCachedTypeArrayMap(view)
+            ViewStore.clearViewCachedTypedArrayMap(view)
         }
         ViewStore.removeView(view.context, view)
 

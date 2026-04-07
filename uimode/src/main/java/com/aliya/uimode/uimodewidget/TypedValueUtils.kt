@@ -1,5 +1,6 @@
 package com.aliya.uimode.uimodewidget
 
+import android.content.Context
 import android.content.res.ColorStateList
 import android.content.res.Resources.Theme
 import android.graphics.PorterDuff
@@ -55,6 +56,25 @@ class TypedValueUtils {
             }
             return null
         }
+
+        /**
+         * 检索主题中属性的值
+         *
+         * @param v           a view.
+         * @param resId       The resource identifier of the desired theme attribute.
+         * @return boolean Returns true if the attribute was found and <var>outValue</var>
+         * is valid, else false.
+         * @see android.content.res.Resources.Theme.resolveAttribute
+         */
+        fun resolveAttribute(context: Context, resId: Int): TypedValue? {
+            val typedValue = AppResourceUtils.getTypedValue()
+            val success = context.theme?.resolveAttribute(resId, typedValue, true)
+            if (success == true) {
+                return typedValue
+            }
+            return null
+        }
+
 
 
         private fun getDrawableInternal(
@@ -195,6 +215,39 @@ class TypedValueUtils {
             }
             return null
         }
+
+
+        fun getColor(
+            context: Context,
+            typedValue: TypedValue,
+        ): Int? {
+            when (typedValue.type) {
+                TypedValue.TYPE_STRING -> {
+                    return ContextCompat.getColor(context, typedValue.resourceId)
+                }
+                TypedValue.TYPE_ATTRIBUTE -> {
+                    if (context.theme != null) {
+                        val attrTypedValue =
+                            resolveAttribute(context, typedValue.resourceId)
+                        attrTypedValue?.apply {
+                            return getColor(context, this)
+                        }
+                    }
+                }
+                else -> {
+                    if(typedValue.resourceId != 0){
+                        return ContextCompat.getColor(context, typedValue.resourceId)
+                    }else{
+                        if (typedValue.type > TypedValue.TYPE_FIRST_INT && typedValue.type < TypedValue.TYPE_LAST_INT) {
+                            return typedValue.data
+                        }
+                    }
+
+                }
+            }
+            return null
+        }
+
 
 
 

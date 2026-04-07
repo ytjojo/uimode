@@ -17,6 +17,8 @@ import android.util.TypedValue;
 
 import com.aliya.uimode.R;
 import com.aliya.uimode.core.ViewStore;
+import com.aliya.uimode.uimodewidget.TypedValueUtils;
+import com.aliya.uimode.utils.AppResourceUtils;
 
 /**
  * ImageView遮罩 - 助手
@@ -43,7 +45,6 @@ public class MaskHelper {
     private int mApplyMaskColor = Color.TRANSPARENT;
     private Paint mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
-    private static TypedValue sOutValue = new TypedValue();
     /**
      * @see R.attr#maskColor
      */
@@ -60,12 +61,8 @@ public class MaskHelper {
         if (attrs != null) {
             TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.MaskImageView);
             maskUnion = a.getBoolean(R.styleable.MaskImageView_maskUnion, false);
+            isSupportViewMask = a.getBoolean(R.styleable.MaskImageView_view_useMaskColor, isGlobalSupportViewMask);
             a.recycle();
-
-            TypedArray uimodeTypedArray = context.obtainStyledAttributes(attrs, R.styleable.UiMode);
-            isSupportViewMask = uimodeTypedArray.getBoolean(R.styleable.UiMode_view_useMaskColor, isGlobalSupportViewMask);
-            uimodeTypedArray.recycle();
-
             final int N = attrs.getAttributeCount();
             for (int i = 0; i < N; i++) {
                 String attrName = attrs.getAttributeName(i);
@@ -129,6 +126,7 @@ public class MaskHelper {
         } else if (mMaskColorHex != null) {
             mApplyMaskColor = mMaskColorHex; // 先赋值
             Resources.Theme theme = mContext.getTheme();
+            TypedValue sOutValue = AppResourceUtils.getTypedValue();
             if (theme != null &&
                     theme.resolveAttribute(R.attr.view_useMaskColor, sOutValue, true)) {
                 if (sOutValue.type == TypedValue.TYPE_INT_BOOLEAN) {
@@ -153,6 +151,7 @@ public class MaskHelper {
 
     private void resolveColorAttribute(int attrId) {
         Resources.Theme theme = mContext.getTheme();
+        TypedValue sOutValue = AppResourceUtils.getTypedValue();
         if (theme != null && theme.resolveAttribute(attrId, sOutValue, true)) {
             switch (sOutValue.type) {
                 case TypedValue.TYPE_INT_COLOR_ARGB4:

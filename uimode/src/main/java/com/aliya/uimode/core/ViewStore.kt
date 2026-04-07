@@ -52,25 +52,25 @@ object ViewStore {
     const val NO_ID = 0 // 这里只能是0
 
 
-    fun getCachedTypeArrayMap(view: View): HashMap<IntArray, CachedTypedValueArray>? {
+    fun getCachedTypedArrayMap(view: View): HashMap<IntArray, CachedTypedValueArray>? {
         return view.getTag(R.id.tag_ui_mode_type_array_map) as? HashMap<IntArray, CachedTypedValueArray>
     }
 
-    fun clearViewCachedTypeArrayMap(view: View) {
-        getCachedTypeArrayMap(view)?.clear()
+    fun clearViewCachedTypedArrayMap(view: View) {
+        getCachedTypedArrayMap(view)?.clear()
         view.setTag(R.id.tag_ui_mode_type_array_map, null)
     }
 
 
-    fun getCreateIfNullCachedTypeArrayMap(view: View): HashMap<IntArray, CachedTypedValueArray> {
-        val cachedTypeArrayMap =
+    fun getCreateIfNullCachedTypedArrayMap(view: View): HashMap<IntArray, CachedTypedValueArray> {
+        val cachedTypedArrayMap =
             view.getTag(R.id.tag_ui_mode_type_array_map) as? HashMap<IntArray, CachedTypedValueArray>
-        if (cachedTypeArrayMap == null) {
-            val cachedTypeArrayMap = HashMap<IntArray, CachedTypedValueArray>()
-            view.setTag(R.id.tag_ui_mode_type_array_map, cachedTypeArrayMap)
-            return cachedTypeArrayMap
+        if (cachedTypedArrayMap == null) {
+            val cachedTypedArrayMap = HashMap<IntArray, CachedTypedValueArray>()
+            view.setTag(R.id.tag_ui_mode_type_array_map, cachedTypedArrayMap)
+            return cachedTypedArrayMap
         }
-        return cachedTypeArrayMap
+        return cachedTypedArrayMap
     }
 
 

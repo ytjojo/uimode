@@ -1,12 +1,15 @@
 package com.aliya.uimode.uimodewidget
 
 import android.content.res.TypedArray
+import android.util.TypedValue
 import android.view.View
 import android.widget.ImageView
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.widget.ImageViewCompat
 import com.aliya.uimode.R
+import com.aliya.uimode.UiModeManager
 import com.aliya.uimode.core.CachedTypedValueArray
+import com.aliya.uimode.widget.MaskImageView
 import java.util.Arrays
 
 open class ImageViewWidget : AbstractWidget() {
@@ -14,6 +17,8 @@ open class ImageViewWidget : AbstractWidget() {
     override fun onRegisterStyleable() {
         super.onRegisterStyleable()
         registerAttrArray(androidx.appcompat.R.styleable.AppCompatImageView)
+        registerCustomAttrArray(R.styleable.MaskImageView)
+        registerCustomAttrArray(R.styleable.Round)
     }
 
 
@@ -59,5 +64,33 @@ open class ImageViewWidget : AbstractWidget() {
 
 
 
+    override fun onApplyCustom(v: View, typedArrayMap: Map<IntArray, CachedTypedValueArray>) {
+        if(v is MaskImageView){
+            if(typedArrayMap.containsKey(R.styleable.MaskImageView)){
+                val cachedTypedValueArray = typedArrayMap[R.styleable.MaskImageView]
+                if(cachedTypedValueArray != null){
+                    v.onApplyUiModeChanged(R.styleable.MaskImageView,cachedTypedValueArray)
+                }
+            }else if(typedArrayMap.containsKey(R.styleable.Round)){
+                val cachedTypedValueArray = typedArrayMap[R.styleable.Round]
+                if(cachedTypedValueArray != null){
+                    v.onApplyUiModeChanged(R.styleable.Round,cachedTypedValueArray)
+                }
+            }
+        }
+
+    }
+
+    override fun onAssembleCustom(
+        view: View,
+        styleable: IntArray,
+        typedArray: TypedArray,
+        cachedTypedArray: CachedTypedValueArray
+    ) {
+        if(view is MaskImageView){
+            view.onAssemble(styleable,cachedTypedArray)
+        }
+
+    }
 
 }

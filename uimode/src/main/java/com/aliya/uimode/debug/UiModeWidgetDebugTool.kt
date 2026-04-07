@@ -183,7 +183,7 @@ object UiModeWidgetDebugTool {
         val applyStyleCount = ViewStore.getApplyStyleAttrCount(v)
         val list: ArrayList<AbstractWidget>? = WidgetRegister.getWidgetList(v)
         val sb = StringBuilder()
-        val typeArrayMap = ViewStore.getCachedTypeArrayMap(v)
+        val typeArrayMap = ViewStore.getCachedTypedArrayMap(v)
         val currentTime = java.text.SimpleDateFormat("HH:mm:ss", java.util.Locale.getDefault()).format(java.util.Date())
         sb.appendLine("====== Apply Start @ time: ${currentTime}  =======")
         sb.appendLine("applyStyleCount: $applyStyleCount")

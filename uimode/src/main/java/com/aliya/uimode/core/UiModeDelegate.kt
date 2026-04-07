@@ -61,10 +61,10 @@ object UiModeDelegate {
 
         val list: ArrayList<AbstractWidget>? = WidgetRegister.getWidgetList(v)
 
-        val typeArrayMap = ViewStore.getCachedTypeArrayMap(v)
-        if (typeArrayMap != null) {
+        val typedArrayMap = ViewStore.getCachedTypedArrayMap(v)
+        if (typedArrayMap != null) {
             list?.forEach {
-                typeArrayMap.forEach { entry ->
+                typedArrayMap.forEach { entry ->
                     it.onApply(v, entry.key, entry.value)
                 }
             }

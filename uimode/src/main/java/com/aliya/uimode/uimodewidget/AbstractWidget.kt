@@ -8,7 +8,6 @@ import android.text.TextUtils
 import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.View
-import android.widget.TextView
 import androidx.annotation.CallSuper
 import androidx.annotation.StyleRes
 import com.aliya.uimode.R
@@ -127,7 +126,7 @@ abstract class AbstractWidget : IApplyAttrResourceId {
                 ignoreAttrIds.add(AppResourceUtils.getAttrId(view.context, it))
             }
 
-            val cachedTypeArrayMap = ViewStore.getCreateIfNullCachedTypeArrayMap(view)
+            val cachedTypedArrayMap = ViewStore.getCreateIfNullCachedTypedArrayMap(view)
             val isHasViewStyleTag = ViewStore.hasViewStyleTag(view)
 
             for (styleable in mStyleableKeySet) {
@@ -135,7 +134,7 @@ abstract class AbstractWidget : IApplyAttrResourceId {
                     view.context.obtainStyledAttributes(attributeSet, styleable, 0, if(isHasViewStyleTag) styleResId else 0)
                 val indexCount = typedArray.indexCount
                 if (indexCount > 0) {
-                    val cachedTypeArray = cachedTypeArrayMap.get(styleable)?:
+                    val cachedTypedArray = cachedTypedArrayMap.get(styleable)?:
                     CachedTypedValueArray(view.resources, WeakReference(view.context))
                     for (i in 0 until indexCount) {
                         val indexInStyleable = typedArray.getIndex(i)
@@ -165,34 +164,34 @@ abstract class AbstractWidget : IApplyAttrResourceId {
                                     indexInStyleable,
                                     typedValue,
                                     typedArray,
-                                    cachedTypeArray
+                                    cachedTypedArray
                                 )
                             ) {
-                                cachedTypeArray.putTypeValue(indexInStyleable, typedValue)
-                                cachedTypeArray.putIndexAttr(indexInStyleable)
+                                cachedTypedArray.putTypeValue(indexInStyleable, typedValue)
+                                cachedTypedArray.putIndexAttr(indexInStyleable)
                             } else {
-                                cachedTypeArray.removeTypeValue(indexInStyleable)
+                                cachedTypedArray.removeTypeValue(indexInStyleable)
                             }
 
                         }
 
                     }
-                    if (!cachedTypeArray.isEmpty()) {
-                        cachedTypeArrayMap.put(styleable, cachedTypeArray)
-                        applyTypedValueWhenOnAssemble(view, styleable, cachedTypeArray)
+                    if (!cachedTypedArray.isEmpty()) {
+                        cachedTypedArrayMap.put(styleable, cachedTypedArray)
+                        applyTypedValueWhenOnAssemble(view, styleable, cachedTypedArray)
                     }
                 } else {
-                    cachedTypeArrayMap.remove(styleable)
+                    cachedTypedArrayMap.remove(styleable)
 
                 }
                 typedArray.recycle()
             }
-            if (!cachedTypeArrayMap.isEmpty()) {
+            if (!cachedTypedArrayMap.isEmpty()) {
                 isSave = true
-                view.setTag(R.id.tag_ui_mode_type_array_map, cachedTypeArrayMap)
+                view.setTag(R.id.tag_ui_mode_type_array_map, cachedTypedArrayMap)
             }else{
-                if(cachedTypeArrayMap.isEmpty()){
-                    ViewStore.clearViewCachedTypeArrayMap(view)
+                if(cachedTypedArrayMap.isEmpty()){
+                    ViewStore.clearViewCachedTypedArrayMap(view)
                 }
             }
 
@@ -200,38 +199,48 @@ abstract class AbstractWidget : IApplyAttrResourceId {
 
         if (mCustomStyleableKeySet.isNotEmpty()) {
 
-            val tagCachedTypeArrayMap = view.getTag(R.id.tag_ui_mode_custom_type_array_map)
-            val cachedTypeArrayMap =
-                if (tagCachedTypeArrayMap != null && tagCachedTypeArrayMap is HashMap<*, *>) tagCachedTypeArrayMap as HashMap<IntArray, CachedTypedValueArray> else HashMap<IntArray, CachedTypedValueArray>()
+            val tagcachedTypedArrayMap = view.getTag(R.id.tag_ui_mode_custom_type_array_map)
+            val cachedTypedArrayMap =
+                if (tagcachedTypedArrayMap != null && tagcachedTypedArrayMap is HashMap<*, *>) tagcachedTypedArrayMap as HashMap<IntArray, CachedTypedValueArray> else HashMap<IntArray, CachedTypedValueArray>()
 
             for (styleable in mCustomStyleableKeySet) {
                 val typedArray = view.context.obtainStyledAttributes(attributeSet, styleable)
                 val indexCount = typedArray.indexCount
-                val cachedTypeArray =
+                val cachedTypedArray =
                     CachedTypedValueArray(view.resources, WeakReference(view.context))
                 if (indexCount > 0) {
                     for (i in 0 until indexCount) {
                         val indexInStyleable = typedArray.getIndex(i)
                         val typedValue = TypedValue()
                         if (typedArray.getValue(indexInStyleable, typedValue)) {
-                            cachedTypeArray.putTypeValue(indexInStyleable, typedValue)
-                            cachedTypeArray.putIndexAttr(indexInStyleable)
+                            cachedTypedArray.putTypeValue(indexInStyleable, typedValue)
+                            cachedTypedArray.putIndexAttr(indexInStyleable)
                         }
                     }
-                    if (!cachedTypeArray.isEmpty()) {
-                        cachedTypeArrayMap.put(styleable, cachedTypeArray)
-                    }
+                }
+                onAssembleCustom(view, styleable, typedArray, cachedTypedArray)
+                if (!cachedTypedArray.isEmpty()) {
+                    cachedTypedArrayMap.put(styleable, cachedTypedArray)
                 }
                 typedArray.recycle()
             }
-            if (!cachedTypeArrayMap.isEmpty()) {
+            if (!cachedTypedArrayMap.isEmpty()) {
                 isSave = true
-                view.setTag(R.id.tag_ui_mode_custom_type_array_map, cachedTypeArrayMap)
+                view.setTag(R.id.tag_ui_mode_custom_type_array_map, cachedTypedArrayMap)
             }
         }
 
         return isSave
 
+
+    }
+
+    open fun onAssembleCustom(
+        view: View,
+        styleable: IntArray,
+        typedArray: TypedArray,
+        cachedTypedArray: CachedTypedValueArray
+    ) {
 
     }
 
@@ -280,11 +289,11 @@ abstract class AbstractWidget : IApplyAttrResourceId {
     override fun assembleStyle(view: View, @StyleRes styleRes: Int): Int {
         var applyCount = 0
 
-        var tagCachedTypeArrayMap = ViewStore.getCachedTypeArrayMap(view)
+        var tagCachedTypedArrayMap = ViewStore.getCachedTypedArrayMap(view)
 
 
         mStyleableKeySet.forEach { styleable ->
-            val attrTypedArray = tagCachedTypeArrayMap?.get(styleable) ?: CachedTypedValueArray(
+            val attrTypedArray = tagCachedTypedArrayMap?.get(styleable) ?: CachedTypedValueArray(
                 view.resources,
                 WeakReference(view.context)
             )
@@ -310,10 +319,10 @@ abstract class AbstractWidget : IApplyAttrResourceId {
 
             }
             if (!attrTypedArray.isEmpty()) {
-                if (tagCachedTypeArrayMap == null) {
-                    tagCachedTypeArrayMap = ViewStore.getCreateIfNullCachedTypeArrayMap(view)
+                if (tagCachedTypedArrayMap == null) {
+                    tagCachedTypedArrayMap = ViewStore.getCreateIfNullCachedTypedArrayMap(view)
                 }
-                tagCachedTypeArrayMap.put(styleable, attrTypedArray)
+                tagCachedTypedArrayMap.put(styleable, attrTypedArray)
             }
         }
         view.setTag(R.id.tag_ui_mode_widget_style_apply_count, applyCount)
