@@ -103,6 +103,72 @@
 
             </LinearLayout>
 
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:paddingHorizontal="15dp"
+                android:orientation="horizontal">
+
+                <FrameLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:adjustViewBounds="true"
+                        android:scaleType="fitXY"
+                        android:src="@mipmap/ic_rabbit"
+                        app:view_useMaskColor="false"
+                        app:border_color="@color/text_dark_primary"
+                        app:border_width="2dp"
+                        app:radius_oval="true"
+                        app:ratio_w2h="2:1" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:text="无遮罩带边框"
+                        android:textColor="@color/text_color" />
+
+                </FrameLayout>
+
+                <View
+                    android:layout_width="20dp"
+                    android:layout_height="0dp" />
+
+                <FrameLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:adjustViewBounds="true"
+                        android:scaleType="fitXY"
+                        android:src="@mipmap/ic_rabbit"
+                        app:maskColor="@color/_3f0000ff_3f00ff00"
+                        app:border_color="@color/text_dark_primary"
+                        app:border_width="2dp"
+                        app:ratio_w2h="1:1"
+                        app:radius_oval="true" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:text="自定义罩层带边框"
+                        android:textColor="@color/text_color" />
+
+                </FrameLayout>
+
+            </LinearLayout>
+
             <FrameLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -195,7 +261,7 @@
                     android:scaleType="fitXY"
                     android:src="@mipmap/ic_rabbit"
                     app:border_color="@color/_e4e4e4_2e2f34"
-                    app:border_width="2dp"
+                    app:border_width="3dp"
                     app:radius_oval="true" />
 
                 <ImageView
@@ -207,7 +273,7 @@
                     android:scaleType="centerCrop"
                     android:src="@mipmap/ic_rabbit"
                     app:border_color="@color/_e4e4e4_2e2f34"
-                    app:border_width="2dp"
+                    app:border_width="3dp"
                     app:radius_oval="true"
                     app:ratio_w2h="1:1" />
 

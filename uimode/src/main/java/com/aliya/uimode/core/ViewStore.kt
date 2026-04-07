@@ -74,6 +74,30 @@ object ViewStore {
     }
 
 
+    fun getCreateCustomCachedTypedArrayMap(view: View): HashMap<IntArray, CachedTypedValueArray> {
+        val cachedTypedArrayMap =
+            view.getTag(R.id.tag_ui_mode_custom_type_array_map) as? HashMap<IntArray, CachedTypedValueArray>
+        if (cachedTypedArrayMap == null) {
+            val cachedTypedArrayMap = HashMap<IntArray, CachedTypedValueArray>()
+            view.setTag(R.id.tag_ui_mode_custom_type_array_map, cachedTypedArrayMap)
+            return cachedTypedArrayMap
+        }
+        return cachedTypedArrayMap
+    }
+
+    fun getCustomCachedTypedArrayMap(view: View): HashMap<IntArray, CachedTypedValueArray>? {
+        return view.getTag(R.id.tag_ui_mode_custom_type_array_map) as? HashMap<IntArray, CachedTypedValueArray>?
+    }
+
+    fun removeCustomCachedTypedArrayMapIfEmpty(view: View) {
+        val cachedTypedArrayMap =
+            view.getTag(R.id.tag_ui_mode_custom_type_array_map) as? HashMap<IntArray, CachedTypedValueArray>
+        if (cachedTypedArrayMap != null && cachedTypedArrayMap.isEmpty()) {
+            view.setTag(R.id.tag_ui_mode_custom_type_array_map, null)
+        }
+    }
+
+
     fun setViewStyleTag(v: View, @StyleRes style: Int) {
         v.setTag(R.id.tag_ui_mode_widget_style, style)
     }

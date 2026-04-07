@@ -190,23 +190,28 @@ object UiModeWidgetDebugTool {
         val isNight = v.resources.configuration.uiMode and android.content.res.Configuration.UI_MODE_NIGHT_MASK == android.content.res.Configuration.UI_MODE_NIGHT_YES
         sb.appendLine("====  是否是夜间 : ${isNight}  =====")
         if (typeArrayMap != null) {
-            list?.forEach {
-                sb.appendLine("Widget: ${it.javaClass.simpleName}")
-                typeArrayMap.forEach { entry ->
-                    onApplyInfo(v, entry.key, entry.value,sb)
 
+            typeArrayMap.forEach { entry ->
+                val widget = list?.find { it.containsStyleable(entry.key) }
+                if(widget != null){
+                    sb.appendLine("Widget apply: ${widget.javaClass.simpleName}")
                 }
+                onApplyInfo(v, entry.key, entry.value,sb)
             }
         }
-        val tagCustom = v.getTag(R.id.tag_ui_mode_custom_type_array_map)
-        if (tagCustom != null && tagCustom is Map<*, *>) {
+
+        sb.appendLine("========  =========")
+        val tagCustom = ViewStore.getCustomCachedTypedArrayMap( v)
+        if (tagCustom != null) {
             val typedArrayMap = tagCustom as Map<IntArray, CachedTypedValueArray>
-            list?.forEach {
-                sb.appendLine("Widget: ${it.javaClass.simpleName}")
-                typedArrayMap.forEach { entry ->
-                    onApplyInfo(v, entry.key, entry.value,sb)
+            typedArrayMap.forEach { entry ->
+                val widget = list?.find { it.containsCustomStyleable(entry.key) }
+                if(widget != null){
+                    sb.appendLine("Widget apply custom: ${widget.javaClass.simpleName}")
                 }
+                onApplyInfo(v, entry.key, entry.value,sb)
             }
+
         }
 
         val tagOnUiModeChanged = v.getTag(R.id.tag_ui_mode_user_view_ui_mode_changed)
@@ -235,7 +240,7 @@ object UiModeWidgetDebugTool {
     ) {
 
         val attrInfo = buildAttributeInfo(view, styleable, typedArray)
-        sb.append(attrInfo)
+        sb.appendLine(attrInfo)
     }
 
 

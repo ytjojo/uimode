@@ -72,8 +72,8 @@ object UiModeDelegate {
 
         }
 
-        val tagCustom = v.getTag(R.id.tag_ui_mode_custom_type_array_map)
-        if (tagCustom != null && tagCustom is Map<*, *>) {
+        val tagCustom = ViewStore.getCustomCachedTypedArrayMap(v)
+        if (tagCustom != null) {
             val typedArrayMap = tagCustom as Map<IntArray, CachedTypedValueArray>
             list?.forEach {
                 it.onApplyCustom(v, typedArrayMap)

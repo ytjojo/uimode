@@ -66,19 +66,10 @@ open class ImageViewWidget : AbstractWidget() {
 
     override fun onApplyCustom(v: View, typedArrayMap: Map<IntArray, CachedTypedValueArray>) {
         if(v is MaskImageView){
-            if(typedArrayMap.containsKey(R.styleable.MaskImageView)){
-                val cachedTypedValueArray = typedArrayMap[R.styleable.MaskImageView]
-                if(cachedTypedValueArray != null){
-                    v.onApplyUiModeChanged(R.styleable.MaskImageView,cachedTypedValueArray)
-                }
-            }else if(typedArrayMap.containsKey(R.styleable.Round)){
-                val cachedTypedValueArray = typedArrayMap[R.styleable.Round]
-                if(cachedTypedValueArray != null){
-                    v.onApplyUiModeChanged(R.styleable.Round,cachedTypedValueArray)
-                }
+            typedArrayMap.forEach { styleable, cachedTypedValueArray ->
+                v.onApplyUiModeChanged(styleable,cachedTypedValueArray)
             }
         }
-
     }
 
     override fun onAssembleCustom(
